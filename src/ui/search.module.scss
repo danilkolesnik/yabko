@@ -1,0 +1,81 @@
+.btnContent {
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+}
+
+.searchInput {
+    width: 100%;
+    font-family: 'Gotham', sans-serif;
+    font-weight: bold;
+    color: #888;
+    font-size: 13px;
+    letter-spacing: .15px;
+    background: #0f0f0f;
+    text-align: center;
+    height: 35px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: none;
+    padding-left: 42px;
+    text-align: left;
+    background: #1d1d1d;
+    padding-right: 80px;
+}
+
+.btnContent::before {
+    content: "";
+    background: #0F0F0F;
+    position: absolute;
+    top: -26px;
+    right: -19px;
+    transform: rotate(135deg);
+    transform-origin: 0 100%;
+    width: 17px;
+    height: 15px;
+    z-index: 10;
+}
+
+.btnContent::after {
+    content: "";
+    background: #0F0F0F;
+    position: absolute;
+    bottom: 0px;
+    right: -7px;
+    transform: rotate(45deg);
+    transform-origin: 0 100%;
+    width: 17px;
+    height: 17px;
+    z-index: 10;
+}
+
+.invisibleSearchSpan::before {
+    content: "";
+    background: #0F0F0F;
+    position: absolute;
+    top: -17px;
+    left: -12px;
+    transform: rotate(45deg);
+    transform-origin: 0 100%;
+    width: 16px;
+    height: 16px;
+    z-index: 10;
+}
+
+.invisibleSearchSpan::after {
+    content: "";
+    background: #0F0F0F;
+    position: absolute;
+    bottom: 10px;
+    left: 0px;
+    transform: rotate(135deg);
+    transform-origin: 0 100%;
+    width: 16px;
+    height: 15px;
+    z-index: 10;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 13px;
+}
