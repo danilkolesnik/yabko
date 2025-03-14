@@ -1,0 +1,67 @@
+.productSlider {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+
+  .slick-slide {
+    padding: 0 10px;
+    max-width: 350px;
+  }
+
+  .slick-prev,
+  .slick-next {
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    &::before {
+      font-size: 20px;
+      color: white;
+    }
+  }
+
+  .slick-prev {
+    left: -50px;
+  }
+
+  .slick-next {
+    right: -50px;
+  }
+
+  .progressBarContainer {
+    width: 10%;
+    margin-top: 40px; // Добавляем больше места снизу
+    padding-bottom: 20px; // Отступ для прогресс-бара
+  }
+  .progressBarWrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .progressBar {
+    display: flex;
+    flex-direction: row;
+    gap: 4px; // Расстояние между полосками
+  }
+
+  .progressLine {
+    height: 2px; // Высота каждой полоски
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.3); // Полупрозрачные полоски
+    transition: width 0.5s ease, background-color 0.5s ease;
+
+    &:nth-child(1) {
+      background-color: #fff; // Активная полоска
+    }
+  }
+}
