@@ -8,6 +8,11 @@ import ProductCard from './ProductCard';
 import { getProducts } from '@/app/page';
 
 
+interface SliderProps {
+  products: Product[];
+}
+
+
 const Slider = dynamic(() => import('react-slick'), { ssr: false });
 
 //@ts-ignore

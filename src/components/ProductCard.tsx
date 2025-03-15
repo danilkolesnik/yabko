@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import MedusaClient from "@medusajs/medusa-js";
 import styles from "./ProductCard.module.scss";
+
 import { Product } from "@/types/product";
 
-
-const ProductCard = ({product}: {product: Product}) => {
+const ProductCard = ({product}: {product: any}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
 
@@ -40,7 +40,7 @@ const ProductCard = ({product}: {product: Product}) => {
             <p>{product.description}</p>
 
             <div className={styles.buySection}>
-              <button className={styles.buyButton}>Купить</button>
+              <Link href={product.handle}><button className={styles.buyButton}>Купить</button></Link>
               <span className={styles.price}>
                 {/* @ts-ignore */}
                 {product.variants.prices ? product.variants[0]?.prices[0]?.amount / 100 : ''} ₴
