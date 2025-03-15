@@ -1,15 +1,60 @@
 'use client';
 import { useState } from 'react';
 import styles from './categories.list.module.scss';
+import { medusa } from "@/lib/medusa";
 
-export default function CategoriesList({ products, productCategories }: any) {
-  // console.log(products);
-  // console.log(productCategories);
+export default function CategoriesList({ productCategories }: any) {
 
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
+
+  const fetchProductsByCategory = async (categoryId: string) => {
+    if (categoryProducts[categoryId]) return;
+  
+    const category = productCategories.find((category: { id: string }) => category.id === categoryId);
+  
+    if (!category) {
+      return;
+    }
+  
+    const fetchProductsForCategory = async (id: string) => {
+      try {
+        const { products } = await medusa.products.list({
+          category_id: [id],
+        });
+        return products;
+      } catch (error) {
+        console.error("Error occured", id, error);
+        return [];
+      }
+    };
+  
+    try {
+      const products = await fetchProductsForCategory(categoryId);
+
+      const updatedProducts: { [key: string]: any[] } = {
+        [categoryId]: products,
+      };
+  
+      for (const childCategory of category.category_children || []) {
+        const childProducts = await fetchProductsForCategory(childCategory.id);
+        updatedProducts[childCategory.id] = childProducts;
+      }
+  
+      setCategoryProducts((prev) => ({
+        ...prev,
+        ...updatedProducts,
+      }));
+  
+    } catch (error) {
+      console.error("Ошибка при получении продуктов для категории", categoryId, error);
+    }
+  };
+  
 
   const handleMouseEnter = (categoryId: string) => {
     setActiveCategoryId(categoryId);
+    fetchProductsByCategory(categoryId);
   };
 
   const handleMouseLeave = () => {
@@ -18,7 +63,7 @@ export default function CategoriesList({ products, productCategories }: any) {
 
   return (
     <ul className={styles.categoriesContainer}>
-      {productCategories.map((category : any) => {
+      {productCategories.map((category: any) => {
         if (!category.parent_category_id) {
           return (
             <li
@@ -28,12 +73,22 @@ export default function CategoriesList({ products, productCategories }: any) {
               onMouseLeave={handleMouseLeave}
             >
               {category.name}
-              {/* Отображаем дочерние категории при наведении */}
-              {activeCategoryId === category.id && category.category_children.length > 0 && (
+              {activeCategoryId === category.id && (
                 <ul className={styles.childCategories}>
-                  {category.category_children.map((child : any) => (
+                  {category.category_children.map((child: any) => (
                     <li key={child.id} className={styles.childCategoryItem}>
                       {child.name}
+                      {categoryProducts[child.id] && (
+                        <ul className={styles.productList}>
+                          {categoryProducts[child.id].length > 0 ? (
+                            categoryProducts[child.id].map((product) => (
+                              <li key={product.id}>{product.title}</li>
+                            ))
+                          ) : (
+                            <li>Нет товаров</li>
+                          )}
+                        </ul>
+                      )}
                     </li>
                   ))}
                 </ul>

@@ -1,5 +1,4 @@
 .sliderContainer {
-    background-color: #0F0F0F;
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -7,6 +6,8 @@
   }
   
   .sliderTrack {
+    display: flex;
+    overflow: hidden;
     position: relative;
     width: 100%;
     height: 100%;
@@ -17,7 +18,9 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    transition: all 0.5s ease-in-out;
+    display: flex;
+    justify-content: space-between;
+    transition: transform 0.5s ease;
     transform: translateX(0);
     opacity: 0;
     z-index: 0;
@@ -30,6 +33,44 @@
     opacity: 1;
     z-index: 10;
   }
+
+  .imageWrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .imageBlock {
+    flex: 1;
+    padding: 5px;
+  }
+
+  .sliderImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  /* Для экранов от 780px до 1450px */
+@media (min-width: 780px) and (max-width: 1450px) {
+  .imageWrapper {
+    flex-wrap: wrap;
+  }
+  .imageBlock {
+    flex: 0 0 30%; /* 3 блока по 30% */
+  }
+}
+
+/* Для экранов от 1450px */
+@media (min-width: 1450px) {
+  .imageWrapper {
+    flex-wrap: wrap;
+  }
+  .imageBlock {
+    flex: 0 0 20%; /* 4 блока по 20% */
+  }
+}
+
   
   .slide.next {
     transform: translateX(100%);

@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
-import MedusaClient from "@medusajs/medusa-js";
+import { useState } from "react";
+import Link from "next/link";
 import styles from "./ProductCard.module.scss";
-
-import { Product } from "@/types/product";
 
 const ProductCard = ({product}: {product: any}) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-
 
   return (
     <div>

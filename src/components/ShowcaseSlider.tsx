@@ -1,7 +1,5 @@
 "use client"
-import type React from "react"
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import styles from "./showcase.slider.module.scss"
 
 const ChevronLeftIcon = () => (
@@ -39,33 +37,27 @@ const ChevronRightIcon = () => (
 const slides = [
   {
     id: 1,
-    title: "Мрррійливі",
-    subtitle: "ціни",
-    product: "Гаджети",
-    bgColor: "pink",
     images: [
-      { src: "/placeholder.svg?height=100&width=100", alt: "iPhone", className: styles.productTopRight },
-      { src: "/placeholder.svg?height=100&width=100", alt: "Headphones", className: styles.productTopLeft },
-      { src: "/placeholder.svg?height=100&width=100", alt: "Watch", className: styles.productBottomRight },
-      { src: "/placeholder.svg?height=100&width=100", alt: "Controller", className: styles.productBottomLeft },
-    ],
-    mainImage: "/placeholder.svg?height=300&width=300",
-    mainImageAlt: "Cat with products",
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+    ]
   },
   {
     id: 2,
-    title: "Стиль на лапках",
-    subtitle: "",
-    product: "Apple Watch",
-    bgColor: "purple",
     images: [
-      { src: "/placeholder.svg?height=100&width=100", alt: "Apple Watch 1", className: styles.productTopRight },
-      { src: "/placeholder.svg?height=100&width=100", alt: "Apple Watch 2", className: styles.productTopLeft },
-      { src: "/placeholder.svg?height=100&width=100", alt: "Apple Watch 3", className: styles.productBottomRight },
-      { src: "/placeholder.svg?height=100&width=100", alt: "Apple Watch 4", className: styles.productBottomLeft },
-    ],
-    mainImage: "/placeholder.svg?height=300&width=300",
-    mainImageAlt: "Cat paws with Apple Watch",
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+    ]
+  },
+  {
+    id: 3,
+    images: [
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
+    ]
   },
 ]
 
@@ -132,7 +124,7 @@ export default function ShowcaseSlider() {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`${styles.slide} ${styles[slide.bgColor]} ${
+            className={`${styles.slide} ${
               index === currentSlide
                 ? styles.active
                 : index > currentSlide || (currentSlide === slides.length - 1 && index === 0)
@@ -140,9 +132,17 @@ export default function ShowcaseSlider() {
                   : styles.prev
             }`}
           >
-            {/* Slide Content */}
             <div className={styles.slideContent}>
-            slide
+              <div className={styles.imageWrapper}>
+                {slide.images.map((image, imgIndex) => (
+                  <div
+                    key={imgIndex}
+                    className={styles.imageBlock}
+                  >
+                    <img className={styles.sliderImage} src={image} alt={`slide-${slide.id}-image-${imgIndex}`} />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ))}
@@ -171,4 +171,3 @@ export default function ShowcaseSlider() {
     </div>
   )
 }
-
