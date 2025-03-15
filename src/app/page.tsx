@@ -19,7 +19,6 @@ async function getCategories(): Promise<any> {
 
 export default async function HomePage() {
   const products = await getProducts();
-  console.log(products);
   const productCategories = await getCategories();
   return (
     <div className="page-wrapper">
