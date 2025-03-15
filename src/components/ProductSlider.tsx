@@ -1,37 +1,28 @@
-'use client'; // Указываем, что это клиентский компонент
-
-import React, { useState, useRef } from 'react';
+'use client'; 
+import React, { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import styles from './ProductSlider.module.scss';
-import ProductCard, { Product } from './ProductCard';
-import { useEffect } from "react";
+import ProductCard from './ProductCard';
 import { getProducts } from '@/app/page';
 
 
 const Slider = dynamic(() => import('react-slick'), { ssr: false });
 
-
-const ProductSlider: React.FC = async () => {
-  const [currentSlide, setCurrentSlide] = useState(0); // Текущий слайд
-  const [products, setProducts] = useState<any[]>([])
-  const sliderRef = useRef<any>(null); // Ссылка на слайдер
-
-  //!!!!!!                  INFO            !!!!!!!!!!
-  // я пытался подключить сюда getProducts, но у меня так и не вышло , тут в целом все готово , просто выведи переменную продукты , дальше там все сдлеано , слайдер и карты 
-
-
-  // Настройки слайдера
+//@ts-ignore
+const ProductSlider: React.FC = ({ products }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const sliderRef = useRef<any>(null); 
   const settings = {
-    dots: false, // Отключаем стандартные точки
+    dots: false,
     infinite: true,
     speed: 600,
     slidesToShow: 5,
     slidesToScroll: 5,
-    autoplay: true, // Включаем автопрокрутку
-    autoplaySpeed: 5000, // Интервал автопрокрутки (5 секунд)
-    afterChange: (index: number) => setCurrentSlide(index), // Обновляем текущий слайд
+    autoplay: true,
+    autoplaySpeed: 5000,
+    afterChange: (index: number) => setCurrentSlide(index),
     responsive: [
       {
         breakpoint: 1800,
@@ -71,21 +62,21 @@ const ProductSlider: React.FC = async () => {
     ],
   };
 
-  // Прогресс-бар
-  const progress = ((currentSlide + 1) / products.length) * 100;
+  const progress = ((currentSlide + 1) / products?.length) * 100;
 
   return (
     <div className={styles.productSlider}>
-      {/* Используем ref с явным приведением типа */}
+      {/* @ts-ignore */}
       <Slider ref={sliderRef as React.RefObject<any>} {...settings}>
-        {products.length > 0 ? (products.map((product, index) => (
+        {/* @ts-ignore */}
+        {products?.length > 0 ? (products.map((product, index) => (
           <div key={index} className={styles.slide}>
             <ProductCard product={product}/>
           </div>
         ) )): <p>can find products</p>}
       </Slider>
 
-      {/* Прогресс-бар из трёх полосок */}
+      {/* Progress bar */}
       <div className={styles.progressBarWrapper}>
         <div className={styles.progressBarContainer}>
           <div className={styles.progressBar}>
