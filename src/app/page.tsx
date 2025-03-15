@@ -4,12 +4,8 @@ import CategoriesList from "@/components/CategoriesList";
 import ShowcaseSlider from "@/components/ShowcaseSlider";
 import MedusaClient from "@medusajs/medusa-js";
 import ProductSlider from "@/components/ProductSlider";
+import { medusa } from "@/lib/medusa";
 
-const medusa = new MedusaClient({
-  baseUrl: "http://localhost:9000",
-  maxRetries: 3,
-  publishableApiKey: process.env.PUBLISHABLE_API_KEY,
-});
 
 export async function getProducts(): Promise<any> {
   const { products } = await medusa.products.list();
@@ -32,7 +28,7 @@ export default async function HomePage() {
         <ShowcaseSlider />
       </div>
       
-      <ProductSlider />
+      <ProductSlider products={products}/>
       {/* <ProductSlider products={products}/> */}
     </div>
   );

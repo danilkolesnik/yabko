@@ -10,12 +10,17 @@ import { useEffect } from "react";
 import { getProducts } from '@/app/page';
 
 
+interface SliderProps {
+  products: Product[];
+}
+
+
 const Slider = dynamic(() => import('react-slick'), { ssr: false });
 
 
-const ProductSlider: React.FC = async () => {
+const ProductSlider: React.FC<SliderProps> = ({ products }) => {
   const [currentSlide, setCurrentSlide] = useState(0); // Текущий слайд
-  const [products, setProducts] = useState<any[]>([])
+  // const [products, setProducts] = useState<any[]>([])
   const sliderRef = useRef<any>(null); // Ссылка на слайдер
 
   //!!!!!!                  INFO            !!!!!!!!!!
