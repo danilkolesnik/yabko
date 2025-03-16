@@ -1,7 +1,7 @@
 // src/components/ProductCard.tsx
 import { useState } from "react";
 import Link from "next/link";
-import styles from "./ProductCard.module.scss";
+import styles from "./product.card.module.scss";
 
 interface ProductImage {
   id?: string;

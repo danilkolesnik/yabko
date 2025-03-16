@@ -26,7 +26,7 @@ export default async function HomePage() {
         <ShowcaseSlider />
       </div>
       
-      {/* <ProductSlider products={products}/> */}
+      <ProductSlider products={products}/>
       <DescriptionSection />
     </div>
   );
