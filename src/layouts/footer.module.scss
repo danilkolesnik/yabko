@@ -1,0 +1,101 @@
+
+.footer {
+    padding: 0px 15px 0px 25px;
+}
+
+.footerTop {
+    padding: 25px 0 90px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0px 2rem;
+}
+
+.footerNavCaption {
+    font-family: "Gotham", sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.footerItemsContainer {
+    margin-top: 15px;
+    line-height: 1.4;
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.footerNav {
+    white-space: nowrap;
+    width: 40%;
+}
+
+.footerItem {
+    width: 130px;
+}
+
+.footerLink {
+    cursor: pointer;
+    text-decoration: none;
+    color: #9b9fa2;
+    text-decoration: none;
+    font-family: "Gotham", sans-serif;
+    font-weight: bold;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    &:hover {
+        color: #fff;
+    }
+}
+
+.footerSideBlock {
+    width: 30%;
+}
+
+.footerContactWrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.footerContactLink {
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+    text-decoration: none;
+    font-family: "Gotham", sans-serif;
+    font-weight: bold;
+    font-size: 0.8rem;
+    &:hover {
+        color: #9b9fa2;
+    }
+}
+
+.footerTimeNote {
+    color: #fff;
+    text-decoration: none;
+    font-family: "Gotham", sans-serif;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.footerTelegramLink {
+    color: #9b9fa2;
+    &:hover {
+        color: #fff;
+    }
+}
+
+.footerPaymentsWrapper {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.svgPaymentItem {
+    display: flex;
+    align-items: center;
+    margin: 0 2px 0 15px;
+    height: 25px;
+}
