@@ -94,7 +94,7 @@ const renderSingleCard = (
       <div className={styles.details}>
         {/* Рейтинг */}
         <div className={styles.rating}>
-          <span>{[1,2,3,4,5].map(() => <RatingStarIcon/>)}</span>
+          <span>{[1,2,3,4,5].map((star) => <RatingStarIcon key={star} />)}</span>
         </div>
         
         {/* Название товара */}
