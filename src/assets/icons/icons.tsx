@@ -154,3 +154,11 @@ export const ChevronRightIcon = ({ customWidth, customHeight }: { customWidth: s
     <path d="M9 18l6-6-6-6" />
   </svg>
 )
+
+
+export const RatingStarIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 15 14" xmlns="http://www.w3.org/2000/svg" fill="#f7c34e">
+    <path d="M7.69225 0L9.37981 5.18237H14.8408L10.4228 8.38525L12.1103 13.5676L7.69225 10.3647L3.27418 13.5676L4.96173 8.38525L0.543664 5.18237H6.0047L7.69225 0Z">
+    </path>
+  </svg>
+)

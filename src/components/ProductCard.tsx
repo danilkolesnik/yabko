@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styles from "./product.card.module.scss";
+import { RatingStarIcon } from "@/assets/icons/icons";
 
 interface ProductImage {
   id?: string;
@@ -93,16 +94,16 @@ const renderSingleCard = (
       <div className={styles.details}>
         {/* Рейтинг */}
         <div className={styles.rating}>
-          <span>⭐⭐⭐⭐⭐ (27)</span>
+          <span>{[1,2,3,4,5].map(() => <RatingStarIcon/>)}</span>
         </div>
         
         {/* Название товара */}
         <h2 className={styles.title}>{product.title}</h2>
         
         {/* Название варианта (если есть) */}
-        {variantTitle && (
+        {/* {variantTitle && (
           <p className={styles.variantTitle}>{variantTitle}</p>
-        )}
+        )} */}
         
         {/* Секция покупки с ценой */}
         <div className={styles.buySection}>
@@ -111,7 +112,7 @@ const renderSingleCard = (
           </Link>
           <span className={styles.price}>
             {/* снизу прайс должен быть в функции формат прайс , но ее не существует , поэтому 50000 грн*/}
-            {price > 0 ? price : '50 000 грн'}
+            {price > 0 ? price : '50 000 ₴'}
           </span>
         </div>
       </div>
