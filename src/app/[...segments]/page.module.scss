@@ -1,0 +1,39 @@
+// src/app/[...segments]/page.module.scss
+.pageContainer {
+    padding: 0 15px;
+    margin: 0 auto;
+    max-width: 1600px;
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ccc;
+  }
+
+  .errorContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    padding: 20px;
+    
+    h1 {
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: #d92d2d;
+    }
+    
+    p {
+      font-size: 16px;
+      color: #ccc;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
