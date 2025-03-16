@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import ProductSlider from "@/components/ProductSlider";
@@ -11,8 +10,8 @@ import { medusa } from "@/lib/medusa";
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
   const [productCategories, setProductCategories] = useState<any[]>([]);
+  const [collections, setCollections] = useState<any[]>([]);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,10 +22,9 @@ export default function HomePage() {
         setProducts(products);
         setProductCategories(product_categories);
       } catch (error) {
-        console.error("Ошибка загрузки данных", error);
+        console.error("Error fetching data", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -38,7 +36,7 @@ export default function HomePage() {
         <ShowcaseSlider />
       </div>
       {/* @ts-ignore */}
-      <ProductSlider products={products} />
+      <ProductSlider productCategories={productCategories} />
       <DescriptionSection />
     </div>
   );

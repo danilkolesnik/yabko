@@ -6,8 +6,6 @@ import { CategoryArrow } from '@/assets/icons/icons';
 
 export default function CategoriesList({ productCategories, setShowOverlay }: any) {
 
-  console.log(productCategories);
-
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
   

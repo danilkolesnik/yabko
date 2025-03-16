@@ -66,11 +66,26 @@ const slides = [
   },
 ]
 
-export default function ShowcaseSlider() {
+export default function ShowcaseSlider({ productCategories }: { productCategories: []}) {
+
+  // console.log('categories:', productCategories);
+
+  const [sliderCategories, setSliderCategories] = useState<any[]>([]);
+
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
+
+  useEffect(() => {
+    const filteredCategories = productCategories.filter((category: any) => {
+      return category.metadata?.slider === true;
+    });
+
+    setSliderCategories(filteredCategories);
+
+    console.log('filtered', filteredCategories);
+  }, [productCategories]);
 
   const nextSlide = () => {
     if (isAnimating) return
@@ -119,60 +134,64 @@ export default function ShowcaseSlider() {
   }
 
   return (
-    <div className={styles.productSliderContainer}>
-      <header className={styles.productSliderHeader}>
-        <span className={styles.headerCaptionWrapper}>
-          <h3 className={styles.categoryName}>{'{'}Категорiя{'}'}</h3>
-          <a className={styles.categoryLink} href="#">В категорiю <CategoryArrow /></a>
-        </span>
-        <div className={styles.customButtonsWrapper}>
-          <button onClick={prevSlide} className={`${styles.navButton} ${styles.prevButton}`} aria-label="Previous slide">
-            <ChevronLeftIcon customWidth={'15px'} customHeight={'15px'} />
-          </button>
-
-          <button onClick={nextSlide} className={`${styles.navButton} ${styles.nextButton}`} aria-label="Next slide">
-            <span className={styles.chevronWrapper}>
-              <ChevronRightIcon customWidth={'15px'} customHeight={'15px'}/>
+    <div className={styles.sliderBlock}>
+      {(sliderCategories || []).map((category) => (
+        <div key={category.id} className={styles.productSliderContainer}>
+          <header className={styles.productSliderHeader}>
+            <span className={styles.headerCaptionWrapper}>
+              <h3 className={styles.categoryName}>{category.name}</h3>
+              <a className={styles.categoryLink} href="#">В категорiю <CategoryArrow /></a>
             </span>
-          </button>
-        </div>
-      </header>
-      <div className={styles.sliderContainer}>
-        <div
-          className={styles.sliderTrack}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {slides.map((slide, index) => (
-            <div
-              key={slide.id}
-              className={`${styles.slide} ${
-                index === currentSlide
-                  ? styles.active
-                  : index > currentSlide || (currentSlide === slides.length - 1 && index === 0)
-                    ? styles.next
-                    : styles.prev
-              }`}
-            >
-              <div className={styles.slideContent}>
-                <ProductCard product={{}}/>
-              </div>
+            <div className={styles.customButtonsWrapper}>
+              <button onClick={prevSlide} className={`${styles.navButton} ${styles.prevButton}`} aria-label="Previous slide">
+                <ChevronLeftIcon customWidth={'15px'} customHeight={'15px'} />
+              </button>
+
+              <button onClick={nextSlide} className={`${styles.navButton} ${styles.nextButton}`} aria-label="Next slide">
+                <span className={styles.chevronWrapper}>
+                  <ChevronRightIcon customWidth={'15px'} customHeight={'15px'}/>
+                </span>
+              </button>
             </div>
-          ))}
+          </header>
+          <div className={styles.sliderContainer}>
+            <div
+              className={styles.sliderTrack}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              {slides.map((slide, index) => (
+                <div
+                  key={slide.id}
+                  className={`${styles.slide} ${
+                    index === currentSlide
+                      ? styles.active
+                      : index > currentSlide || (currentSlide === slides.length - 1 && index === 0)
+                        ? styles.next
+                        : styles.prev
+                  }`}
+                >
+                  <div className={styles.slideContent}>
+                    <ProductCard product={{}}/>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Pagination Dots */}
+            <div className={styles.pagination}>
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`${styles.paginationDot} ${index === currentSlide ? styles.activeDot : ""}`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-        {/* Pagination Dots */}
-        <div className={styles.pagination}>
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`${styles.paginationDot} ${index === currentSlide ? styles.activeDot : ""}`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      </div>
+      ))} 
     </div>
   )
 }
