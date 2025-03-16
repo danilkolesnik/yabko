@@ -24,7 +24,6 @@
     transform: translateX(0);
     opacity: 0;
     z-index: 0;
-    border-radius: 24px;
     overflow: hidden;
   }
   
@@ -43,7 +42,67 @@
 
   .imageBlock {
     flex: 1;
-    padding: 5px;
+    margin: 0 5px;
+    position: relative;
+  }
+
+  .imageBlock::before {
+    content: "";
+    background: #000;
+    position: absolute;
+    top: -68px;
+    right: -12px;
+    transform: rotate(135deg);
+    transform-origin: 0 100%;
+    width: 27px;
+    height: 48px;
+    z-index: 10;
+  }
+
+  .imageBlock::after {
+    content: '';
+    background: #000;
+    position: absolute;
+    bottom: -0px;
+    right: -7px;
+    transform: rotate(45deg);
+    transform-origin: 0 100%;
+    width: 43px;
+    height: 50px;
+    z-index: 10;
+  }
+
+  .invisibleImageSpan {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .invisibleImageSpan::before {
+    content: "";
+    background: #000;
+    position: absolute;
+    top: -38px;
+    left: -23px;
+    transform: rotate(45deg);
+    transform-origin: 0 100%;
+    /* border-right: 1px solid #FFF; */
+    width: 31px;
+    height: 51px;
+    z-index: 10;
+  }
+
+  .invisibleImageSpan::after {
+    content: "";
+    background: #000;
+    position: absolute;
+    bottom: 35px;
+    left: 0px;
+    transform: rotate(135deg);
+    transform-origin: 0 100%;
+    width: 56px;
+    height: 55px;
+    z-index: 10;
   }
 
   .sliderImage {

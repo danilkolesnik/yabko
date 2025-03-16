@@ -2,7 +2,7 @@ import React from "react";
 import "./styles.css";
 import ProductSlider from "@/components/ProductSlider";
 import CategoriesList from "@/components/CategoriesList";
-import ShowcaseSlider from "@/components/ShowcaseSlider";
+import ShowcaseSlider from "@/components/showcase/ShowcaseSlider";
 import DescriptionSection from "@/components/description/DescriptionSection";
 import { medusa } from "@/lib/medusa";
 
