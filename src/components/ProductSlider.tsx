@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import styles from "./product.slider.module.scss";
 import ProductCard from "./ProductCard";
 import { CategoryArrow } from "@/assets/icons/icons";
+import { Category } from "@/types/category";
+import { CategoryProducts } from "@/types/product";
 
 const ChevronLeftIcon = ({ customWidth, customHeight }: { customWidth: string, customHeight: string }) => (
   <svg
@@ -36,68 +38,24 @@ const ChevronRightIcon = ({ customWidth, customHeight }: { customWidth: string, 
   </svg>
 )
 
-const slides = [
-  {
-    id: 1,
-    images: [
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-    ]
-  },
-  {
-    id: 2,
-    images: [
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-    ]
-  },
-  {
-    id: 3,
-    images: [
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-    ]
-  },
-]
-
-export default function ShowcaseSlider({ productCategories }: { productCategories: []}) {
-
-  // console.log('categories:', productCategories);
-
-  const [sliderCategories, setSliderCategories] = useState<any[]>([]);
+export default function ShowcaseSlider({ category, categoryProducts }: { category: Category, categoryProducts: CategoryProducts }) {
 
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
 
-  useEffect(() => {
-    const filteredCategories = productCategories.filter((category: any) => {
-      return category.metadata?.slider === true;
-    });
-
-    setSliderCategories(filteredCategories);
-
-    console.log('filtered', filteredCategories);
-  }, [productCategories]);
-
   const nextSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+    setCurrentSlide((prev) => (prev === (categoryProducts[category.id] || []).length - 1 ? 0 : prev + 1))
     setTimeout(() => setIsAnimating(false), 500)
   }
 
   const prevSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+    setCurrentSlide((prev) => (prev === 0 ? (categoryProducts[category.id] || []).length - 1 : prev - 1))
     setTimeout(() => setIsAnimating(false), 500)
   }
 
@@ -135,8 +93,7 @@ export default function ShowcaseSlider({ productCategories }: { productCategorie
 
   return (
     <div className={styles.sliderBlock}>
-      {(sliderCategories || []).map((category) => (
-        <div key={category.id} className={styles.productSliderContainer}>
+      <div key={category.id} className={styles.productSliderContainer}>
           <header className={styles.productSliderHeader}>
             <span className={styles.headerCaptionWrapper}>
               <h3 className={styles.categoryName}>{category.name}</h3>
@@ -161,26 +118,26 @@ export default function ShowcaseSlider({ productCategories }: { productCategorie
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {slides.map((slide, index) => (
+              {(categoryProducts[category.id] || []).map((product, index) => (
                 <div
-                  key={slide.id}
+                  key={product.id}
                   className={`${styles.slide} ${
                     index === currentSlide
                       ? styles.active
-                      : index > currentSlide || (currentSlide === slides.length - 1 && index === 0)
+                      : index > currentSlide || (currentSlide === (categoryProducts[category.id] || []).length - 1 && index === 0)
                         ? styles.next
                         : styles.prev
                   }`}
                 >
                   <div className={styles.slideContent}>
-                    <ProductCard product={{}}/>
+                    <ProductCard product={product} />
                   </div>
                 </div>
               ))}
             </div>
             {/* Pagination Dots */}
             <div className={styles.pagination}>
-              {slides.map((_, index) => (
+              {(categoryProducts[category.id] || []).map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
@@ -191,7 +148,6 @@ export default function ShowcaseSlider({ productCategories }: { productCategorie
             </div>
           </div>
         </div>
-      ))} 
     </div>
   )
 }

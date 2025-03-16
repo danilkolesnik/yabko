@@ -10,8 +10,46 @@ import { medusa } from "@/lib/medusa";
 export default function HomePage() {
   const [products, setProducts] = useState<any[]>([]);
   const [productCategories, setProductCategories] = useState<any[]>([]);
-  const [collections, setCollections] = useState<any[]>([]);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [sliderCategories, setSliderCategories] = useState<any[]>([]);
+  const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
+
+  const fetchProductsByCategories = async (filteredCategories: any[]) => {
+    const updatedProducts: { [key: string]: any[] } = {};
+    
+    const fetchProducts = async (categoryId: string) => {
+      try {
+        const { products } = await medusa.products.list({
+          category_id: [categoryId],
+        });
+        return products;
+      } catch (error) {
+        console.error("Ошибка при получении продуктов для категории", categoryId, error);
+        return [];
+      }
+    };
+  
+    for (const category of filteredCategories) {
+      const categoryId = category.id;
+      
+      try {
+        const products = await fetchProducts(categoryId);
+        
+        updatedProducts[categoryId] = products;
+  
+        for (const childCategory of category.category_children || []) {
+          const childProducts = await fetchProducts(childCategory.id);
+          updatedProducts[childCategory.id] = childProducts;
+        }
+        
+      } catch (error) {
+        console.error("Ошибка при обработке категории", categoryId, error);
+      }
+    }
+    console.log('updated products', updatedProducts);
+    setCategoryProducts(updatedProducts);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,6 +59,14 @@ export default function HomePage() {
         ]);
         setProducts(products);
         setProductCategories(product_categories);
+
+        const filteredCategories = product_categories.filter((category: any) => {
+          return category.metadata?.slider === true;
+        });
+
+        fetchProductsByCategories(filteredCategories);
+        setSliderCategories(filteredCategories);
+
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -35,8 +81,9 @@ export default function HomePage() {
         <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
         <ShowcaseSlider />
       </div>
-      {/* @ts-ignore */}
-      <ProductSlider productCategories={productCategories} />
+      {(sliderCategories || []).map((category) => (
+        <ProductSlider key={category.id} category={category} categoryProducts={categoryProducts} />
+      ))}
       <DescriptionSection />
     </div>
   );

@@ -18,7 +18,7 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
       return;
     }
   
-    const fetchProductsForCategory = async (id: string) => {
+    const fetchProducts = async (id: string) => {
       try {
         const { products } = await medusa.products.list({
           category_id: [id],
@@ -31,14 +31,14 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
     };
   
     try {
-      const products = await fetchProductsForCategory(categoryId);
+      const products = await fetchProducts(categoryId);
 
       const updatedProducts: { [key: string]: any[] } = {
         [categoryId]: products,
       };
   
       for (const childCategory of category.category_children || []) {
-        const childProducts = await fetchProductsForCategory(childCategory.id);
+        const childProducts = await fetchProducts(childCategory.id);
         updatedProducts[childCategory.id] = childProducts;
       }
   
@@ -64,7 +64,7 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
     setShowOverlay(false);
   };
 
-  // useEffect(() => { console.log(categoryProducts)}, [categoryProducts]); 
+  useEffect(() => { console.log(categoryProducts)}, [categoryProducts]); 
   return (
     <>
       <ul className={styles.categoriesContainer}>
