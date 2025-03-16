@@ -5,40 +5,43 @@ import ProductCard from "./ProductCard";
 import { CategoryArrow } from "@/assets/icons/icons";
 import { Category } from "@/types/category";
 import { CategoryProducts } from "@/types/product";
-
-const ChevronLeftIcon = ({ customWidth, customHeight }: { customWidth: string, customHeight: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={customWidth || "24px"}
-    height={customHeight || "24px"}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M15 18l-6-6 6-6" />
-  </svg>
-)
-
-const ChevronRightIcon = ({ customWidth, customHeight }: { customWidth: string, customHeight: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={customWidth || "24px"}
-    height={customHeight || "24px"}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M9 18l6-6-6-6" />
-  </svg>
-)
+import { ChevronLeftIcon, ChevronRightIcon } from "@/assets/icons/icons";
 
 export default function ShowcaseSlider({ category, categoryProducts }: { category: Category, categoryProducts: CategoryProducts }) {
+
+  function groupProducts(products, groupSize = 6, totalSlides = 3) {
+    let slides = [];
+  
+    if (products.length < 18) {
+      while (slides.length < totalSlides) {
+        const slide = [];
+        let productIndex = 0;
+  
+        while (slide.length < groupSize) {
+          slide.push(products[productIndex]);
+          productIndex = (productIndex + 1) % products.length;
+        }
+        slides.push(slide);
+      }
+    } else {
+      const first18Products = products.slice(0, 18);
+      for (let i = 0; i < totalSlides; i++) {
+        slides.push(first18Products.slice(i * groupSize, (i + 1) * groupSize));
+      }
+    }
+  
+    return slides;
+  }
+  
+  const [groupedProducts, setGroupedProducts] = useState<any>([]);
+
+  useEffect(() => {
+    const allProducts = categoryProducts[category.id];
+    if (allProducts) {
+      const products = groupProducts(allProducts);
+      setGroupedProducts(products);
+    }
+  }, [categoryProducts]);
 
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -48,14 +51,14 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
   const nextSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev === (categoryProducts[category.id] || []).length - 1 ? 0 : prev + 1))
+    setCurrentSlide((prev) => (prev === (groupedProducts || []).length - 1 ? 0 : prev + 1))
     setTimeout(() => setIsAnimating(false), 500)
   }
 
   const prevSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev === 0 ? (categoryProducts[category.id] || []).length - 1 : prev - 1))
+    setCurrentSlide((prev) => (prev === 0 ? (groupedProducts || []).length - 1 : prev - 1))
     setTimeout(() => setIsAnimating(false), 500)
   }
 
@@ -90,10 +93,9 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
     setCurrentSlide(index)
     setTimeout(() => setIsAnimating(false), 500)
   }
-
   return (
     <div className={styles.sliderBlock}>
-      <div key={category.id} className={styles.productSliderContainer}>
+      <div className={styles.productSliderContainer}>
           <header className={styles.productSliderHeader}>
             <span className={styles.headerCaptionWrapper}>
               <h3 className={styles.categoryName}>{category.name}</h3>
@@ -118,26 +120,30 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {(categoryProducts[category.id] || []).map((product, index) => (
+              {(groupedProducts || []).map((group, index) => (
                 <div
-                  key={product.id}
+                  key={index}
                   className={`${styles.slide} ${
                     index === currentSlide
                       ? styles.active
-                      : index > currentSlide || (currentSlide === (categoryProducts[category.id] || []).length - 1 && index === 0)
+                      : index > currentSlide || (currentSlide === (groupedProducts || []).length - 1 && index === 0)
                         ? styles.next
                         : styles.prev
                   }`}
                 >
                   <div className={styles.slideContent}>
-                    <ProductCard product={product} />
+                    {(group || []).map((product, index) => (
+                      <div key={index} className={styles.productWrapper}>
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
             {/* Pagination Dots */}
             <div className={styles.pagination}>
-              {(categoryProducts[category.id] || []).map((_, index) => (
+              {(groupedProducts || []).map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}

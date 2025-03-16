@@ -32,20 +32,16 @@ interface Product {
 const ProductCard = ({ product }: { product: Product }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Функция форматирования цены
   const formatPrice = (amount: number): string => {
     return (amount / 100).toLocaleString() + ' ₴';
   };
 
-  // Получаем все варианты для этого продукта
   const variants = product.variants || [];
   
-  // Если нет вариантов, просто отображаем один товар
   if (variants.length === 0) {
     return renderSingleCard(product, null, selectedIndex, setSelectedIndex);
   }
   
-  // Отображаем карточки для каждого варианта
   return (
     <>
       {variants.map((variant) => (
@@ -55,17 +51,14 @@ const ProductCard = ({ product }: { product: Product }) => {
   );
 };
 
-// Функция для рендера одной карточки товара
 const renderSingleCard = (
   product: Product, 
   variant: ProductVariant | null, 
   selectedIndex: number, 
   setSelectedIndex: (index: number) => void
 ) => {
-  // Получаем цену из варианта или из первого варианта, если вариант не указан
   const price = variant?.prices?.[0]?.amount || product.variants?.[0]?.prices?.[0]?.amount || 0;
   
-  // Получаем название варианта
   const variantTitle = variant?.title || '';
   
   return (

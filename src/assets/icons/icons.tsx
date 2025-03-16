@@ -122,3 +122,35 @@ export const CategoryArrow = (props: SVGProps<SVGSVGElement>) => {
     </svg>
   );
 }
+
+export const ChevronLeftIcon = ({ customWidth, customHeight }: { customWidth: string, customHeight: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={customWidth || "24px"}
+    height={customHeight || "24px"}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M15 18l-6-6 6-6" />
+  </svg>
+)
+
+export const ChevronRightIcon = ({ customWidth, customHeight }: { customWidth: string, customHeight: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={customWidth || "24px"}
+    height={customHeight || "24px"}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 18l6-6-6-6" />
+  </svg>
+)

@@ -46,7 +46,6 @@ export default function HomePage() {
         console.error("Ошибка при обработке категории", categoryId, error);
       }
     }
-    console.log('updated products', updatedProducts);
     setCategoryProducts(updatedProducts);
   };
 
