@@ -21,8 +21,8 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <div className={`${styles.phoneBar} ${isTop ? styles.visible : styles.hidden}`}>
-        <a className={styles.phoneLink} href="tel:0800307775">
-          0 800 30 777 5
+        <a className={styles.phoneLink} href="tel:0800330386">
+          0 800 33 03 86
         </a>
       </div>
       <div className={styles.mainHeader}>

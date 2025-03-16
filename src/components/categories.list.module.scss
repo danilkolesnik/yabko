@@ -1,17 +1,18 @@
 
 .categoriesContainer {
-    background-color: #0F0F0F;
-    width: 260px;
-    height: 614px;
-    list-style: none;
-    padding: 10px 0;
-    margin: 0;
-    position: relative;
+  background-color: #0F0F0F;
+  width: 260px;
+  height: 614px;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  position: relative;
+  z-index: 999;
 }
 
 .categoryItem {
     cursor: pointer;
-    padding: 5px 10px 5px 10%;
+    padding: 2px 10px;
     font-size: 16px;
     letter-spacing: .25px;
     color: #999999;
@@ -22,6 +23,37 @@
 .categoryItem:hover {
     background-color: #1c1c1c;
     color: #e2e2e2;
+}
+
+.categoryItemWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.categoryItemNameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.categoryItemPicture {
+  width: 26px;
+  height: 26px;
+}
+
+.productList {
+  list-style: none;
+}
+
+.productListItem {
+  color: #9b9fa2;
+  font-size: 0.85rem;
+  padding: 0;
+  margin-left: -40px;
+  &:hover {
+    color: #fff;
+  }
 }
 
 .childCategories {

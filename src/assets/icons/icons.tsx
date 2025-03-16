@@ -113,3 +113,12 @@ export function CartIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export const CategoryArrow = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 14" width="7" height="13">
+      <g xmlns="http://www.w3.org/2000/svg" transform="matrix(0 -1 1 0 -0 14)">
+      <path fillRule="evenodd" clipRule="evenodd" d="M7.39819 7.22371C7.17851 7.44338 6.82241 7.44338 6.60274 7.22371L0.867876 1.48883C0.648208 1.26916 0.648208 0.913059 0.867876 0.693384L1.13305 0.428184C1.35271 0.208509 1.70887 0.208509 1.92854 0.428184L7.00046 5.50013L12.0724 0.428184C12.2921 0.208509 12.6482 0.208509 12.8679 0.428184L13.1331 0.693384C13.3527 0.913059 13.3527 1.26916 13.1331 1.48883L7.39819 7.22371Z" fill="currentColor"></path></g>
+    </svg>
+  );
+}

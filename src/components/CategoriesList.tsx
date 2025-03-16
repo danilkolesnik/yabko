@@ -1,13 +1,16 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './categories.list.module.scss';
 import { medusa } from "@/lib/medusa";
+import { CategoryArrow } from '@/assets/icons/icons';
 
-export default function CategoriesList({ productCategories }: any) {
+export default function CategoriesList({ productCategories, setShowOverlay }: any) {
+
+  console.log(productCategories);
 
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
-
+  
   const fetchProductsByCategory = async (categoryId: string) => {
     if (categoryProducts[categoryId]) return;
   
@@ -55,49 +58,61 @@ export default function CategoriesList({ productCategories }: any) {
   const handleMouseEnter = (categoryId: string) => {
     setActiveCategoryId(categoryId);
     fetchProductsByCategory(categoryId);
+    setShowOverlay(true);
   };
 
   const handleMouseLeave = () => {
     setActiveCategoryId(null);
+    setShowOverlay(false);
   };
 
+  // useEffect(() => { console.log(categoryProducts)}, [categoryProducts]); 
   return (
-    <ul className={styles.categoriesContainer}>
-      {productCategories.map((category: any) => {
-        if (!category.parent_category_id) {
-          return (
-            <li
-              key={category.id}
-              className={styles.categoryItem}
-              onMouseEnter={() => handleMouseEnter(category.id)}
-              onMouseLeave={handleMouseLeave}
-            >
-              {category.name}
-              {activeCategoryId === category.id && (
-                <ul className={styles.childCategories}>
-                  {category.category_children.map((child: any) => (
-                    <li key={child.id} className={styles.childCategoryItem}>
-                      {child.name}
-                      {categoryProducts[child.id] && (
-                        <ul className={styles.productList}>
-                          {categoryProducts[child.id].length > 0 ? (
-                            categoryProducts[child.id].map((product) => (
-                              <li key={product.id}>{product.title}</li>
-                            ))
-                          ) : (
-                            <li>Нет товаров</li>
-                          )}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          );
-        }
-        return null;
-      })}
-    </ul>
+    <>
+      <ul className={styles.categoriesContainer}>
+        {productCategories.map((category: any) => {
+          if (!category.parent_category_id) {
+            return (
+              <li
+                key={category.id}
+                className={styles.categoryItem}
+                onMouseEnter={() => handleMouseEnter(category.id)}
+                onMouseLeave={handleMouseLeave}
+              > 
+                <div className={styles.categoryItemWrapper}>
+                  <div className={styles.categoryItemNameWrapper}>
+                    {category.metadata?.picture && <img className={styles.categoryItemPicture} src={category.metadata.picture} alt="" />}
+                    {category.name}
+                  </div>
+                  {category.category_children.length ? <CategoryArrow /> : null}
+                </div>
+                {activeCategoryId === category.id && category.category_children.length > 0 && (
+                  <ul className={styles.childCategories}>
+                    {category.category_children.map((child: any) => (
+                      <li key={child.id} className={styles.childCategoryItem}>
+                        <div className={styles.categoryItemNameWrapper}>
+                          {child.metadata?.picture && <img className={styles.categoryItemPicture} src={child .metadata.picture} alt="" />}
+                          {child.name}
+                        </div>
+                        {categoryProducts[child.id] && (
+                          <ul className={styles.productList}>
+                            {categoryProducts[child.id].length > 0 && (
+                              categoryProducts[child.id].map((product) => (
+                                <li className={styles.productListItem} key={product.id}>{product.title}</li>
+                              ))
+                            )}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          }
+          return null;
+        })}
+      </ul>
+    </>
   );
 }

@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 import ProductSlider from "@/components/ProductSlider";
 import CategoriesList from "@/components/CategoriesList";
@@ -6,27 +8,37 @@ import ShowcaseSlider from "@/components/showcase/ShowcaseSlider";
 import DescriptionSection from "@/components/description/DescriptionSection";
 import { medusa } from "@/lib/medusa";
 
-export async function getProducts(): Promise<any> {
-  const { products } = await medusa.products.list();
-  return products;
-}
+export default function HomePage() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [productCategories, setProductCategories] = useState<any[]>([]);
+  const [showOverlay, setShowOverlay] = useState<boolean>(false);
 
-async function getCategories(): Promise<any> {
-  const { product_categories } = await medusa.productCategories.list();
-  return product_categories;
-}
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [{ products }, { product_categories }] = await Promise.all([
+          medusa.products.list(),
+          medusa.productCategories.list(),
+        ]);
+        setProducts(products);
+        setProductCategories(product_categories);
+      } catch (error) {
+        console.error("Ошибка загрузки данных", error);
+      }
+    };
 
-export default async function HomePage() {
-  const products = await getProducts();
-  const productCategories = await getCategories();
+    fetchData();
+  }, []);
+
   return (
     <div className="page-wrapper">
+      {<div className={`overlay ${showOverlay ? "active" : ""}`} />}
       <div className="hero-wrapper">
-        <CategoriesList products={products} productCategories={productCategories} />
+        <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
         <ShowcaseSlider />
       </div>
-      
-      <ProductSlider products={products}/>
+      {/* @ts-ignore */}
+      <ProductSlider products={products} />
       <DescriptionSection />
     </div>
   );
