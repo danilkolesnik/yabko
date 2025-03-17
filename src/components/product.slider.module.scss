@@ -95,7 +95,7 @@
   flex-wrap: wrap;
 }
 .imageBlock {
-  flex: 0 0 30%; /* 3 блока по 30% */
+  flex: 0 0 30%;
 }
 }
 
@@ -119,22 +119,6 @@
   transform: translateX(-100%);
   opacity: 0;
   z-index: 0;
-}
-
-.pink {
-  background-color: #f48fb1;
-}
-
-.purple {
-  background-color: #ce93d8;
-}
-
-.blue {
-  background-color: #90caf9;
-}
-
-.lightPurple {
-  background-color: #b39ddb;
 }
 
 .productWrapper {
