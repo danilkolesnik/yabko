@@ -1,1015 +1,3 @@
-// 'use client';
-// // src/components/CatalogPage.tsx
-// import React, { useState, useEffect } from 'react';
-// import styles from './CatalogPage.module.scss';
-// import ProductCard from '@/components/ProductCard';
-// import Link from 'next/link';
-
-// // Базовые интерфейсы
-// interface ProductImage {
-//   id?: string;
-//   url: string;
-// }
-
-// interface ProductPrice {
-//   id?: string;
-//   amount: number;
-//   currency_code: string;
-// }
-
-// interface ProductVariant {
-//   id: string;
-//   title?: string;
-//   prices?: ProductPrice[];
-// }
-
-// interface ProductOption {
-//   id?: string;
-//   title: string;
-//   values: string[];
-// }
-
-// interface Product {
-//   id: string;
-//   title: string;
-//   description: string;
-//   handle: string;
-//   images: ProductImage[];
-//   variants: ProductVariant[];
-//   options?: ProductOption[];
-// }
-
-// interface Category {
-//   id: string;
-//   name: string;
-//   handle: string;
-// }
-
-// interface CatalogPageProps {
-//   category: Category;
-//   products: Product[];
-//   breadcrumbs?: { name: string; path: string }[];
-// }
-
-// // Интерфейсы для динамических фильтров
-// interface FilterOption {
-//   id: string;        // Уникальный идентификатор опции
-//   name: string;      // Отображаемое название
-//   count: number;     // Количество продуктов с этой опцией
-//   value: string;     // Значение для фильтрации
-// }
-
-// interface FilterGroup {
-//   id: string;                // Уникальный идентификатор группы
-//   name: string;              // Отображаемое название группы
-//   options: FilterOption[];   // Доступные опции в группе
-//   expanded: boolean;         // Развернута ли группа
-//   type: string;              // Тип фильтра (color, memory, size, etc.)
-// }
-
-// export default function CatalogPage({ category, products = [], breadcrumbs = [] }: CatalogPageProps) {
-//   // Состояния
-//   const [filteredVariants, setFilteredVariants] = useState<{product: Product, variant: ProductVariant}[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [allFoundOptions, setAllFoundOptions] = useState<Record<string, string[]>>({});
-//   const [originalProductOptions, setOriginalProductOptions] = useState<Record<string, string[]>>({});
-  
-//   // Ценовой диапазон
-//   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
-//   const [currentPriceRange, setCurrentPriceRange] = useState<[number, number]>([0, 100000]);
-  
-//   // Динамические фильтры
-//   const [filterGroups, setFilterGroups] = useState<FilterGroup[]>([]);
-  
-//   // Выбранные фильтры (хранение по id опции)
-//   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
-  
-//   // Первоначальная инициализация данных
-//   useEffect(() => {
-//     if (products.length > 0) {
-//       console.log("Инициализация с", products.length, "товарами");
-      
-//       // Вывод сырых данных первого продукта для отладки
-//       if (products[0]) {
-//         console.log("СЫРЫЕ ДАННЫЕ ПЕРВОГО ПРОДУКТА:", JSON.stringify(products[0], null, 2));
-//       }
-      
-//       // Специальная проверка - выводим ВСЕ опции и все поля первых 3 продуктов
-//       products.slice(0, 3).forEach(product => {
-//         console.log(`ПРОДУКТ [${product.id}]: ${product.title}`);
-//         console.log(`- Все поля:`, Object.keys(product));
-//         console.log(`- Опции:`, product.options ? product.options.map(o => o.title) : 'нет');
-//         console.log(`- Варианты:`, product.variants ? product.variants.length : 0);
-//         if (product.variants && product.variants[0]) {
-//           console.log(`- Пример варианта:`, product.variants[0].title);
-//           console.log(`- Все поля варианта:`, Object.keys(product.variants[0]));
-//         }
-//       });
-      
-//       // Собираем уникальные опции из метаданных продуктов
-//       const allOriginalOptions: Record<string, Set<string>> = {};
-//       const seenProductIds = new Set<string>();
-      
-//       products.forEach(product => {
-//         if (seenProductIds.has(product.id)) return; // Избегаем дублирования
-//         seenProductIds.add(product.id);
-        
-//         // Выводим все опции продукта в их оригинальном виде
-//         if (product.options && Array.isArray(product.options)) {
-//           console.log(`Продукт ${product.id} (${product.title}) опции:`, product.options.map(o => o.title));
-          
-//           product.options.forEach(option => {
-//             if (option && option.title) {
-//               // Используем оригинальное название опции без преобразований
-//               const optionName = option.title;
-              
-//               if (!allOriginalOptions[optionName]) {
-//                 allOriginalOptions[optionName] = new Set<string>();
-//               }
-              
-//               // Добавляем все значения
-//               if (option.values && Array.isArray(option.values)) {
-//                 option.values.forEach(value => {
-//                   if (typeof value === 'string') {
-//                     allOriginalOptions[optionName].add(value);
-//                   }
-//                 });
-//               }
-//             }
-//           });
-//         }
-//       });
-      
-//       // Преобразуем в обычный объект для отладки
-//       const originalOptionsObj: Record<string, string[]> = {};
-//       Object.entries(allOriginalOptions).forEach(([name, valuesSet]) => {
-//         originalOptionsObj[name] = Array.from(valuesSet);
-//       });
-      
-//       console.log("Оригинальные опции из метаданных:", originalOptionsObj);
-//       setOriginalProductOptions(originalOptionsObj);
-      
-//       // Собираем все варианты всех продуктов
-//       const allVariants = products.flatMap(product => 
-//         (product.variants || []).map(variant => ({ product, variant }))
-//       );
-      
-//       // Устанавливаем варианты
-//       setFilteredVariants(allVariants);
-      
-//       // Извлекаем цены
-//       extractPriceRange(allVariants);
-      
-//       // Извлекаем опции для динамических фильтров
-//       extractDynamicFilterOptions(allVariants, allOriginalOptions);
-      
-//       setLoading(false);
-//     }
-//   }, [products]);
-  
-//   // Извлечение ценового диапазона
-//   const extractPriceRange = (variants: {product: Product, variant: ProductVariant}[]) => {
-//     try {
-//       const prices: number[] = [];
-      
-//       variants.forEach(({ variant }) => {
-//         if (!variant.prices) return;
-        
-//         variant.prices.forEach(price => {
-//           if (price && typeof price.amount === 'number') {
-//             prices.push(price.amount / 100);
-//           }
-//         });
-//       });
-      
-//       if (prices.length > 0) {
-//         const minPrice = Math.floor(Math.min(...prices));
-//         const maxPrice = Math.ceil(Math.max(...prices));
-//         console.log(`Установка ценового диапазона: ${minPrice} - ${maxPrice}`);
-//         setPriceRange([minPrice, maxPrice]);
-//         setCurrentPriceRange([minPrice, maxPrice]);
-//       }
-//     } catch (error) {
-//       console.error("Ошибка при извлечении ценового диапазона:", error);
-//     }
-//   };
-  
-//   // Извлечение опций для динамических фильтров
-//   const extractDynamicFilterOptions = (
-//     variants: {product: Product, variant: ProductVariant}[],
-//     originalOptions: Record<string, Set<string>>
-//   ) => {
-//     try {
-//       console.log("Начинаем извлечение опций из", variants.length, "вариантов");
-      
-//       // Объекты для хранения опций и их значений
-//       const optionMap: Record<string, Set<string>> = {};
-//       const optionCounts: Record<string, Record<string, number>> = {};
-      
-//       // Для отладки - собираем все найденные опции
-//       const allOptions: Record<string, string[]> = {};
-      
-//       // Функция для добавления опции и значения
-//       const addOptionValue = (optionName: string, value: string) => {
-//         // Для отладки
-//         if (!allOptions[optionName]) {
-//           allOptions[optionName] = [];
-//         }
-//         if (!allOptions[optionName].includes(value)) {
-//           allOptions[optionName].push(value);
-//         }
-        
-//         // Создаем множество для опции, если его еще нет
-//         if (!optionMap[optionName]) {
-//           optionMap[optionName] = new Set<string>();
-//           optionCounts[optionName] = {};
-//         }
-        
-//         // Добавляем значение в множество
-//         optionMap[optionName].add(value);
-        
-//         // Увеличиваем счетчик
-//         optionCounts[optionName][value] = (optionCounts[optionName][value] || 0) + 1;
-//       };
-      
-//       // Поиск опций в таблице атрибутов продукта
-//       const findOptionsInProductTable = (product: Product) => {
-//         // Проверяем наличие таблицы атрибутов (обычно это поле attributes или properties)
-//         const attributes = (product as any).attributes || (product as any).properties || [];
-        
-//         if (Array.isArray(attributes) && attributes.length > 0) {
-//           console.log(`Найдена таблица атрибутов продукта, элементов: ${attributes.length}`);
-          
-//           attributes.forEach(attr => {
-//             if (!attr) return;
-            
-//             // Проверяем наличие и тип поля
-//             if (typeof attr === 'object') {
-//               const name = attr.name || attr.key || attr.title;
-//               const value = attr.value || attr.text;
-              
-//               if (name && value) {
-//                 console.log(`Атрибут: ${name} = ${value}`);
-                
-//                 // Пытаемся определить тип опции
-//                 let optionType = '';
-//                 const nameLower = name.toLowerCase();
-                
-//                 if (nameLower.includes('color') || nameLower.includes('цвет')) {
-//                   optionType = 'color';
-//                 } else if (nameLower.includes('size') || nameLower.includes('размер')) {
-//                   optionType = 'size';
-//                 } else if (nameLower.includes('storage') || nameLower.includes('память') || 
-//                            nameLower.includes('объем')) {
-//                   optionType = 'Storage';
-//                 }
-                
-//                 // Если определили тип, добавляем опцию
-//                 if (optionType) {
-//                   addOptionValue(optionType, String(value).toLowerCase());
-//                   console.log(`  Добавлен атрибут как опция: ${optionType} = ${value}`);
-//                 }
-//               }
-//             }
-//           });
-//         }
-//       };
-      
-//       // Анализируем таблицы атрибутов продуктов
-//       console.log("Поиск опций в таблицах атрибутов продуктов:");
-//       const productSet = new Set<string>();
-//       variants.forEach(({ product }) => {
-//         if (productSet.has(product.id)) return; // Пропускаем если продукт уже обработан
-//         productSet.add(product.id);
-        
-//         findOptionsInProductTable(product);
-//       });
-      
-//       // Анализируем все варианты для извлечения опций
-//       console.log("Извлечение опций из названий вариантов:");
-//       variants.forEach(({ variant, product }) => {
-//         if (!variant.title) return;
-        
-//         console.log(`  Анализ варианта: ${variant.title}`);
-        
-//         // Сначала проверяем соответствие варианта опциям продукта
-//         if (product.options && Array.isArray(product.options)) {
-//           product.options.forEach(option => {
-//             if (!option || !option.title || !option.values) return;
-            
-//             // Используем оригинальное название опции БЕЗ преобразования в нижний регистр
-//             const optionName = option.title;
-            
-//             // Проверяем каждое значение опции
-//             option.values.forEach(value => {
-//               if (typeof value !== 'string') return;
-              
-//               // Проверяем, содержит ли название варианта значение опции
-//               if (variant.title?.toLowerCase().includes(value.toLowerCase())) {
-                
-//                 addOptionValue(optionName, value.toLowerCase());
-//                 console.log(`    Соответствие опции ${optionName}: ${value}`);
-//               }
-//             });
-//           });
-//         }
-        
-//         // Попытка извлечь структурированные опции
-//         const structuredOptions = extractStructuredOptions(variant.title);
-        
-//         if (Object.keys(structuredOptions).length > 0) {
-//           console.log("    Извлечены структурированные опции:", structuredOptions);
-//           // Если нашли структурированные опции
-//           Object.entries(structuredOptions).forEach(([optionName, value]) => {
-//             addOptionValue(optionName, value);
-//           });
-//         } else {
-//           console.log("    Структурированные опции не найдены. Применяем эвристики...");
-          
-//   // Эвристическое извлечение опций
-//           const title = variant.title.toLowerCase();
-          
-//           // Проверяем тип опции по названию продукта и варианта
-//           const hasStorageFlag = 
-//             product.title.toLowerCase().includes('storage') ||
-//             variant.title.toLowerCase().includes('storage');
-          
-//           // Извлекаем цвета
-//           const colorKeywords = [
-//             'black', 'white', 'red', 'blue', 'green', 'yellow', 'purple', 
-//             'pink', 'gold', 'silver', 'graphite', 'gray', 'space gray', 
-//             'midnight', 'starlight', 'product red'
-//           ];
-          
-//           // Проверяем каждый цвет
-//           for (const color of colorKeywords) {
-//             if (title.includes(color)) {
-//               addOptionValue('color', color);
-//               console.log(`      Найден цвет: ${color}`);
-//               break;
-//             }
-//           }
-          
-//           // Извлекаем объем памяти/хранилища
-//           const storageMatch = title.match(/(\d+)(gb|tb)/i);
-//           if (storageMatch && storageMatch[1] && storageMatch[2]) {
-//             const storageValue = `${storageMatch[1]}${storageMatch[2].toUpperCase()}`;
-            
-//             // Определяем, это storage или memory на основе контекста
-//             if (hasStorageFlag || title.includes('storage') || 
-//                 (originalOptions['Storage'] && 
-//                  originalOptions['Storage'].has(storageValue))) {
-//               addOptionValue('Storage', storageValue.toLowerCase());
-//               console.log(`      Найдено хранилище: ${storageValue}`);
-//             } else if (title.includes('memory') || title.includes('ram') || 
-//                       (originalOptions['memory'] && 
-//                        originalOptions['memory'].has(storageValue))) {
-//               addOptionValue('memory', storageValue.toLowerCase());
-//               console.log(`      Найдена память: ${storageValue}`);
-//             } else {
-//               // Если не можем точно определить тип, смотрим на метаданные продукта
-//               if (originalOptions['Storage']) {
-//                 addOptionValue('Storage', storageValue.toLowerCase());
-//                 console.log(`      Предполагаемое хранилище: ${storageValue}`);
-//               } else {
-//                 addOptionValue('memory', storageValue.toLowerCase());
-//                 console.log(`      Предполагаемая память: ${storageValue}`);
-//               }
-//             }
-//           }
-          
-//           // Извлекаем размеры
-//           const sizeMatch = title.match(/\b(size|размер)?\s*(\d+|xs|s|m|l|xl|xxl|xxxl)\b/i);
-//           if (sizeMatch && sizeMatch[2]) {
-//             const size = sizeMatch[2].toUpperCase();
-//             addOptionValue('size', size.toLowerCase());
-//             console.log(`      Найден размер: ${size}`);
-//           }
-          
-//           // Проверяем состояние (новый, б/у, восстановленный)
-//           const conditionKeywords = ['new', 'used', 'refurbished', 'renewed', 'open box', 'новый', 'б/у', 'восстановленный'];
-//           for (const condition of conditionKeywords) {
-//             if (title.includes(condition)) {
-//               addOptionValue('condition', condition);
-//               console.log(`      Найдено состояние: ${condition}`);
-//               break;
-//             }
-//           }
-          
-//           // Процессоры
-//           const processorMatch = title.match(/\b(i\d|ryzen|snapdragon|a\d+|m\d)\b/i);
-//           if (processorMatch) {
-//             const processor = processorMatch[0].toLowerCase();
-//             addOptionValue('processor', processor);
-//             console.log(`      Найден процессор: ${processor}`);
-//           }
-          
-//           // Материал
-//           const materialKeywords = ['leather', 'cotton', 'wool', 'silk', 'nylon', 'polyester', 'metal', 'plastic', 'glass'];
-//           for (const material of materialKeywords) {
-//             if (title.includes(material)) {
-//               addOptionValue('material', material);
-//               console.log(`      Найден материал: ${material}`);
-//               break;
-//             }
-//           }
-//         }
-//       });
-      
-//       // Сохраняем все найденные опции в состояние для отладки
-//       setAllFoundOptions(allOptions);
-//       console.log("Все найденные опции:", allOptions);
-      
-//       // Словарь для перевода стандартных названий опций
-//       const optionTranslations: Record<string, string> = {
-//         'color': 'color', // Оставляем как есть по требованию
-//         'memory': 'Память',
-//         'size': 'Размер',
-//         'processor': 'Процессор',
-//         'material': 'Материал',
-//         'weight': 'Вес',
-//         'capacity': 'Емкость',
-//         'generation': 'Поколение',
-//         'version': 'Версия',
-//         'condition': 'Состояние', // Добавляем перевод для третьей опции
-//         'year': 'Год',
-//         'model': 'Модель',
-//         'os': 'ОС',
-//         'screen': 'Экран',
-//         'battery': 'Батарея',
-//         'camera': 'Камера',
-//         'storage': 'Хранилище',
-//         'warranty': 'Гарантия',
-//         'type': 'Тип',
-//         'feature': 'Особенность'
-//       };
-      
-//       // Функция для получения названия группы
-//       const getGroupDisplayName = (optionName: string): string => {
-//         console.log(`Получение отображаемого имени для опции: ${optionName}`);
-        
-//         // Если это color, оставляем как есть
-//         if (optionName.toLowerCase().includes('color')) {
-//           console.log(`  Это опция цвета, оставляем оригинальное название: ${optionName}`);
-//           return optionName;
-//         }
-        
-//         // Проверяем, есть ли перевод
-//         if (optionTranslations[optionName.toLowerCase()]) {
-//           const translated = optionTranslations[optionName.toLowerCase()];
-//           console.log(`  Найден перевод: ${translated}`);
-//           return translated;
-//         }
-        
-//         // Если нет перевода, используем исходное название с заглавной буквы
-//         const capitalized = optionName.charAt(0).toUpperCase() + optionName.slice(1);
-//         console.log(`  Используем с заглавной буквы: ${capitalized}`);
-//         return capitalized;
-//       };
-      
-//   // Создаем группы фильтров из найденных опций
-//       const dynamicFilterGroups: FilterGroup[] = [];
-      
-//       // Словарь для сохранения оригинального регистра названий опций
-//       const originalOptionCaseMap: Record<string, string> = {};
-      
-//       // Приоритет для опций продукта - используем оригинальные названия
-//       const productOptionNames = Object.keys(originalOptions);
-//       console.log("Создание групп фильтров из оригинальных опций:", productOptionNames);
-      
-//       // Сохраняем оригинальный регистр названий опций
-//       productOptionNames.forEach(name => {
-//         originalOptionCaseMap[name.toLowerCase()] = name;
-//       });
-      
-//       // Сперва добавляем группы из оригинальных опций продукта
-//       productOptionNames.forEach(optionName => {
-//         const values = originalOptions[optionName];
-//         if (values.size > 0) {
-//           const displayName = optionName.toLowerCase().includes('color') 
-//             ? optionName  // Оставляем "color" без изменений
-//             : getGroupDisplayName(optionName);
-          
-//           const filterOptions: FilterOption[] = Array.from(values).map(value => ({
-//             id: `${optionName}-${value.replace(/\s+/g, '-').toLowerCase()}`,
-//             name: value, // Используем оригинальное значение без преобразований
-//             value: value.toLowerCase(), // Для фильтрации используем нижний регистр
-//             count: optionCounts[optionName]?.[value.toLowerCase()] || 0
-//           })).sort((a, b) => a.name.localeCompare(b.name));
-          
-//           dynamicFilterGroups.push({
-//             id: optionName.toLowerCase(), // ID в нижнем регистре для согласованности
-//             name: displayName,
-//             options: filterOptions,
-//             expanded: true,
-//             type: optionName
-//           });
-          
-//           console.log(`Создана группа из оригинальной опции: ${displayName} (${filterOptions.length} значений)`);
-//         }
-//       });
-      
-//       // Затем добавляем группы из эвристик (если их еще нет)
-//       Object.entries(optionMap).forEach(([optionName, values]) => {
-//         // Проверяем есть ли эта опция (с учетом регистра) в оригинальных опциях
-//         const lowerCaseName = optionName.toLowerCase();
-//         if (Object.keys(originalOptionCaseMap).includes(lowerCaseName)) {
-//           // Если эта опция уже добавлена из метаданных продукта, пропускаем её
-//           console.log(`Пропускаем эвристическую опцию "${optionName}", так как она уже есть в метаданных`);
-//           return;
-//         }
-        
-//         // Проверяем специальный случай для Storage/memory
-//         if (lowerCaseName === 'storage' && 
-//             Object.keys(originalOptionCaseMap).includes('memory')) {
-//           console.log(`Особая обработка: опция "${optionName}" может быть связана с "memory"`);
-          
-//           // Дополняем существующую группу memory, если нашли Storage эвристически
-//           const memoryGroup = dynamicFilterGroups.find(g => 
-//             g.id.toLowerCase() === 'memory' || 
-//             g.type.toLowerCase() === 'memory'
-//           );
-          
-//           if (memoryGroup) {
-//             console.log(`Добавляем значения Storage в группу memory`);
-            
-//             const newOptions = Array.from(values).map(value => ({
-//               id: `Storage-${value.replace(/\s+/g, '-')}`,
-//               name: value.charAt(0).toUpperCase() + value.slice(1), // Capitalize
-//               value: value,
-//               count: optionCounts[optionName][value] || 0
-//             }));
-            
-//             memoryGroup.options = [...memoryGroup.options, ...newOptions]
-//               .sort((a, b) => a.name.localeCompare(b.name));
-            
-//             return;
-//           }
-//         }
-        
-//         // Стандартная обработка эвристической опции
-//         if (values.size > 0) {
-//           const displayName = getGroupDisplayName(optionName);
-          
-//           const filterOptions: FilterOption[] = Array.from(values).map(value => ({
-//             id: `${optionName}-${value.replace(/\s+/g, '-')}`,
-//             name: value.charAt(0).toUpperCase() + value.slice(1), // Capitalize
-//             value: value,
-//             count: optionCounts[optionName][value] || 0
-//           })).sort((a, b) => a.name.localeCompare(b.name));
-          
-//           dynamicFilterGroups.push({
-//             id: optionName,
-//             name: displayName,
-//             options: filterOptions,
-//             expanded: true,
-//             type: optionName
-//           });
-          
-//           console.log(`Создана группа из эвристической опции: ${displayName} (${filterOptions.length} значений)`);
-//         }
-//       });
-      
-//       // Приоритеты для сортировки групп
-//       const groupPriorities: Record<string, number> = {
-//         'color': 1,
-//         'memory': 2,
-//         'size': 3,
-//         'condition': 4,
-//         'processor': 5,
-//         'material': 6
-//       };
-      
-//       // Сортируем группы по приоритету
-//       dynamicFilterGroups.sort((a, b) => {
-//         const priorityA = groupPriorities[a.id.toLowerCase()] || 999;
-//         const priorityB = groupPriorities[b.id.toLowerCase()] || 999;
-//         return priorityA - priorityB;
-//       });
-      
-//       // Добавляем ценовой фильтр
-//       dynamicFilterGroups.unshift({
-//         id: 'price',
-//         name: 'Цена',
-//         options: [],
-//         expanded: true,
-//         type: 'price'
-//       });
-      
-//       console.log("Созданы группы фильтров:", dynamicFilterGroups.map(g => `${g.name} (${g.options.length} значений)`));
-//       setFilterGroups(dynamicFilterGroups);
-      
-//       // Инициализация выбранных фильтров
-//       const initialSelectedFilters: Record<string, string[]> = {};
-//       dynamicFilterGroups.forEach(group => {
-//         initialSelectedFilters[group.id] = [];
-//       });
-//       setSelectedFilters(initialSelectedFilters);
-      
-//     } catch (error) {
-//       console.error("Ошибка при извлечении опций фильтров:", error);
-//       console.error(error.stack);
-//     }
-//   };
-  
-//   // Функция для извлечения структурированных опций из строки
-//   const extractStructuredOptions = (title: string): Record<string, string> => {
-//     const options: Record<string, string> = {};
-    
-//     // Проверяем разные форматы определения опций
-    
-//     // Формат "Опция: Значение, Опция: Значение"
-//     const colonPattern = /(\w+):\s*([^,]+)(?:,|$)/g;
-//     let match;
-//     while ((match = colonPattern.exec(title)) !== null) {
-//       const optionName = match[1].trim().toLowerCase();
-//       const optionValue = match[2].trim().toLowerCase();
-//       options[optionName] = optionValue;
-//     }
-    
-//     // Формат "Опция = Значение; Опция = Значение"
-//     if (Object.keys(options).length === 0) {
-//       const equalsPattern = /(\w+)\s*=\s*([^;]+)(?:;|$)/g;
-//       while ((match = equalsPattern.exec(title)) !== null) {
-//         const optionName = match[1].trim().toLowerCase();
-//         const optionValue = match[2].trim().toLowerCase();
-//         options[optionName] = optionValue;
-//       }
-//     }
-    
-//     // Формат с разделителями "|" или "/"
-//     if (Object.keys(options).length === 0) {
-//       const parts = title.split(/[|\/]/);
-//       if (parts.length > 1) {
-//         parts.forEach(part => {
-//           const trimmedPart = part.trim().toLowerCase();
-          
-//           // Пытаемся определить тип опции
-//           if (/\d+\s*(gb|tb)/i.test(trimmedPart)) {
-//             options['memory'] = trimmedPart;
-//           } else if (/\b(xs|s|m|l|xl)\b/i.test(trimmedPart)) {
-//             options['size'] = trimmedPart;
-//           } else if (/\b(black|white|red|blue|green|yellow)\b/i.test(trimmedPart)) {
-//             options['color'] = trimmedPart;
-//           } else if (/\b(i\d|ryzen|snapdragon|a\d+)\b/i.test(trimmedPart)) {
-//             options['processor'] = trimmedPart;
-//           }
-//         });
-//       }
-//     }
-    
-//     return options;
-//   };
-  
-//   // Обработчик изменения чекбокса фильтра
-//   const handleFilterChange = (groupId: string, value: string) => {
-//     setSelectedFilters(prev => {
-//       const groupValues = [...(prev[groupId] || [])];
-      
-//       if (groupValues.includes(value)) {
-//         // Удаляем значение, если оно уже выбрано
-//         return {
-//           ...prev,
-//           [groupId]: groupValues.filter(v => v !== value)
-//         };
-//       } else {
-//         // Добавляем новое значение
-//         return {
-//           ...prev,
-//           [groupId]: [...groupValues, value]
-//         };
-//       }
-//     });
-//   };
-  
-//   // Применение фильтров
-//   useEffect(() => {
-//     if (products.length === 0) return;
-    
-//     setLoading(true);
-    
-//     try {
-//       // Собираем все варианты всех продуктов
-//       let filteredItems = products.flatMap(product => 
-//         (product.variants || []).map(variant => ({ product, variant }))
-//       );
-      
-//       console.log(`Начало фильтрации. Исходное количество вариантов: ${filteredItems.length}`);
-      
-//       // Фильтр по цене
-//       filteredItems = filteredItems.filter(({ variant }) => {
-//         if (!variant.prices || variant.prices.length === 0) return true;
-        
-//         return variant.prices.some(price => {
-//           if (!price || typeof price.amount !== 'number') return true;
-          
-//           const priceValue = price.amount / 100;
-//           return priceValue >= currentPriceRange[0] && priceValue <= currentPriceRange[1];
-//         });
-//       });
-      
-//       console.log(`После фильтрации по цене: ${filteredItems.length} вариантов`);
-      
-//       // Применяем фильтры по группам
-//       Object.entries(selectedFilters).forEach(([groupId, values]) => {
-//         if (values.length === 0 || groupId === 'price') return; // Пропускаем, если не выбраны значения или это ценовой фильтр
-        
-//         console.log(`Применение фильтра [${groupId}] со значениями:`, values);
-        
-//         const prevCount = filteredItems.length;
-        
-//         filteredItems = filteredItems.filter(({ variant, product }) => {
-//           if (!variant.title) return false;
-          
-//           const title = variant.title.toLowerCase();
-          
-//           // Проверяем, содержит ли название хотя бы одно из выбранных значений
-//           const matchesByTitle = values.some(value => {
-//             const includes = title.includes(value.toLowerCase());
-//             return includes;
-//           });
-          
-//           if (matchesByTitle) {
-//             return true;
-//           }
-          
-//           // Проверяем, если у продукта есть метаданные опций
-//           if (product.options && Array.isArray(product.options)) {
-//             for (const option of product.options) {
-//               // Проверяем, что option существует и имеет свойство name
-//               if (!option || !option.title) continue;
-              
-//               // Проверяем, соответствует ли название опции текущему фильтру
-//               if (option.title.toLowerCase() === groupId.toLowerCase()) {
-//                 if (!option.values || !Array.isArray(option.values)) continue;
-                
-//                 // Проверяем, есть ли пересечение между значениями опции и выбранными значениями фильтра
-//                 for (const optionValue of option.values) {
-//                   if (typeof optionValue !== 'string') continue;
-                  
-//                   for (const filterValue of values) {
-//                     if (optionValue.toLowerCase() === filterValue.toLowerCase()) {
-//                       return true;
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-          
-//           return false;
-//         });
-        
-//         console.log(`После фильтра [${groupId}]: ${filteredItems.length} вариантов (было ${prevCount})`);
-//       });
-      
-//       console.log(`Отфильтровано ${filteredItems.length} вариантов из общего количества`);
-//       setFilteredVariants(filteredItems);
-//     } catch (error) {
-//       console.error("Ошибка при применении фильтров:", error);
-//       console.error(error.stack);
-//       // В случае ошибки показываем все варианты
-//       const allVariants = products.flatMap(product => 
-//         (product.variants || []).map(variant => ({ product, variant }))
-//       );
-//       setFilteredVariants(allVariants);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, [products, currentPriceRange, selectedFilters]);
-  
-//   // Переключение развернутости фильтра
-//   const toggleFilterGroup = (groupId: string) => {
-//     setFilterGroups(prevGroups => 
-//       prevGroups.map(group => 
-//         group.id === groupId ? { ...group, expanded: !group.expanded } : group
-//       )
-//     );
-//   };
-  
-//   // Обработчик изменения ценового диапазона
-//   const handlePriceRangeChange = (min: number, max: number) => {
-//     setCurrentPriceRange([min, max]);
-//   };
-  
-//   // Сброс фильтров
-//   const resetFilters = () => {
-//     // Сбрасываем все выбранные фильтры
-//     const resetSelections: Record<string, string[]> = {};
-//     filterGroups.forEach(group => {
-//       resetSelections[group.id] = [];
-//     });
-//     setSelectedFilters(resetSelections);
-    
-//     // Сбрасываем ценовой диапазон
-//     setCurrentPriceRange(priceRange);
-//   };
-  
-//   // Функция для определения цвета по названию
-//   const getColorCode = (colorName: string): string => {
-//     const colorMap: Record<string, string> = {
-//       'black': '#000000',
-//       'white': '#FFFFFF',
-//       'red': '#FF0000',
-//       'blue': '#0000FF',
-//       'green': '#008000',
-//       'yellow': '#FFFF00',
-//       'purple': '#800080',
-//       'pink': '#FFC0CB',
-//       'gold': '#FFD700',
-//       'silver': '#C0C0C0',
-//       'graphite': '#333333',
-//       'gray': '#808080',
-//       'space gray': '#676767',
-//       'midnight': '#121212',
-//       'starlight': '#F9F3EE',
-//       'product red': '#FF0000',
-//     };
-    
-//     return colorMap[colorName.toLowerCase()] || '#CCCCCC';
-//   };
-  
-//   // Если продуктов нет
-//   if (products.length === 0) {
-//     return (
-//       <div className={styles.catalogContainer}>
-//         <h1 className={styles.categoryTitle}>{category?.name || 'Категория'}</h1>
-//         <div className={styles.noResults}>В данной категории нет товаров</div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className={styles.catalogContainer}>
-//       {/* Хлебные крошки */}
-//       {breadcrumbs && breadcrumbs.length > 0 && (
-//         <div className={styles.breadcrumbs}>
-//           <Link href="/">Главная</Link>
-//           {breadcrumbs.map((crumb, index) => (
-//             <React.Fragment key={index}>
-//               <span className={styles.breadcrumbSeparator}>/</span>
-//               <Link href={crumb.path}>{crumb.name}</Link>
-//             </React.Fragment>
-//           ))}
-//         </div>
-//       )}
-
-//       {/* Заголовок категории */}
-//       <h1 className={styles.categoryTitle}>{category?.name || 'Категория'}</h1>
-
-//       <div className={styles.catalogContent}>
-//         {/* Сайдбар с фильтрами */}
-//         <div className={styles.filterSidebar}>
-//           {/* Фильтр по цене */}
-//           <div className={styles.filterGroup}>
-//             <div 
-//               className={styles.filterHeader} 
-//               onClick={() => toggleFilterGroup('price')}
-//             >
-//               <h3>Цена</h3>
-//               <span className={styles.collapseIcon}>
-//                 {filterGroups.find(g => g.id === 'price')?.expanded ? '▲' : '▼'}
-//               </span>
-//             </div>
-            
-//             {(filterGroups.find(g => g.id === 'price')?.expanded !== false) && (
-//               <div className={styles.priceRange}>
-//                 <div className={styles.rangeValues}>
-//                   <span>{currentPriceRange[0]} ₴</span>
-//                   <span>{currentPriceRange[1]} ₴</span>
-//                 </div>
-//                 <div className={styles.rangeSliders}>
-//                   <input
-//                     type="range"
-//                     min={priceRange[0]}
-//                     max={priceRange[1]}
-//                     value={currentPriceRange[0]}
-//                     onChange={(e) => handlePriceRangeChange(Number(e.target.value), currentPriceRange[1])}
-//                     className={styles.rangeSlider}
-//                   />
-//                   <input
-//                     type="range"
-//                     min={priceRange[0]}
-//                     max={priceRange[1]}
-//                     value={currentPriceRange[1]}
-//                     onChange={(e) => handlePriceRangeChange(currentPriceRange[0], Number(e.target.value))}
-//                     className={styles.rangeSlider}
-//                   />
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-          
-//           {/* Динамические фильтры */}
-//           {filterGroups.filter(group => group.id !== 'price').map((group) => (
-//             <div key={group.id} className={styles.filterGroup}>
-//               <div 
-//                 className={styles.filterHeader} 
-//                 onClick={() => toggleFilterGroup(group.id)}
-//               >
-//                 <h3>{group.name}</h3>
-//                 <span className={styles.collapseIcon}>
-//                   {group.expanded ? '▲' : '▼'}
-//                 </span>
-//               </div>
-              
-//               {group.expanded && (
-//                 <div className={styles.filterContent}>
-//                   <div className={styles.filterOptions}>
-//                     {group.options.map((option) => (
-//                       <div key={option.id} className={styles.filterOption}>
-//                         <input
-//                           type="checkbox"
-//                           id={option.id}
-//                           checked={selectedFilters[group.id]?.includes(option.value) || false}
-//                           onChange={() => handleFilterChange(group.id, option.value)}
-//                         />
-//                         {group.type.toLowerCase().includes('color') && (
-//                           <span 
-//                             className={styles.colorSquare}
-//                             style={{ backgroundColor: getColorCode(option.value) }}
-//                           />
-//                         )}
-//                         <label htmlFor={option.id}>
-//                           {option.name} 
-//                           <span className={styles.optionCount}>({option.count})</span>
-//                         </label>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-//               )}
-//             </div>
-//           ))}
-
-//           {/* Кнопка сброса фильтров */}
-//           <button className={styles.resetButton} onClick={resetFilters}>
-//             Сбросить фильтр
-//           </button>
-          
-//           {/* Отладочная информация */}
-//         </div>
-
-//         {/* Сетка продуктов */}
-//         <div className={styles.productGrid}>
-//           {loading ? (
-//             <div className={styles.loading}>Загрузка...</div>
-//           ) : filteredVariants.length === 0 ? (
-//             <div className={styles.noResults}>Нет товаров, соответствующих выбранным фильтрам</div>
-//           ) : (
-//             filteredVariants.map(({ product, variant }, index) => (
-//               <div key={`variant-${index}`} className={styles.productCardWrapper}>
-//                 <ProductCard 
-//                   product={{
-//                     ...product,
-//                     variants: [variant]
-//                   }} 
-//                 />
-//               </div>
-//             ))
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//                      ВЕРСИЯ НА ПОКАЗ
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 'use client';
 // src/components/CatalogPage.tsx
 import React, { useState, useEffect } from 'react';
@@ -1033,31 +21,374 @@ interface ProductVariant {
   id: string;
   title?: string;
   prices?: ProductPrice[];
+  options?: any[]; // Массив опций варианта
+  [key: string]: any;
 }
 
-interface Product {
-  id: string;
+interface ProductOptionValue {
+  id?: string;
+  value: string;
+}
+
+interface ProductOption {
+  id?: string;
   title: string;
-  description: string;
-  handle: string;
-  images: ProductImage[];
-  variants: ProductVariant[];
+  values: (string | ProductOptionValue)[];
 }
 
 interface Category {
   id: string;
   name: string;
   handle: string;
+  parent_category_id: string | null;
+  category_children?: Category[];
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
+  handle: string;
+  images: ProductImage[];
+  variants: ProductVariant[];
+  options?: ProductOption[];
+  categories?: Category[]; // Категории продукта
 }
 
 interface CatalogPageProps {
-  category: Category;
-  products: Product[];
-  breadcrumbs?: { name: string; path: string }[];
+  category: Category; // Текущая категория
+  products: Product[]; // Продукты для отображения
+  breadcrumbs?: { name: string; path: string }[]; // Хлебные крошки
+  allCategories?: Category[]; // Все доступные категории для фильтрации
 }
 
-export default function CatalogPage({ category, products = [], breadcrumbs = [] }: CatalogPageProps) {
-  // Состояния
+// Интерфейсы для динамических фильтров
+interface FilterOption {
+  value: string;  // Значение фильтра (для категорий это ID)
+  label: string;  // Отображаемое название
+  count: number;  // Количество вариантов с этим значением
+  normalized?: string; // Нормализованное значение для сопоставления (для атрибутов)
+}
+
+interface FilterGroup {
+  id: string;
+  name: string;
+  options: FilterOption[];
+  expanded: boolean;
+  // Для групп категорий:
+  isCategory?: boolean; // Является ли группа категорией
+  parentId?: string; // ID родительской категории (для подкатегорий)
+  order?: number; // Порядок отображения
+  isProduct?: boolean; // Новое свойство: является ли группа продуктами
+}
+
+// Функция для получения значения опции из варианта
+const getVariantOptionValue = (variant: ProductVariant, optionName: string): string | undefined => {
+  const lowerOptionName = optionName.toLowerCase();
+  console.log("LOWEROPTIONNAME ", lowerOptionName);
+  console.log("OPTION NAME: ", optionName)
+  
+  // 1. Сначала проверяем прямые свойства варианта
+  for (const key in variant) {
+    if (key.toLowerCase() === lowerOptionName && variant[key] !== undefined) {
+      console.log("VARIANT KEY zzzzzzzzzzzz: ", variant[key]);
+      console.log("VARIANT: ", variant);
+      return String(variant[key]);
+    }
+  }
+  
+  // 2. Проверяем поля title и option.title в варианте 
+  if (variant.title && typeof variant.title === 'string') {
+    // const titleParts = variant.title.split(' / ');
+    // if (optionName.toLowerCase() === 'color' && titleParts.length > 0) {
+    //   return titleParts[0]; // Обычно первая часть - цвет
+    // }
+    // if (optionName.toLowerCase() === 'storage' && titleParts.length > 1) {
+    //   return titleParts[1]; // Обычно вторая часть - хранилище
+    // }
+  }
+  
+  // 3. Проверяем массив options, если он есть
+  if (variant.options && Array.isArray(variant.options)) {
+    // Ищем опцию с нужным названием
+    for (const optItem of variant.options) {
+      // 3.1 Проверяем наличие вложенного объекта option с полем title (стандартная структура)
+      if (optItem.option && optItem.option.title && 
+          optItem.option.title.toLowerCase() === lowerOptionName && 
+          optItem.value !== undefined) {
+        return optItem.value;
+      }
+      
+      // 3.2 Проверяем наличие прямого поля title
+      // if (optItem.title && 
+      //     optItem.title.toLowerCase() === lowerOptionName && 
+      //     optItem.value !== undefined) {
+      //   return optItem.value;
+      // }
+      
+      // 3.3 Проверяем, есть ли свойство с именем опции в самом элементе options
+      if (optItem[lowerOptionName] !== undefined) {
+        console.log("OptItem[lowerOptionName]: ")
+        return String(optItem[lowerOptionName]);
+      }
+    }
+  }
+  
+  // 4. Не нашли значение
+  return undefined;
+};
+
+// Функция для нормализации значения опции
+const normalizeOptionValue = (optionName: string, value: string): string => {
+  // if (!value) return '';
+  
+  // const lowerValue = value.toLowerCase();
+  
+  // // Нормализация для storage
+  // if (optionName.toLowerCase() === 'storage') {
+  //   // Убираем пробелы и приводим к единому формату
+  //   let normalized = lowerValue.replace(/\s+/g, '');
+    
+  //   // Преобразуем все обозначения гигабайт/терабайт к единому формату
+  //   normalized = normalized
+  //     .replace(/gb/i, 'GB')
+  //     .replace(/tb/i, 'TB')
+  //     .replace(/mb/i, 'MB');
+    
+  //   return normalized;
+  // }
+  
+  // // Нормализация для размеров
+  // if (optionName.toLowerCase() === 'size') {
+  //   return value.toUpperCase();
+  // }
+  
+  // // Нормализация для цветов
+  // if (optionName.toLowerCase() === 'color') {
+  //   // Первая буква заглавная, остальные строчные
+  //   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  // }
+  
+  // Для других опций возвращаем как есть
+  return value;
+};
+
+// Функция для получения отображаемого значения опции
+const getDisplayOptionValue = (optionName: string, value: string): string => {
+  // if (!value) return '';
+  
+  // // Отображение для storage
+  // if (optionName.toLowerCase() === 'storage') {
+  //   // Проверяем наличие обозначений гигабайт/терабайт
+  //   if (value.toUpperCase().includes('GB')) {
+  //     // Форматируем, например, "256GB"
+  //     return value.toUpperCase();
+  //   }
+  //   if (value.toUpperCase().includes('TB')) {
+  //     // Форматируем, например, "1TB"
+  //     return value.toUpperCase();
+  //   }
+    
+  //   // Если нет обозначения, предполагаем гигабайты
+  //   if (/^\d+$/.test(value)) {
+  //     return `${value}GB`;
+  //   }
+    
+  //   return value;
+  // }
+  
+  return value;
+};
+
+// Функция для создания групп фильтров без дублирования
+const createUniqueFilterGroups = (variants: {product: Product, variant: ProductVariant}[]): FilterGroup[] => {
+  console.log("===== СОЗДАНИЕ УНИКАЛЬНЫХ ФИЛЬТРОВ =====");
+  
+  // Шаг 1: Собираем все опции из всех продуктов и их значения в единую структуру
+  const filterOptions: Record<string, {
+    displayName: string,
+    values: Map<string, {
+      originalValue: string,
+      count: number
+    }>
+  }> = {};
+  
+  // Получаем уникальные продукты
+  const uniqueProducts = new Map<string, Product>();
+  variants.forEach(({ product }) => {
+    if (!uniqueProducts.has(product.id)) {
+      uniqueProducts.set(product.id, product);
+    }
+  });
+  
+  console.log(`Найдено ${uniqueProducts.size} уникальных продуктов`);
+  
+  // Извлекаем все опции из продуктов и их значения
+  uniqueProducts.forEach(product => {
+    console.log(`Обработка товара: "${product.title}" (id: ${product.id})`);
+    
+    if (!product.options || !Array.isArray(product.options)) {
+      console.log("  У товара нет опций");
+      return;
+    }
+    
+    product.options.forEach(option => {
+      if (!option.title) return;
+      
+      const optionName = option.title;
+      const normalizedName = optionName.toLowerCase(); // Ключ для группировки
+      
+      console.log(`  Опция: "${optionName}"`);
+      
+      // Создаем запись для опции, если её ещё нет
+      if (!filterOptions[normalizedName]) {
+        filterOptions[normalizedName] = {
+          displayName: optionName,
+          values: new Map()
+        };
+      }
+      
+      // Добавляем все значения опции
+      option.values.forEach(value => {
+        let valueStr: string;
+        
+        if (typeof value === 'string') {
+          valueStr = value;
+        } else if (value && typeof value.value === 'string') {
+          valueStr = value.value;
+        } else {
+          return; // Пропускаем некорректные значения
+        }
+        
+        console.log(`    Значение: "${valueStr}"`);
+        
+        // Нормализуем значение для группировки
+        const normalizedValue = normalizeOptionValue(optionName, valueStr);
+        
+        // Инициализируем запись для значения, если её ещё нет
+        if (!filterOptions[normalizedName].values.has(normalizedValue)) {
+          filterOptions[normalizedName].values.set(normalizedValue, {
+            originalValue: valueStr,
+            count: 0
+          });
+        }
+      });
+    });
+  });
+  
+  // Шаг 2: Подсчитываем количество вариантов для каждого значения
+  console.log("\nПодсчет вариантов:");
+  
+  variants.forEach(({ product, variant }) => {
+    // Для каждой опции
+    Object.entries(filterOptions).forEach(([normalizedName, optionInfo]) => {
+      // Получаем значение опции из варианта
+      const variantValue = getVariantOptionValue(variant, optionInfo.displayName);
+      
+      if (variantValue) {
+        console.log(`Найдено значение "${variantValue}" для опции "${optionInfo.displayName}" в варианте ${variant.id} (товар: ${product.title})`);
+        
+        // Нормализуем значение для сопоставления
+        const normalizedValue = normalizeOptionValue(optionInfo.displayName, variantValue);
+        
+        // Увеличиваем счетчик, если такое значение есть
+        if (optionInfo.values.has(normalizedValue)) {
+          const valueInfo = optionInfo.values.get(normalizedValue)!;
+          valueInfo.count++;
+        } else {
+          // Если значения нет, добавляем его
+          console.log(`  Новое значение "${variantValue}" (нормализовано: "${normalizedValue}") для опции "${optionInfo.displayName}"`);
+          optionInfo.values.set(normalizedValue, {
+            originalValue: variantValue,
+            count: 1
+          });
+        }
+      }
+    });
+  });
+  
+  // Шаг 3: Создаем финальные группы фильтров
+  console.log("\nСоздание финальных групп фильтров:");
+  
+  const filterGroups: FilterGroup[] = [
+    // Добавляем фильтр по цене
+    {
+      id: 'price',
+      name: 'Цена',
+      options: [],
+      expanded: true
+    }
+  ];
+  
+  // Добавляем остальные фильтры
+  Object.entries(filterOptions).forEach(([normalizedName, optionInfo]) => {
+    // Создаем опции для этого фильтра
+    const options: FilterOption[] = [];
+    
+    optionInfo.values.forEach((valueInfo, normalizedValue) => {
+      if (valueInfo.count > 0) { // Добавляем только значения с товарами
+        options.push({
+          value: valueInfo.originalValue,
+          label: getDisplayOptionValue(optionInfo.displayName, valueInfo.originalValue),
+          count: valueInfo.count,
+          normalized: normalizedValue
+        });
+      }
+    });
+    
+    // Пропускаем пустые группы
+    if (options.length === 0) {
+      console.log(`  Пустая группа "${optionInfo.displayName}" пропущена`);
+      return;
+    }
+    
+    // Сортируем опции
+    // options.sort((a, b) => {
+    //   // Для storage - специальная сортировка по размеру
+    //   if (normalizedName === 'storage') {
+    //     const getNumericValue = (str: string) => {
+    //       const match = str.match(/(\d+)/);
+    //       if (match) {
+    //         let value = parseInt(match[1], 10);
+    //         if (str.toUpperCase().includes('TB')) {
+    //           value *= 1024;
+    //         }
+    //         return value;
+    //       }
+    //       return 0;
+    //     };
+        
+    //     return getNumericValue(a.value) - getNumericValue(b.value);
+    //   }
+      
+    //   // Для других опций - по алфавиту
+    //   return a.label.localeCompare(b.label);
+    // });
+    
+    // Добавляем группу в результат
+    filterGroups.push({
+      id: normalizedName, // Используем нормализованное имя как ID!
+      name: optionInfo.displayName,
+      options: options,
+      expanded: true
+    });
+    
+    console.log(`  Создана группа "${optionInfo.displayName}" (id: ${normalizedName}) с ${options.length} опциями:`);
+    options.forEach(opt => console.log(`    - ${opt.label} (${opt.count})`));
+  });
+  
+  return filterGroups;
+};
+
+export default function CatalogPage({ 
+  category, 
+  products = [], 
+  breadcrumbs = [],
+  allCategories = []
+}: CatalogPageProps) {
+  // Все варианты для отслеживания
+  const [allVariants, setAllVariants] = useState<{product: Product, variant: ProductVariant}[]>([]);
+  // Отфильтрованные варианты
   const [filteredVariants, setFilteredVariants] = useState<{product: Product, variant: ProductVariant}[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -1065,41 +396,162 @@ export default function CatalogPage({ category, products = [], breadcrumbs = [] 
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [currentPriceRange, setCurrentPriceRange] = useState<[number, number]>([0, 100000]);
   
-  // Фильтры (фиксированные категории)
-  const [colorOptions, setColorOptions] = useState<string[]>([]);
-  const [memoryOptions, setMemoryOptions] = useState<string[]>([]);
-  const [sizeOptions, setSizeOptions] = useState<string[]>([]);
+  // Динамические фильтры для атрибутов продуктов
+  const [attributeFilterGroups, setAttributeFilterGroups] = useState<FilterGroup[]>([]);
+  
+  // Фильтры категорий для иерархического отображения
+  const [categoryFilterGroups, setCategoryFilterGroups] = useState<FilterGroup[]>([]);
+  
+  // Новый фильтр по продуктам
+  const [productFilterGroup, setProductFilterGroup] = useState<FilterGroup | null>(null);
   
   // Выбранные фильтры
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-  const [selectedMemories, setSelectedMemories] = useState<string[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   
-  // Состояние развернутости фильтров
-  const [expandedFilters, setExpandedFilters] = useState({
-    'price': true,
-    'color': true,
-    'memory': true,
-    'size': true
-  });
+  // НОВОЕ: Подготовка иерархии категорий для фильтрации
+  useEffect(() => {
+    if (allCategories.length === 0) return;
+    
+    console.log("Подготовка иерархии категорий для фильтрации");
+    
+    // Шаг 1: Организуем категории по уровням иерархии
+    const rootCategories = allCategories.filter(cat => !cat.parent_category_id);
+    
+    // Получаем подсчет продуктов для каждой категории
+    const categoryCounts: Record<string, number> = {};
+    
+    products.forEach(product => {
+      if (!product.categories) return;
+      
+      product.categories.forEach(cat => {
+        categoryCounts[cat.id] = (categoryCounts[cat.id] || 0) + 1;
+      });
+    });
+    
+    // Шаг 2: Создаем группы фильтров для категорий
+    const categoryGroups: FilterGroup[] = [];
+    
+    // Добавляем корневые категории как основные группы
+    rootCategories.forEach((rootCat, index) => {
+      // Создаем группу для корневой категории, если она не является текущей
+      if (rootCat.id !== category.id) {
+        categoryGroups.push({
+          id: `category_${rootCat.id}`,
+          name: rootCat.name,
+          options: [{
+            value: rootCat.id,
+            label: rootCat.name,
+            count: categoryCounts[rootCat.id] || 0
+          }],
+          expanded: true,
+          isCategory: true,
+          order: index
+        });
+      }
+      
+      // Находим все подкатегории этой корневой категории
+      const childCategories = allCategories.filter(cat => cat.parent_category_id === rootCat.id);
+      
+      if (childCategories.length > 0) {
+        // Создаем отдельную группу для подкатегорий
+        categoryGroups.push({
+          id: `subcategories_${rootCat.id}`,
+          name: `Модель ${rootCat.name}:`,
+          options: childCategories.map(child => ({
+            value: child.id,
+            label: child.name,
+            count: categoryCounts[child.id] || 0
+          })),
+          expanded: true,
+          isCategory: true,
+          parentId: rootCat.id,
+          order: index + 100 // Чтобы подкатегории отображались после соответствующих родительских
+        });
+      }
+    });
+    
+    // Сортируем группы по порядку
+    categoryGroups.sort((a, b) => (a.order || 0) - (b.order || 0));
+    
+    // Отфильтровываем пустые группы подкатегорий
+    const filteredGroups = categoryGroups.filter(group => 
+      group.options.length > 0 && group.options.some(opt => opt.count > 0)
+    );
+    
+    console.log(`Создано ${filteredGroups.length} групп категорий для фильтрации`);
+    setCategoryFilterGroups(filteredGroups);
+    
+    // Инициализируем выбранные фильтры для категорий
+    const initialCategoryFilters: Record<string, string[]> = {};
+    filteredGroups.forEach(group => {
+      initialCategoryFilters[group.id] = [];
+    });
+    setSelectedFilters(prev => ({...prev, ...initialCategoryFilters}));
+    
+  }, [allCategories, products, category.id]);
   
   // Первоначальная инициализация данных
   useEffect(() => {
     if (products.length > 0) {
       console.log("Инициализация с", products.length, "товарами");
+      
       // Собираем все варианты всех продуктов
-      const allVariants = products.flatMap(product => 
+      const variants = products.flatMap(product => 
         (product.variants || []).map(variant => ({ product, variant }))
       );
       
-      // Устанавливаем варианты
-      setFilteredVariants(allVariants);
+      // Выводим структуру первого варианта для отладки
+      if (variants.length > 0) {
+        console.log("Структура первого варианта:", variants[0].variant);
+      }
+      
+      // Сохраняем все варианты для дальнейшего использования
+      setAllVariants(variants);
+      
+      // Изначально показываем все варианты
+      setFilteredVariants(variants);
       
       // Извлекаем цены
-      extractPriceRange(allVariants);
+      extractPriceRange(variants);
       
-      // Извлекаем опции
-      extractFilterOptions(allVariants);
+      // ВАЖНО: Вместо extractFilterOptions и mergeFilterGroups
+      // используем нашу новую функцию createUniqueFilterGroups
+      const uniqueFilterGroups = createUniqueFilterGroups(variants);
+      
+      // НОВОЕ: Создаем фильтр по продуктам
+      const productFilter: FilterGroup = {
+        id: 'products',
+        name: 'Товары',
+        options: products.map(product => ({
+          value: product.id,
+          label: product.title,
+          count: product.variants.length
+        })),
+        expanded: true,
+        isProduct: true
+      };
+      
+      setProductFilterGroup(productFilter);
+      
+      // ОТЛАДКА: Анализ созданных групп фильтров 
+      console.log("\n===== ИТОГОВЫЕ ГРУППЫ ФИЛЬТРОВ =====");
+      uniqueFilterGroups.forEach(group => {
+        console.log(`Фильтр: id="${group.id}", name="${group.name}", опций=${group.options.length}`);
+        console.log(`  Значения: ${group.options.map(o => `"${o.label}" (${o.count})`).join(', ')}`);
+      });
+      
+      // Устанавливаем группы фильтров атрибутов
+      setAttributeFilterGroups(uniqueFilterGroups);
+      
+      // Инициализируем выбранные фильтры атрибутов и продуктов
+      const initialFilters: Record<string, string[]> = {};
+      uniqueFilterGroups.forEach(group => {
+        initialFilters[group.id] = [];
+      });
+      initialFilters['products'] = []; // Добавляем инициализацию для фильтра по продуктам
+      
+      setSelectedFilters(prev => ({...prev, ...initialFilters}));
       
       setLoading(false);
     }
@@ -1132,184 +584,230 @@ export default function CatalogPage({ category, products = [], breadcrumbs = [] 
     }
   };
   
-  // Извлечение опций для фильтров
-  const extractFilterOptions = (variants: {product: Product, variant: ProductVariant}[]) => {
-    try {
-      // Множества для хранения уникальных значений
-      const colors = new Set<string>();
-      const memories = new Set<string>();
-      const sizes = new Set<string>();
+  // Обработчик изменения чекбокса фильтра
+  const handleFilterChange = (groupId: string, value: string) => {
+    console.log(`Изменение фильтра: ${groupId} = ${value}`);
+    
+    setSelectedFilters(prev => {
+      const groupValues = [...(prev[groupId] || [])];
       
-      // Проверяем каждый вариант
-      variants.forEach(({ variant }) => {
-        if (!variant.title) return;
-        
-        const title = variant.title.toLowerCase();
-        
-        // Ищем цвета
-        const colorKeywords = [
-          'black', 'white', 'red', 'blue', 'green', 'yellow', 'purple', 
-          'pink', 'gold', 'silver', 'graphite', 'gray', 'space gray', 
-          'midnight', 'starlight', 'product red'
-        ];
-        
-        for (const color of colorKeywords) {
-          if (title.includes(color)) {
-            colors.add(color.charAt(0).toUpperCase() + color.slice(1)); // Capitalize
-            break;
-          }
-        }
-        
-        // Ищем объем памяти
-        const memoryMatch = title.match(/(\d+)(gb|tb)/i);
-        if (memoryMatch && memoryMatch[1] && memoryMatch[2]) {
-          memories.add(`${memoryMatch[1]}${memoryMatch[2].toUpperCase()}`);
-        }
-        
-        // Ищем размеры
-        const sizeMatch = title.match(/\b(size|размер)?\s*(\d+|xs|s|m|l|xl|xxl|xxxl)\b/i);
-        if (sizeMatch && sizeMatch[2]) {
-          sizes.add(sizeMatch[2].toUpperCase());
-        }
-      });
-      
-      // Устанавливаем опции фильтров
-      setColorOptions(Array.from(colors).sort());
-      setMemoryOptions(Array.from(memories).sort());
-      setSizeOptions(Array.from(sizes).sort());
-      
-      console.log("Извлечены опции фильтров:", {
-        colors: Array.from(colors),
-        memories: Array.from(memories),
-        sizes: Array.from(sizes)
-      });
-    } catch (error) {
-      console.error("Ошибка при извлечении опций фильтров:", error);
-    }
+      if (groupValues.includes(value)) {
+        // Удаляем значение, если оно уже выбрано
+        console.log(`Удаляем значение "${value}" из группы "${groupId}"`);
+        return {
+          ...prev,
+          [groupId]: groupValues.filter(v => v !== value)
+        };
+      } else {
+        // Добавляем новое значение
+        console.log(`Добавляем значение "${value}" в группу "${groupId}"`);
+        return {
+          ...prev,
+          [groupId]: [...groupValues, value]
+        };
+      }
+    });
   };
   
-  // Применение фильтров
+  // Применение фильтров при изменении выбранных фильтров или ценового диапазона
   useEffect(() => {
-    if (products.length === 0) return;
+    if (allVariants.length === 0) return;
+    
+    console.log("=== ПРИМЕНЕНИЕ ФИЛЬТРОВ ===");
+    const categoryFilters = Object.entries(selectedFilters)
+      .filter(([groupId, values]) => groupId.startsWith('category_') || groupId.startsWith('subcategories_'));
+    
+    const attributeFilters = Object.entries(selectedFilters)
+      .filter(([groupId, values]) => !groupId.startsWith('category_') && !groupId.startsWith('subcategories_') && groupId !== 'price' && groupId !== 'products' && values.length > 0);
+    
+    // НОВОЕ: Получаем выбранные продукты
+    const productFilter = selectedFilters['products'] || [];
+    
+    console.log("Фильтры по категориям:", categoryFilters);
+    console.log("Фильтры по атрибутам:", attributeFilters);
+    console.log("Фильтры по продуктам:", productFilter);
+    console.log(`Ценовой диапазон: ${currentPriceRange[0]} - ${currentPriceRange[1]}`);
     
     setLoading(true);
     
     try {
-      // Собираем все варианты всех продуктов
-      let filteredItems = products.flatMap(product => 
-        (product.variants || []).map(variant => ({ product, variant }))
-      );
+      // ЭТАП 1: Начинаем с полного набора вариантов
+      console.log(`Шаг 1: Начинаем с ${allVariants.length} вариантов`);
+      let filtered = [...allVariants];
       
-      // Фильтр по цене
-      filteredItems = filteredItems.filter(({ variant }) => {
-        if (!variant.prices || variant.prices.length === 0) return true;
+      // ЭТАП 2: Фильтр по цене
+      console.log("Шаг 2: Применяем фильтр по цене");
+      const beforePriceFilter = filtered.length;
+      
+      filtered = filtered.filter(({ variant }) => {
+        if (!variant.prices || variant.prices.length === 0) {
+          return true; // Если нет цен, пропускаем этот фильтр
+        }
         
-        return variant.prices.some(price => {
+        // Проверяем, попадает ли хотя бы одна из цен в диапазон
+        const inRange = variant.prices.some(price => {
           if (!price || typeof price.amount !== 'number') return true;
           
           const priceValue = price.amount / 100;
           return priceValue >= currentPriceRange[0] && priceValue <= currentPriceRange[1];
         });
+        
+        return inRange;
       });
       
-      // Фильтр по цвету
-      if (selectedColors.length > 0) {
-        filteredItems = filteredItems.filter(({ variant }) => {
-          if (!variant.title) return false;
+      console.log(`После фильтра по цене: ${filtered.length} вариантов (убрано ${beforePriceFilter - filtered.length})`);
+      
+      // ЭТАП 3: Фильтр по категориям
+      if (categoryFilters.length > 0 && categoryFilters.some(([_, values]) => values.length > 0)) {
+        console.log("Шаг 3: Применяем фильтр по категориям");
+        const beforeCategoryFilter = filtered.length;
+        
+        // Собираем все выбранные ID категорий из разных групп
+        const selectedCategoryIds = categoryFilters
+          .filter(([_, values]) => values.length > 0)
+          .flatMap(([_, values]) => values);
+        
+        if (selectedCategoryIds.length > 0) {
+          filtered = filtered.filter(({ product }) => {
+            // Проверяем, есть ли у продукта категории
+            if (!product.categories || product.categories.length === 0) {
+              return false;
+            }
+            
+            // Продукт проходит фильтр, если хотя бы одна из его категорий выбрана
+            return product.categories.some(cat => selectedCategoryIds.includes(cat.id));
+          });
           
-          const title = variant.title.toLowerCase();
-          return selectedColors.some(color => title.includes(color.toLowerCase()));
-        });
+          console.log(`После фильтра по категориям: ${filtered.length} вариантов (убрано ${beforeCategoryFilter - filtered.length})`);
+        }
       }
       
-      // Фильтр по памяти
-      if (selectedMemories.length > 0) {
-        filteredItems = filteredItems.filter(({ variant }) => {
-          if (!variant.title) return false;
-          
-          const title = variant.title.toLowerCase();
-          return selectedMemories.some(memory => title.toLowerCase().includes(memory.toLowerCase()));
-        });
-      }
-      
-      // Фильтр по размеру
-      if (selectedSizes.length > 0) {
-        filteredItems = filteredItems.filter(({ variant }) => {
-          if (!variant.title) return false;
-          
-          const title = variant.title.toLowerCase();
-          return selectedSizes.some(size => {
-            // Ищем размер как отдельное слово
-            const regex = new RegExp(`\\b${size.toLowerCase()}\\b`, 'i');
-            return regex.test(title);
+      // ЭТАП 4: Фильтр по атрибутам продукта
+      if (attributeFilters.length > 0) {
+        console.log("Шаг 4: Применяем фильтр по атрибутам продукта");
+        console.log(`Активные фильтры: ${attributeFilters.map(([id, values]) => `${id}: ${values.join(', ')}`).join('; ')}`);
+        
+        const beforeAttributesFilter = filtered.length;
+        
+        filtered = filtered.filter(({ product, variant }) => {
+          // Проверяем соответствие каждому активному фильтру
+          return attributeFilters.every(([groupId, values]) => {
+            // Находим фильтр с таким ID
+            const filterGroup = attributeFilterGroups.find(group => group.id === groupId);
+            if (!filterGroup) return true;
+            
+            // Получаем значение опции для этого варианта
+            const variantValue = getVariantOptionValue(variant, filterGroup.name);
+            
+            // Если нет выбранных значений для этой опции, пропускаем проверку
+            if (values.length === 0) return true;
+            
+            // Если у варианта нет значения опции, не соответствует
+            if (!variantValue) {
+              console.log(`Вариант ${variant.id} (товар: ${product.title}) не имеет значения для опции "${filterGroup.name}"`);
+              return false;
+            }
+            
+            // Нормализуем значение варианта для сравнения
+            const normalizedVariantValue = normalizeOptionValue(filterGroup.name, variantValue);
+            
+            // Проверяем, входит ли значение в список выбранных
+            const matches = values.some(value => {
+              const normalizedValue = normalizeOptionValue(filterGroup.name, value);
+              return normalizedVariantValue === normalizedValue;
+            });
+            
+            if (matches) {
+              console.log(`Вариант ${variant.id} (товар: ${product.title}) прошел фильтр "${filterGroup.name}": ${variantValue}`);
+            } else {
+              console.log(`Вариант ${variant.id} (товар: ${product.title}) НЕ прошел фильтр "${filterGroup.name}": ${variantValue} не входит в [${values.join(', ')}]`);
+            }
+            
+            return matches;
           });
         });
+        
+        console.log(`После фильтра по атрибутам: ${filtered.length} вариантов (убрано ${beforeAttributesFilter - filtered.length})`);
       }
       
-      console.log(`Отфильтровано ${filteredItems.length} вариантов`);
-      setFilteredVariants(filteredItems);
+      // НОВОЕ: ЭТАП 5: Фильтр по конкретным продуктам
+      if (productFilter.length > 0) {
+        console.log("Шаг 5: Применяем фильтр по продуктам");
+        const beforeProductFilter = filtered.length;
+        
+        filtered = filtered.filter(({ product }) => {
+          const matches = productFilter.includes(product.id);
+          if (matches) {
+            console.log(`Товар "${product.title}" (id: ${product.id}) прошел фильтр по продуктам`);
+          } else {
+            console.log(`Товар "${product.title}" (id: ${product.id}) НЕ прошел фильтр по продуктам`);
+          }
+          return matches;
+        });
+        
+        console.log(`После фильтра по продуктам: ${filtered.length} вариантов (убрано ${beforeProductFilter - filtered.length})`);
+      }
+      
+      console.log(`ИТОГ: Отфильтровано ${filtered.length} из ${allVariants.length} вариантов`);
+      setFilteredVariants(filtered);
     } catch (error) {
       console.error("Ошибка при применении фильтров:", error);
       // В случае ошибки показываем все варианты
-      const allVariants = products.flatMap(product => 
-        (product.variants || []).map(variant => ({ product, variant }))
-      );
       setFilteredVariants(allVariants);
     } finally {
       setLoading(false);
     }
-  }, [products, currentPriceRange, selectedColors, selectedMemories, selectedSizes]);
-  
-  // Обработчики изменения чекбоксов
-  const handleColorChange = (color: string) => {
-    setSelectedColors(prev => {
-      if (prev.includes(color)) {
-        return prev.filter(c => c !== color);
-      } else {
-        return [...prev, color];
-      }
-    });
-  };
-  
-  const handleMemoryChange = (memory: string) => {
-    setSelectedMemories(prev => {
-      if (prev.includes(memory)) {
-        return prev.filter(m => m !== memory);
-      } else {
-        return [...prev, memory];
-      }
-    });
-  };
-  
-  const handleSizeChange = (size: string) => {
-    setSelectedSizes(prev => {
-      if (prev.includes(size)) {
-        return prev.filter(s => s !== size);
-      } else {
-        return [...prev, size];
-      }
-    });
-  };
-  
-  // Сброс фильтров
-  const resetFilters = () => {
-    setSelectedColors([]);
-    setSelectedMemories([]);
-    setSelectedSizes([]);
-    setCurrentPriceRange(priceRange);
-  };
+  }, [allVariants, currentPriceRange, selectedFilters, attributeFilterGroups]);
   
   // Переключение развернутости фильтра
-  const toggleFilterGroup = (filterName: string) => {
-    setExpandedFilters(prev => ({
-      ...prev,
-      [filterName]: !prev[filterName]
-    }));
+  const toggleFilterGroup = (groupId: string) => {
+    // Проверяем, к какому типу фильтров относится группа
+    if (groupId === 'price' || attributeFilterGroups.some(g => g.id === groupId)) {
+      setAttributeFilterGroups(prevGroups => 
+        prevGroups.map(group => 
+          group.id === groupId ? { ...group, expanded: !group.expanded } : group
+        )
+      );
+    } else if (groupId === 'products' && productFilterGroup) {
+      setProductFilterGroup(prev => prev ? { ...prev, expanded: !prev.expanded } : null);
+    } else {
+      setCategoryFilterGroups(prevGroups => 
+        prevGroups.map(group => 
+          group.id === groupId ? { ...group, expanded: !group.expanded } : group
+        )
+      );
+    }
   };
   
   // Обработчик изменения ценового диапазона
   const handlePriceRangeChange = (min: number, max: number) => {
     setCurrentPriceRange([min, max]);
+  };
+  
+  // Сброс фильтров
+  const resetFilters = () => {
+    console.log("=== СБРОС ВСЕХ ФИЛЬТРОВ ===");
+    
+    // Сбрасываем все выбранные фильтры
+    const resetSelections: Record<string, string[]> = {};
+    
+    // Сбрасываем фильтры атрибутов
+    attributeFilterGroups.forEach(group => {
+      resetSelections[group.id] = [];
+    });
+    
+    // Сбрасываем фильтры категорий
+    categoryFilterGroups.forEach(group => {
+      resetSelections[group.id] = [];
+    });
+    
+    // Сбрасываем фильтр по продуктам
+    resetSelections['products'] = [];
+    
+    setSelectedFilters(resetSelections);
+    
+    // Сбрасываем ценовой диапазон
+    setCurrentPriceRange(priceRange);
   };
   
   // Функция для определения цвета по названию
@@ -1375,11 +873,11 @@ export default function CatalogPage({ category, products = [], breadcrumbs = [] 
             >
               <h3>Цена</h3>
               <span className={styles.collapseIcon}>
-                {expandedFilters['price'] ? '▲' : '▼'}
+                {attributeFilterGroups[0]?.expanded ? '▲' : '▼'}
               </span>
             </div>
             
-            {expandedFilters['price'] && (
+            {attributeFilterGroups[0]?.expanded && (
               <div className={styles.priceRange}>
                 <div className={styles.rangeValues}>
                   <span>{currentPriceRange[0]} ₴</span>
@@ -1406,102 +904,37 @@ export default function CatalogPage({ category, products = [], breadcrumbs = [] 
               </div>
             )}
           </div>
-          
-          {/* Фильтр по цвету */}
-          {colorOptions.length > 0 && (
+
+          {/* НОВОЕ: Фильтр по продуктам */}
+          {productFilterGroup && (
             <div className={styles.filterGroup}>
               <div 
                 className={styles.filterHeader} 
-                onClick={() => toggleFilterGroup('color')}
+                onClick={() => toggleFilterGroup('products')}
               >
-                <h3>Цвет</h3>
+                <h3>{productFilterGroup.name}</h3>
                 <span className={styles.collapseIcon}>
-                  {expandedFilters['color'] ? '▲' : '▼'}
+                  {productFilterGroup.expanded ? '▲' : '▼'}
                 </span>
               </div>
               
-              {expandedFilters['color'] && (
+              {productFilterGroup.expanded && (
                 <div className={styles.filterContent}>
                   <div className={styles.filterOptions}>
-                    {colorOptions.map((color, index) => (
-                      <div key={`color-${index}`} className={styles.filterOption}>
+                    {productFilterGroup.options.map((option) => (
+                      <div key={`products-${option.value}`} className={styles.filterOption}>
                         <input
                           type="checkbox"
-                          id={`color-${index}`}
-                          checked={selectedColors.includes(color)}
-                          onChange={() => handleColorChange(color)}
+                          id={`products-${option.value}`}
+                          checked={selectedFilters['products']?.includes(option.value) || false}
+                          onChange={() => handleFilterChange('products', option.value)}
                         />
-                        <span 
-                          className={styles.colorSquare}
-                          style={{ backgroundColor: getColorCode(color) }}
-                        />
-                        <label htmlFor={`color-${index}`}>{color}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Фильтр по памяти */}
-          {memoryOptions.length > 0 && (
-            <div className={styles.filterGroup}>
-              <div 
-                className={styles.filterHeader} 
-                onClick={() => toggleFilterGroup('memory')}
-              >
-                <h3>Память</h3>
-                <span className={styles.collapseIcon}>
-                  {expandedFilters['memory'] ? '▲' : '▼'}
-                </span>
-              </div>
-              
-              {expandedFilters['memory'] && (
-                <div className={styles.filterContent}>
-                  <div className={styles.filterOptions}>
-                    {memoryOptions.map((memory, index) => (
-                      <div key={`memory-${index}`} className={styles.filterOption}>
-                        <input
-                          type="checkbox"
-                          id={`memory-${index}`}
-                          checked={selectedMemories.includes(memory)}
-                          onChange={() => handleMemoryChange(memory)}
-                        />
-                        <label htmlFor={`memory-${index}`}>{memory}</label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {/* Фильтр по размеру */}
-          {sizeOptions.length > 0 && (
-            <div className={styles.filterGroup}>
-              <div 
-                className={styles.filterHeader} 
-                onClick={() => toggleFilterGroup('size')}
-              >
-                <h3>Размер</h3>
-                <span className={styles.collapseIcon}>
-                  {expandedFilters['size'] ? '▲' : '▼'}
-                </span>
-              </div>
-              
-              {expandedFilters['size'] && (
-                <div className={styles.filterContent}>
-                  <div className={styles.filterOptions}>
-                    {sizeOptions.map((size, index) => (
-                      <div key={`size-${index}`} className={styles.filterOption}>
-                        <input
-                          type="checkbox"
-                          id={`size-${index}`}
-                          checked={selectedSizes.includes(size)}
-                          onChange={() => handleSizeChange(size)}
-                        />
-                        <label htmlFor={`size-${index}`}>{size}</label>
+                        <label htmlFor={`products-${option.value}`}>
+                          {option.label}
+                          {option.count > 0 && (
+                            <span style={{ color: '#999', marginLeft: '5px' }}>({option.count})</span>
+                          )}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -1510,17 +943,100 @@ export default function CatalogPage({ category, products = [], breadcrumbs = [] 
             </div>
           )}
 
+          {/* Фильтры по категориям */}
+          {categoryFilterGroups.map((group) => (
+            <div key={group.id} className={styles.filterGroup}>
+              <div 
+                className={styles.filterHeader} 
+                onClick={() => toggleFilterGroup(group.id)}
+              >
+                <h3>{group.name}</h3>
+                <span className={styles.collapseIcon}>
+                  {group.expanded ? '▲' : '▼'}
+                </span>
+              </div>
+              
+              {group.expanded && (
+                <div className={styles.filterContent}>
+                  <div className={styles.filterOptions}>
+                    {group.options.map((option) => (
+                      <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
+                        <input
+                          type="checkbox"
+                          id={`${group.id}-${option.value}`}
+                          checked={selectedFilters[group.id]?.includes(option.value) || false}
+                          onChange={() => handleFilterChange(group.id, option.value)}
+                        />
+                        <label htmlFor={`${group.id}-${option.value}`}>
+                          {option.label}
+                          {option.count > 0 && (
+                            <span style={{ color: '#999', marginLeft: '5px' }}>({option.count})</span>
+                          )}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+          
+          {/* Динамические фильтры по атрибутам продуктов */}
+          {attributeFilterGroups.slice(1).map((group) => (
+            <div key={group.id} className={styles.filterGroup}>
+              <div 
+                className={styles.filterHeader} 
+                onClick={() => toggleFilterGroup(group.id)}
+              >
+                <h3>{group.name}</h3>
+                <span className={styles.collapseIcon}>
+                  {group.expanded ? '▲' : '▼'}
+                </span>
+              </div>
+              
+              {group.expanded && (
+                <div className={styles.filterContent}>
+                  <div className={styles.filterOptions}>
+                    {group.options.map((option) => (
+                      <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
+                        <input
+                          type="checkbox"
+                          id={`${group.id}-${option.value}`}
+                          checked={selectedFilters[group.id]?.includes(option.value) || false}
+                          onChange={() => handleFilterChange(group.id, option.value)}
+                        />
+                        {(group.name.toLowerCase().includes('цвет') || group.name.toLowerCase().includes('color')) && (
+                          <span 
+                            className={styles.colorSquare}
+                            style={{ backgroundColor: getColorCode(option.value) }}
+                          />
+                        )}
+                        <label htmlFor={`${group.id}-${option.value}`}>
+                          {option.label}
+                          {option.count > 0 && (
+                            <span style={{ color: '#999', marginLeft: '5px' }}>({option.count})</span>
+                          )}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
           {/* Кнопка сброса фильтров */}
           <button className={styles.resetButton} onClick={resetFilters}>
             Сбросить фильтр
           </button>
-          
+
           {/* Отладочная информация */}
           <div style={{ padding: '10px', fontSize: '12px', color: '#999', marginTop: '10px' }}>
-            <p>Всего вариантов: {filteredVariants.length}</p>
-            <p>Выбрано цветов: {selectedColors.length}</p>
-            <p>Выбрано объемов памяти: {selectedMemories.length}</p>
-            <p>Выбрано размеров: {selectedSizes.length}</p>
+            <p>Всего вариантов: {filteredVariants.length} из {allVariants.length}</p>
+            <p>Активные фильтры: {Object.entries(selectedFilters)
+              .filter(([_, values]) => values.length > 0)
+              .map(([id, values]) => `${id} (${values.join(', ')})`)
+              .join('; ') || 'нет'}</p>
           </div>
         </div>
 
@@ -1536,7 +1052,7 @@ export default function CatalogPage({ category, products = [], breadcrumbs = [] 
                 <ProductCard 
                   product={{
                     ...product,
-                    variants: [variant]
+                    variants: [variant] // Передаем только один отфильтрованный вариант
                   }} 
                 />
               </div>

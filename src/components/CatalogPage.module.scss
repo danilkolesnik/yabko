@@ -1,9 +1,12 @@
-// src/components/CatalogPage.module.scss
+/* Fixed CatalogPage.module.scss with grid height issues resolved */
+
 .catalogContainer {
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 15px;
+  background-color: #000;
+  color: #fff;
 }
 
 .breadcrumbs {
@@ -37,22 +40,25 @@
 
 .catalogContent {
   display: flex;
-  gap: 20px;
+  gap: 16px;
 }
 
 .filterSidebar {
   width: 260px;
   flex-shrink: 0;
-  background-color: #0f0f0f;
-  border-radius: 3px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Add gap between filter groups */
+  background-color: transparent; /* Make background transparent */
 }
 
 .filterGroup {
-  border-bottom: 1px solid #333;
-  
-  &:last-child {
-    border-bottom: none;
-  }
+  background-color: #1a1a1a; /* Match card background color */
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .filterHeader {
@@ -60,157 +66,184 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  padding: 12px 15px;
+  padding: 5px 16px 2px;
+  background-color: #1a1a1a; /* Match card background color */
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #222;
+  }
   
   h3 {
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 16px;
+    text-transform: capitalize;
+    font-weight: 600;
     margin: 0;
-    color: #fff;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   
   .collapseIcon {
-    font-size: 10px;
-    color: #999;
+    font-size: 16px;
+    color: #ffffff;
   }
 }
 
 .filterContent {
-  padding: 0 15px 15px;
+  padding: 0px 16px 6px;
 }
 
 .priceRange {
-  padding: 0 15px 15px;
+  padding: 16px 16px 22px;
   
   .rangeValues {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin: 10px 0 16px;
     
     span {
-      font-size: 13px;
-      color: #999;
+      font-size: 16px;
+      color: #fff;
+      font-weight: 600;
+      background-color: #000;
+      padding: 10px 15px;
+      // border-radius: 2px;
+      min-width: 80px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
   }
   
   .rangeSliders {
     position: relative;
     height: 30px;
+    margin-top: 5px;
     
     .rangeSlider {
       position: absolute;
       width: 100%;
-      height: 3px;
-      background: #333;
+      height: 2px;
+      background: #444;
       outline: none;
       -webkit-appearance: none;
       pointer-events: auto;
       
       &::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 15px;
-        height: 15px;
+        width: 18px;
+        height: 18px;
         border-radius: 50%;
-        background: #d92d2d;
+        background: #fff;
         cursor: pointer;
         pointer-events: auto;
-      }
-      
-      &:first-child {
-        top: 0;
-      }
-      
-      &:last-child {
-        top: 15px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
       }
     }
   }
 }
 
 .filterOptions {
-  max-height: 200px;
+  max-height: 250px;
   overflow-y: auto;
+  padding-top: 10px;
+  padding-bottom: 5px;
   
   &::-webkit-scrollbar {
     width: 4px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background-color: #333;
-    border-radius: 2px;
+    background-color: #444;
+    
   }
 }
 
 .filterOption {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-left: 2px;
   
   input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
-    background-color: #1a1a1a;
+    background-color: transparent;
     border: 1px solid #444;
-    border-radius: 2px;
     cursor: pointer;
     position: relative;
     
     &:checked {
-      background-color: #d92d2d;
-      border-color: #d92d2d;
+      background-color: transparent;
+      border-color: #fff;
       
       &::after {
         content: "✓";
-        font-size: 11px;
-        color: white;
+        font-size: 12px;
+        color: #fff;
         position: absolute;
-        top: 1px;
-        left: 3px;
+        top: -1px;
+        left: 2px;
+        font-weight: bold;
       }
     }
   }
   
   .colorSquare {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     border-radius: 3px;
     border: 1px solid #444;
   }
   
   label {
-    font-size: 13px;
-    color: #ccc;
+    font-size: 18px;
+    color: #fff;
     cursor: pointer;
+    font-weight: 500;
+    
+    span {
+      opacity: 0.7;
+      color: #aaa;
+    }
   }
 }
 
 .resetButton {
-  width: calc(100% - 30px);
-  margin: 15px;
-  padding: 10px;
-  background-color: #252525;
-  color: #ccc;
-  border: 1px solid #444;
+  width: calc(100% - 32px);
+  margin: 20px 16px;
+  padding: 12px;
+  background-color: #1a1a1a; /* Match card background */
+  color: #fff;
+  border: 1px solid #333;
   border-radius: 3px;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: center; /* Center in the flex container */
   
   &:hover {
-    background-color: #303030;
+    background-color: #222;
+    border-color: #444;
   }
 }
 
-.productGrid {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-}
+/* FIXED PRODUCT GRID - key changes here */
+// .productGrid {
+//   flex: 1;
+//   display: grid;
+//   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+//   gap: 4px;
+//   grid-auto-rows: 320px; /* Set fixed height for grid rows */
+//   grid-auto-flow: row dense; /* Improve grid item placement */
+// }
+
+
 
 .loading, .noResults {
   grid-column: 1 / -1;
@@ -223,30 +256,58 @@
   text-align: center;
 }
 
-// Адаптивная верстка
-@media (max-width: 1024px) {
-  .catalogContent {
-    flex-direction: column;
+
+.productCardWrapper {
+  background-color: #1a1a1a;
+  overflow: hidden;
+  transition: transform 0.2s;
+  height: 100%;
+  width: 100%; /* Make the card take up much less width in its cell */
+  max-width: 200px; /* Set a strict maximum width */
+  margin: 0 auto; /* Center the card in its cell */
+  box-sizing: border-box;
+  display: flex;
+  
+  &:hover {
+    transform: translateY(-3px);
   }
   
-  .filterSidebar {
+  & > * {
+    height: 100%;
     width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  .productGrid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 }
 
-@media (max-width: 768px) {
+/* Maintain 5 column grid but add more space between cards */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px; /* Increased gap for more spacing */
+  column-gap: 10px;
+  grid-auto-rows: 320px;
+  justify-items: center; /* Center items in their cells */
+}
+/* Responsive adjustments */
+@media (max-width: 1400px) {
   .productGrid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 1200px) {
   .productGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+  }
+}
+
+@media (max-width: 900px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+  }
+}
+
+@media (max-width: 500px) {
+  .productGrid {
+    grid-template-columns: 1fr; /* 1 column on mobile */
   }
 }
