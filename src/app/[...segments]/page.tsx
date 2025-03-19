@@ -126,12 +126,11 @@ async function getCategoryByPath(path: string[]) {
   }
 }
 
-// Функция для получения продуктов по категории
 async function getProductsByCategory(categoryId: string) {
   try {
     const { products } = await medusa.products.list({
       category_id: [categoryId],
-      limit: 100, // Увеличиваем лимит для получения большего количества продуктов
+      limit: 100,
     });
     
     return products;

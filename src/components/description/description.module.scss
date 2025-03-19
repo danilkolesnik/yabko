@@ -22,11 +22,13 @@
     text-align: center;
 }
 
+
 .descriptionParagraph {
     margin: 23px 0px 0px;
     line-height: 23px !important;
     font-size: 1rem;
     font-weight: bold;
+    font-size: 1.5;
 }
 
 .amore {
@@ -46,4 +48,8 @@
     -webkit-transition: all .5s ease;
     transition: all .5s ease;
     pointer-events: none;
+
+    @media (max-width: 800px) {
+        height: 150%;
+    }
 }

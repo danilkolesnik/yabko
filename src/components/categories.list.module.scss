@@ -8,6 +8,10 @@
   margin: 0;
   position: relative;
   z-index: 990;
+
+  @media (max-width: 1100px) {
+    display: none;
+  }
 }
 
 .categoryItem {

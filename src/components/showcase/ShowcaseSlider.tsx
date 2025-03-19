@@ -1,6 +1,7 @@
-"use client"
-import { useState, useEffect } from "react"
-import styles from "./showcase.slider.module.scss"
+"use client";
+import { useState, useEffect } from "react";
+import styles from "./showcase.slider.module.scss";
+import { showcaseSlidesDesktop, showcaseSlidesTablet } from "@/utils/mockup";
 
 const ChevronLeftIcon = () => (
   <svg
@@ -34,53 +35,38 @@ const ChevronRightIcon = () => (
   </svg>
 )
 
-const slides = [
-  {
-    id: 1,
-    images: [
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/061655/88-desc-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071216/watch-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/130959/Kitchen-Aid-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/beauty-desktop-max-1700.png.webp',
-    ]
-  },
-  {
-    id: 2,
-    images: [
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/airpods-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071216/iphone-16-desktop-(1)-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/game-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/smart-desktop-max-1700.png.webp',
-    ]
-  },
-  {
-    id: 3,
-    images: [
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/home-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/beauty-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/071217/game-desktop-max-1700.png.webp',
-      'https://img.jabko.ua/image/cache/catalog/products/2025/03/130959/Kitchen-Aid-desktop-max-1700.png.webp',
-    ]
-  },
-]
-
 export default function ShowcaseSlider() {
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
+  const [adaptedSlides, setAdaptedSlides] = useState(showcaseSlidesDesktop);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  useEffect(() => {
+    const updateSlides = () => {
+      if (window.innerWidth < 1400) {
+        setAdaptedSlides(showcaseSlidesTablet);
+      } else {
+        setAdaptedSlides(showcaseSlidesDesktop);
+      }
+    };
+
+    updateSlides();
+    window.addEventListener("resize", updateSlides);
+    return () => window.removeEventListener("resize", updateSlides);
+  }, []);
 
   const nextSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+    setCurrentSlide((prev) => (prev === adaptedSlides.length - 1 ? 0 : prev + 1))
     setTimeout(() => setIsAnimating(false), 500)
   }
 
   const prevSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+    setCurrentSlide((prev) => (prev === 0 ? adaptedSlides.length - 1 : prev - 1))
     setTimeout(() => setIsAnimating(false), 500)
   }
 
@@ -124,13 +110,13 @@ export default function ShowcaseSlider() {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {slides.map((slide, index) => (
+        {adaptedSlides.map((slide, index) => (
           <div
             key={slide.id}
             className={`${styles.slide} ${
               index === currentSlide
                 ? styles.active
-                : index > currentSlide || (currentSlide === slides.length - 1 && index === 0)
+                : index > currentSlide || (currentSlide === adaptedSlides.length - 1 && index === 0)
                   ? styles.next
                   : styles.prev
             }`}
@@ -163,7 +149,7 @@ export default function ShowcaseSlider() {
 
       {/* Pagination Dots */}
       <div className={styles.pagination}>
-        {slides.map((_, index) => (
+        {adaptedSlides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}

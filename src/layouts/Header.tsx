@@ -26,9 +26,9 @@ export default function Header() {
         </a>
       </div>
       <div className={styles.mainHeader}>
-        <span className={styles.logo}>
+        <a href='/' className={styles.logo}>
           <Logo />
-        </span>
+        </a>
         <CatalogButton />
         <div className={styles.searchWrapper}>
           <Search />

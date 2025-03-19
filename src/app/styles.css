@@ -169,6 +169,10 @@ svg {
   gap: 10px;
   margin-top: 10px;
   flex-direction: column;
+
+  @media screen and (max-width: 700px) {
+    padding: 5px;
+  }
 }
 
 .hero-wrapper {

@@ -8,30 +8,41 @@ import { CategoryProducts } from "@/types/product";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/assets/icons/icons";
 
 export default function ShowcaseSlider({ category, categoryProducts }: { category: Category, categoryProducts: CategoryProducts }) {
+  console.log(category)
 
-  function groupProducts(products, groupSize = 6, totalSlides = 3) {
+  function groupProducts(products: any, groupSize = 6, totalSlides = 3) {
+    
+    if (window.innerWidth < 700) {
+        groupSize = 2;
+        totalSlides = 9;
+    } else if (window.innerWidth >= 700 && window.innerWidth < 1000) {
+        groupSize = 4;
+        totalSlides = 4;
+    }
+
     let slides = [];
   
     if (products.length < 18) {
-      while (slides.length < totalSlides) {
-        const slide = [];
-        let productIndex = 0;
+        while (slides.length < totalSlides) {
+            const slide = [];
+            let productIndex = 0;
   
-        while (slide.length < groupSize) {
-          slide.push(products[productIndex]);
-          productIndex = (productIndex + 1) % products.length;
+            while (slide.length < groupSize) {
+                slide.push(products[productIndex]);
+                productIndex = (productIndex + 1) % products.length;
+            }
+            slides.push(slide);
         }
-        slides.push(slide);
-      }
     } else {
-      const first18Products = products.slice(0, 18);
-      for (let i = 0; i < totalSlides; i++) {
-        slides.push(first18Products.slice(i * groupSize, (i + 1) * groupSize));
-      }
+        const first18Products = products.slice(0, 18);
+        for (let i = 0; i < totalSlides; i++) {
+            slides.push(first18Products.slice(i * groupSize, (i + 1) * groupSize));
+        }
     }
   
     return slides;
   }
+
   
   const [groupedProducts, setGroupedProducts] = useState<any>([]);
 
@@ -93,13 +104,14 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
     setCurrentSlide(index)
     setTimeout(() => setIsAnimating(false), 500)
   }
+
   return (
     <div className={styles.sliderBlock}>
       <div className={styles.productSliderContainer}>
           <header className={styles.productSliderHeader}>
             <span className={styles.headerCaptionWrapper}>
-              <h3 className={styles.categoryName}>{category.name}</h3>
-              <a className={styles.categoryLink} href="#">В категорiю <CategoryArrow /></a>
+              <h3 className={styles.categoryName}>{category?.name}</h3>
+              <a className={styles.categoryLink} href={`/${category?.handle}`}>В категорiю <CategoryArrow /></a>
             </span>
             <div className={styles.customButtonsWrapper}>
               <button onClick={prevSlide} className={`${styles.navButton} ${styles.prevButton}`} aria-label="Previous slide">
@@ -120,7 +132,7 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {(groupedProducts || []).map((group, index) => (
+              {(groupedProducts || []).map((group: any, index: number) => (
                 <div
                   key={index}
                   className={`${styles.slide} ${
@@ -132,7 +144,7 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
                   }`}
                 >
                   <div className={styles.slideContent}>
-                    {(group || []).map((product, index) => (
+                    {(group || []).map((product: any, index: number) => (
                       <div key={index} className={styles.productWrapper}>
                         <ProductCard product={product} />
                       </div>
@@ -143,7 +155,7 @@ export default function ShowcaseSlider({ category, categoryProducts }: { categor
             </div>
             {/* Pagination Dots */}
             <div className={styles.pagination}>
-              {(groupedProducts || []).map((_, index) => (
+              {(groupedProducts || []).map((_: any, index: number) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
