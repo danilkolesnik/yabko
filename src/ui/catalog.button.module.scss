@@ -11,6 +11,9 @@
     font-family: sans;
     transition: all 0.3s ease;
     cursor: pointer;
+    @media screen and (max-width: 700px) {
+        display: none;
+    }
 }
 
 .catalogButton:hover {

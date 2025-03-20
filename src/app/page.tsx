@@ -74,16 +74,18 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="page-wrapper">
-      {<div className={`overlay ${showOverlay ? "active" : ""}`} />}
-      <div className="hero-wrapper">
-        <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
-        <ShowcaseSlider />
+    <>
+      <div className="page-wrapper">
+        {<div className={`overlay ${showOverlay ? "active" : ""}`} />}
+        <div className="hero-wrapper">
+          <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
+          <ShowcaseSlider />
+        </div>
+        {(sliderCategories || []).map((category) => (
+          <ProductSlider key={category.id} category={category} categoryProducts={categoryProducts} />
+        ))}
+        <DescriptionSection />
       </div>
-      {(sliderCategories || []).map((category) => (
-        <ProductSlider key={category.id} category={category} categoryProducts={categoryProducts} />
-      ))}
-      <DescriptionSection />
-    </div>
+    </>
   );
 }

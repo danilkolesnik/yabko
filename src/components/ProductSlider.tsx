@@ -8,8 +8,6 @@ import { CategoryProducts } from "@/types/product";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/assets/icons/icons";
 
 export default function ShowcaseSlider({ category, categoryProducts }: { category: Category, categoryProducts: CategoryProducts }) {
-  console.log(category)
-
   function groupProducts(products: any, groupSize = 6, totalSlides = 3) {
     
     if (window.innerWidth < 700) {

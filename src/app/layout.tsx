@@ -1,8 +1,8 @@
-import React from 'react'
-import './styles.css'
-import '@/styles/globals.scss'
-import Header from '@/layouts/Header'
-import Footer from '@/layouts/Footer'
+import React from 'react';
+import './styles.css';
+import '@/styles/globals.scss';
+import Footer from '@/layouts/Footer';
+import Header from '@/layouts/Header';
 
 export const metadata = {
   description: 'A blank template using Payload in a Next.js app.',
