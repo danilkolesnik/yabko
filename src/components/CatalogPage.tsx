@@ -1,86 +1,9 @@
 'use client';
-// src/components/CatalogPage.tsx
 import React, { useState, useEffect } from 'react';
 import styles from './CatalogPage.module.scss';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
-
-// Базовые интерфейсы
-interface ProductImage {
-  id?: string;
-  url: string;
-}
-
-interface ProductPrice {
-  id?: string;
-  amount: number;
-  currency_code: string;
-}
-
-interface ProductVariant {
-  id: string;
-  title?: string;
-  prices?: ProductPrice[];
-  options?: any[]; // Массив опций варианта
-  [key: string]: any;
-}
-
-interface ProductOptionValue {
-  id?: string;
-  value: string;
-}
-
-interface ProductOption {
-  id?: string;
-  title: string;
-  values: (string | ProductOptionValue)[];
-}
-
-interface Category {
-  id: string;
-  name: string;
-  handle: string;
-  parent_category_id: string | null;
-  category_children?: Category[];
-}
-
-export interface Product {
-  id: string;
-  title: string;
-  description: string;
-  handle: string;
-  images: ProductImage[];
-  variants: ProductVariant[];
-  options?: ProductOption[];
-  categories?: Category[]; // Категории продукта
-}
-
-interface CatalogPageProps {
-  category: Category; // Текущая категория
-  products: Product[]; // Продукты для отображения
-  breadcrumbs?: { name: string; path: string }[]; // Хлебные крошки
-  allCategories?: Category[]; // Все доступные категории для фильтрации
-}
-
-// Интерфейсы для динамических фильтров
-interface FilterOption {
-  value: string;  // Значение фильтра (для категорий это ID)
-  label: string;  // Отображаемое название
-  count: number;  // Количество вариантов с этим значением
-  normalized?: string; // Нормализованное значение для сопоставления (для атрибутов)
-}
-
-interface FilterGroup {
-  id: string;
-  name: string;
-  options: FilterOption[];
-  expanded: boolean;
-  // Для групп категорий:
-  isCategory?: boolean; // Является ли группа категорией
-  parentId?: string; // ID родительской категории (для подкатегорий)
-  order?: number; // Порядок отображения
-  isProduct?: boolean; // Новое свойство: является ли группа продуктами
-}
+import { CatalogPageProps, ProductVariant, FilterGroup, FilterOption, Product } from '@/types/filters';
 
 // Функция для получения значения опции из варианта
 const getVariantOptionValue = (variant: ProductVariant, optionName: string): string | undefined => {
@@ -140,63 +63,11 @@ const getVariantOptionValue = (variant: ProductVariant, optionName: string): str
 
 // Функция для нормализации значения опции
 const normalizeOptionValue = (optionName: string, value: string): string => {
-  // if (!value) return '';
-  
-  // const lowerValue = value.toLowerCase();
-  
-  // // Нормализация для storage
-  // if (optionName.toLowerCase() === 'storage') {
-  //   // Убираем пробелы и приводим к единому формату
-  //   let normalized = lowerValue.replace(/\s+/g, '');
-    
-  //   // Преобразуем все обозначения гигабайт/терабайт к единому формату
-  //   normalized = normalized
-  //     .replace(/gb/i, 'GB')
-  //     .replace(/tb/i, 'TB')
-  //     .replace(/mb/i, 'MB');
-    
-  //   return normalized;
-  // }
-  
-  // // Нормализация для размеров
-  // if (optionName.toLowerCase() === 'size') {
-  //   return value.toUpperCase();
-  // }
-  
-  // // Нормализация для цветов
-  // if (optionName.toLowerCase() === 'color') {
-  //   // Первая буква заглавная, остальные строчные
-  //   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-  // }
-  
-  // Для других опций возвращаем как есть
   return value;
 };
 
 // Функция для получения отображаемого значения опции
 const getDisplayOptionValue = (optionName: string, value: string): string => {
-  // if (!value) return '';
-  
-  // // Отображение для storage
-  // if (optionName.toLowerCase() === 'storage') {
-  //   // Проверяем наличие обозначений гигабайт/терабайт
-  //   if (value.toUpperCase().includes('GB')) {
-  //     // Форматируем, например, "256GB"
-  //     return value.toUpperCase();
-  //   }
-  //   if (value.toUpperCase().includes('TB')) {
-  //     // Форматируем, например, "1TB"
-  //     return value.toUpperCase();
-  //   }
-    
-  //   // Если нет обозначения, предполагаем гигабайты
-  //   if (/^\d+$/.test(value)) {
-  //     return `${value}GB`;
-  //   }
-    
-  //   return value;
-  // }
-  
   return value;
 };
 
