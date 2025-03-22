@@ -1,11 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useOverlay } from '@/context/OverlayContext';
+import Link from 'next/link';
 import styles from './categories.list.module.scss';
 import { medusa } from "@/lib/medusa";
 import { CategoryArrow } from '@/assets/icons/icons';
 
 export default function CategoriesList({ productCategories, setShowOverlay }: any) {
-
+  const { showOverlay, hideOverlay } = useOverlay();
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
   const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
   
@@ -56,15 +58,14 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
   const handleMouseEnter = (categoryId: string) => {
     setActiveCategoryId(categoryId);
     fetchProductsByCategory(categoryId);
-    setShowOverlay(true);
+    showOverlay();
   };
 
   const handleMouseLeave = () => {
     setActiveCategoryId(null);
-    setShowOverlay(false);
+    hideOverlay();
   };
 
-  useEffect(() => { console.log(categoryProducts)}, [categoryProducts]); 
   return (
     <>
       <ul className={styles.categoriesContainer}>
@@ -96,7 +97,11 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
                           <ul className={styles.productList}>
                             {categoryProducts[child.id].length > 0 && (
                               categoryProducts[child.id].map((product) => (
-                                <li className={styles.productListItem} key={product.id}>{product.title}</li>
+                                <li className={styles.productListItem} key={product.id}>
+                                  <Link href='/product' className={styles.productListLink}>
+                                    {product.title}
+                                  </Link>
+                                </li>
                               ))
                             )}
                           </ul>

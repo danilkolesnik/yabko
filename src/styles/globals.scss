@@ -1,29 +1,30 @@
 @font-face {
-    font-family: 'Gotham';
-    src: url('/src/assets/fonts/GothamPro-Light.woff2') format('woff2'),
-         url('/src/assets/fonts/GothamPro-Light.woff') format('woff');
-    font-weight: lighter;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: 'Gotham';
-    src: url('/src/assets/fonts/GothamPro-Medium.woff2') format('woff2'),
-         url('/src/assets/fonts/GothamPro-Medium.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-  }
+  font-family: 'Gotham';
+  src: url('/src/assets/fonts/GothamPro-Light.woff2') format('woff2'),
+       url('/src/assets/fonts/GothamPro-Light.woff') format('woff');
+  font-weight: lighter;
+  font-style: normal;
+}
 
-  @font-face {
-    font-family: 'Gotham';
-    src: url('/src/assets/fonts/GothamPro-Bold.woff2') format('woff2'),
-         url('/src/assets/fonts/GothamPro-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-  }
-  
-  body {
-    font-family: 'Gotham', sans-serif;
-    letter-spacing: .25px;
-  }
-  
+@font-face {
+  font-family: 'Gotham';
+  src: url('/src/assets/fonts/GothamPro-Medium.woff2') format('woff2'),
+       url('/src/assets/fonts/GothamPro-Medium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url('/src/assets/fonts/GothamPro-Bold.woff2') format('woff2'),
+       url('/src/assets/fonts/GothamPro-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Gotham', sans-serif;
+  letter-spacing: .25px;
+}
+html {
+  scroll-behavior: smooth;
+}

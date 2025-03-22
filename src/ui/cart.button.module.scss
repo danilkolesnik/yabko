@@ -1,3 +1,10 @@
+.cartButtonWrapper {
+    position: relative;
+}
+
+.cartButtonWrapper:hover .cartDropdown {
+    display: block;
+}
 
 .cartButton {
     height: 35px;

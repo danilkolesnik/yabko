@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@medusajs/medusa-js": "^6.1.10",
+    "framer-motion": "^12.5.0",
     "hamburger-react": "^2.5.2",
     "next": "15.2.1",
     "postcss": "^8.5.3",

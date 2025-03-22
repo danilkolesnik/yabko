@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import styles from './CatalogPage.module.scss';
-import ProductCard from '@/components/ProductCard';
+import ProductCard from '@/components/productCard/ProductCard';
 import Link from 'next/link';
 import { CatalogPageProps, ProductVariant, FilterGroup, FilterOption, Product } from '@/types/filters';
 

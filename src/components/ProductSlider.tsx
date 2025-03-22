@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import styles from "./product.slider.module.scss";
-import ProductCard from "./ProductCard";
+import ProductCard from "./productCard/ProductCard";
 import { CategoryArrow } from "@/assets/icons/icons";
 import { Category } from "@/types/category";
 import { CategoryProducts } from "@/types/product";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/assets/icons/icons";
 
-export default function ShowcaseSlider({ category, categoryProducts }: { category: Category, categoryProducts: CategoryProducts }) {
+export default function ShowcaseSlider({ category, categoryProducts, setShowOverlay }: { category: Category, categoryProducts: CategoryProducts, setShowOverlay: any }) {
   function groupProducts(products: any, groupSize = 6, totalSlides = 3) {
     
     if (window.innerWidth < 700) {

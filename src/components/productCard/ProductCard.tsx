@@ -1,8 +1,10 @@
-// src/components/ProductCard.tsx
+import { useCart } from "@/context/CartContext";
+import { useOverlay } from "@/context/OverlayContext";
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styles from "./product.card.module.scss";
 import { RatingStarIcon } from "@/assets/icons/icons";
+import { localStorageService } from "@/services/localStorage";
 
 interface ProductImage {
   id?: string;
@@ -19,8 +21,8 @@ interface ProductVariant {
   id: string;
   title?: string;
   prices?: ProductPrice[];
-  color?: string; // Add color property
-  [key: string]: any; // To accommodate any other variant properties
+  color?: string; 
+  [key: string]: any;
 }
 
 interface Product {
@@ -30,14 +32,12 @@ interface Product {
   handle: string;
   images: ProductImage[];
   variants: ProductVariant[];
-  options?: any[]; // Add options array from CatalogPage
+  options?: any[];
 }
 
-// Function to extract colors from product variants - similar to the function in CatalogPage
 const extractColors = (product: Product): string[] => {
   const colors: Set<string> = new Set();
   
-  // First try to get colors from product options
   if (product.options && Array.isArray(product.options)) {
     const colorOption = product.options.find(option => 
       option.title && option.title.toLowerCase() === 'color' || 
@@ -46,7 +46,7 @@ const extractColors = (product: Product): string[] => {
     );
     
     if (colorOption && Array.isArray(colorOption.values)) {
-      colorOption.values.forEach(value => {
+      colorOption.values.forEach((value: any) => {
         if (typeof value === 'string') {
           colors.add(value);
         } else if (value && typeof value.value === 'string') {
@@ -56,7 +56,6 @@ const extractColors = (product: Product): string[] => {
     }
   }
   
-  // If no colors found in options, try to extract from variants
   if (colors.size === 0 && product.variants && Array.isArray(product.variants)) {
     product.variants.forEach(variant => {
       // Check direct color property
@@ -64,11 +63,10 @@ const extractColors = (product: Product): string[] => {
         colors.add(variant.color);
       }
       
-      // Check title for color (common pattern is "Color / Size")
       if (variant.title) {
         const titleParts = variant.title.split(' / ');
         if (titleParts.length > 0) {
-          colors.add(titleParts[0]); // First part is often color
+          colors.add(titleParts[0]); 
         }
       }
       
@@ -151,15 +149,24 @@ const renderSingleCard = (
   setSelectedIndex: (index: number) => void,
   formatPrice: (amount: number) => string,
 ) => {
+  const router = useRouter();
+  const { openCart } = useCart();
+  const { showOverlay } = useOverlay();
+  
   const price = variant?.prices?.[0]?.amount || product.variants?.[0]?.prices?.[0]?.amount || 0;
   
   const variantTitle = variant?.title || '';
   
-  // Extract colors for this product
   const colors = extractColors(product);
   
+  const handleBuy = () => {
+    localStorageService({method: 'set', key: 'cart', value: JSON.stringify(product)});
+    showOverlay();
+    openCart();
+  };
+
   return (
-    <div key={variant?.id || product.id} className={styles.card}>
+    <div onClick={() => router.push(`/product/${product.handle}`)} key={variant?.id || product.id} className={styles.card}>
       {/* Изображение товара */}
       <div className={styles.imageContainer}>
         {product.images && product.images.length > 0 ? (
@@ -172,7 +179,6 @@ const renderSingleCard = (
           <div className={styles.noImage}>Нет фото</div>
         )}
       </div>
-
       {/* Индикаторы изображений (точки) */}
       {product.images && product.images.length > 1 && (
         <div className={styles.indicators}>
@@ -185,7 +191,6 @@ const renderSingleCard = (
           ))}
         </div>
       )}
-
       {/* Информация о товаре */}
       <div className={styles.details}>
         {/* Рейтинг */}
@@ -207,21 +212,16 @@ const renderSingleCard = (
             ))}
           </div>
         )}
-        
-        {/* Название варианта (если есть) */}
-        {variantTitle && (
-          <p className={styles.title}>{variantTitle}</p>
-        )}
+
         {/* Название товара */}
-        {!variantTitle && (
-          <h2 className={styles.title}>{product.title}</h2> 
-        )}
-        
+        <h2 className={styles.title}>{product.title} {variantTitle !== 'Default variant' && variantTitle}</h2> 
+    
         {/* Секция покупки с ценой */}
         <div className={styles.buySection}>
-          <Link href={`/product/${product.handle}`}>
-            <button className={styles.buyButton}>Купить</button>
-          </Link>
+          <button type="button" onClick={(event) => {
+            event.stopPropagation();
+            handleBuy();
+        }} className={styles.buyButton}>Купити</button>
           <span className={styles.price}>
             {price > 0 ? (formatPrice(price)) : '50 000 ₴'}
           </span>

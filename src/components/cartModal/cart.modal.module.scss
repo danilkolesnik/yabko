@@ -1,0 +1,68 @@
+
+.cartModal {
+    position: fixed;
+    width: 70%;
+    padding: 20px 45px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 996;
+}
+
+.header {
+    position: relative;
+    text-align: center;
+}
+
+.header h6 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.closeWrapper {
+    position: absolute;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    margin-top: -2px;
+}
+
+.miniCart {
+    background-color: #1d1d1d;
+    border-radius: 2px;
+}
+
+.priceSection {
+    background-color: #1d1d1d;
+    padding: 5px;
+    border-radius: 2px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.priceCaption {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.priceValue {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.actionSection {
+    background-color: #1d1d1d;
+    padding: 5px;
+    border-radius: 2px;
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

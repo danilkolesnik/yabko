@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import styles from './header.module.scss'
-import { Logo } from '@/assets/icons/icons'
+import { Logo, CartIcon } from '@/assets/icons/icons'
 import CatalogButton from '@/ui/CatalogButton';
 import Search from '@/ui/Search';
 import CartButton from '@/ui/CartButton';
@@ -11,7 +11,7 @@ import Hamburger from 'hamburger-react'
 
 export default function Header() {
 
-  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(true);
+  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(false);
   const [isTop, setIsTop] = useState(true)
   const [productCategories, setProductCategories] = useState<any[]>([]);
 
@@ -50,14 +50,16 @@ export default function Header() {
         <a href='/' className={styles.logo}>
           <Logo />
         </a>
-        <span className={styles.burgerWrapper}>
-          cart
-        </span>
-        <CatalogButton />
+        <a className={styles.catalogButtonWrapper} href="#catalog">
+          <CatalogButton />
+        </a>
         <div className={styles.searchWrapper}>
           <Search />
           <CartButton />
         </div>
+        <span onClick={() => setIsMobileCategoriesOpen(!isMobileCategoriesOpen)} className={styles.burgerWrapper}>
+          <CartIcon />
+        </span>
       </div>
     </header>
   )

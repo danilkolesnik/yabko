@@ -66,32 +66,32 @@ export interface ProductVariant {
 }
 
 export interface Product {
-  id: string;
-  title: string;
-  subtitle?: string | null;
-  description?: string | null;
-  handle: string;
-  is_giftcard: boolean;
-  discountable: boolean;
-  thumbnail?: string | null;
-  collection_id?: string | null;
-  type_id?: string | null;
-  weight?: number | null;
-  length?: number | null;
-  height?: number | null;
-  width?: number | null;
-  hs_code?: string | null;
-  origin_country?: string | null;
-  mid_code?: string | null;
-  material?: string | null;
-  created_at: string;
-  updated_at: string;
-  type?: any;
-  collection?: { id: string } | null;
-  options: ProductOption[];
-  tags: ProductTag[];
-  images: ProductImage[];
-  variants: ProductVariant[];
+  id?: string | null | undefined;
+  title?: string | null | undefined;
+  subtitle?: string | null | undefined;
+  description?: string | null | undefined;
+  handle?: string | null | undefined ;
+  is_giftcard?: boolean | null | undefined ;
+  discountable?: boolean | null | undefined;
+  thumbnail?: string | null | undefined;
+  collection_id?: string | null | undefined;
+  type_id?: string | null | undefined;
+  weight?: number | null | undefined;
+  length?: number | null | undefined;
+  height?: number | null | undefined;
+  width?: number | null | undefined;
+  hs_code?: string | null | undefined;
+  origin_country?: string | null | undefined;
+  mid_code?: string | null | undefined;
+  material?: string | null | undefined;
+  created_at?: Date | undefined;
+  updated_at?: Date | undefined;
+  type?: any | null | undefined;
+  collection?: { id: string } | null | undefined;
+  options?: ProductOption[] | null | undefined;
+  tags?: ProductTag[] | null | undefined;
+  images?: ProductImage[] | null | undefined;
+  variants?: ProductVariant[] | null | undefined;
 }
 
 export type CategoryProducts = Record<string, Product[]>;

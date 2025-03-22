@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 926;
 }
   
 .logo {
@@ -25,6 +25,12 @@
   padding: 0 1rem;
   height: 40px;
   overflow: hidden;
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
+}
+
+.catalogButtonWrapper {
   @media screen and (max-width: 700px) {
     display: none;
   }

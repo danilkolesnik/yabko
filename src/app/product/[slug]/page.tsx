@@ -1,9 +1,11 @@
 // app/product/[id]/page.tsx
 'use client';
-
-import { useState } from 'react';
+import { useParams } from "next/navigation";
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './page.module.scss';
+import { medusa } from "@/lib/medusa";
+import { Product } from "@/types/product";
 
 interface ProductOption {
   id: string;
@@ -24,7 +26,35 @@ interface ProductWarranty {
 }
 
 const ProductPage = () => {
-  // Состояния для выбранных опций
+
+  const params = useParams();
+  const [product, setProduct] = useState();
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { products } = await medusa.products.list();
+  
+        const product = products.find(
+          (p) => p.handle && p.handle === params.slug
+        );
+  
+        if (product) {
+          console.log("Найденный продукт:", product);
+          setProduct(product);
+        } else {
+          console.log("Продукт не найден.");
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке продуктов:", error);
+      }
+    };
+  
+    if (params.slug) {
+      fetchProducts();
+    }
+  }, [params.slug]);
+
+  
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedVersion, setSelectedVersion] = useState('Global');
   const [selectedCondition, setSelectedCondition] = useState('Новий');
@@ -33,7 +63,6 @@ const ProductPage = () => {
   const [selectedColor, setSelectedColor] = useState('blue');
   const [selectedWarranty, setSelectedWarranty] = useState('2');
 
-  // Данные продукта
   const productImages = [
     '/images/iphone15-main.jpg',
     '/images/iphone15-side.jpg',
@@ -129,7 +158,7 @@ const ProductPage = () => {
         
         <div className={styles.productDetails}>
           <div className={styles.header}>
-            <h1 className={styles.productTitle}>Apple iPhone 15 Pro Max 512GB (Blue Titanium)</h1>
+            <h1 className={styles.productTitle}>{product?.title}</h1>
           
             <div className={styles.rating}>
               <div className={styles.stars}>★★★★★</div>

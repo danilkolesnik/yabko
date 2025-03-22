@@ -164,6 +164,7 @@ svg {
 }
 
 .page-wrapper {
+  position: relative;
   padding: 0 15px;
   display: flex;
   gap: 10px;
@@ -190,7 +191,7 @@ svg {
   opacity: 0;  /* Показываем */
   visibility: hidden;
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-  z-index: 990;
+  z-index: 928;
 }
 
 .overlay.active {
