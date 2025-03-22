@@ -5,6 +5,7 @@ import './styles.css';
 import '@/styles/globals.scss';
 import Footer from '@/layouts/Footer';
 import Header from '@/layouts/Header';
+import CallButton from '@/layouts/CallButton/CallButton';
 
 export const metadata = {
   description: 'A blank template using Payload in a Next.js app.',
@@ -20,7 +21,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         <Header />
         <OverlayProvider>
           <CartProvider>
-            <main>{children}</main>
+            <main>
+              {children}
+              <CallButton />
+            </main>
           </CartProvider>
         </OverlayProvider>
         <Footer />

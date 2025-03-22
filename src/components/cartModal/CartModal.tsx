@@ -2,7 +2,7 @@
 import styles from './cart.modal.module.scss';
 import { useCart } from "@/context/CartContext";
 import { useOverlay } from '@/context/OverlayContext';
-import { CloseIcon } from '@/assets/icons/icons';
+import { CloseIcon, TrashIcon } from '@/assets/icons/icons';
 import { localStorageService } from '@/services/localStorage';
 
 const CartModal = () => {
@@ -10,7 +10,7 @@ const CartModal = () => {
     const { hideOverlay } = useOverlay();
     if (!isCartOpen) return null;
     const cart = localStorageService({method: 'get', key: 'cart'});
-    console.log(cart);
+
     const handleCloseModal = () => {
         closeCart();
         hideOverlay();
@@ -24,18 +24,54 @@ const CartModal = () => {
                     <CloseIcon />
                 </span>
             </header>
-            <div className={styles.miniCart}>
-                {(cart || []).map((item: any) => (
+            <ul className={styles.miniCart}>
+                {/* {(cart || []).map((item: any) => (
                     <div key={item.id}>{item.title}</div>
-                ))}
-            </div>
+                ))} */}
+                <li className={styles.miniCartItem}>
+                    <div className={styles.productPhotoWrapper}>
+                        photo
+                    </div>
+                    <div className={styles.productDetailsWrapper}>
+                        <div className={styles.productInfoFlex}>
+                            <span className={styles.productName}>
+                                Apple iPhone 13 128GB (Starlight)
+                            </span>
+                            <span className={styles.productPrice}>
+                                21 999 грн
+                            </span>
+                        </div>
+                    </div>
+                    <div className={styles.productRemoveWrapper}>
+                        <TrashIcon />
+                    </div>
+                </li>
+                <li className={styles.miniCartItem}>
+                    <div className={styles.productPhotoWrapper}>
+                        photo
+                    </div>
+                    <div className={styles.productDetailsWrapper}>
+                        <div className={styles.productInfoFlex}>
+                            <span className={styles.productName}>
+                                Apple iPhone 13 128GB (Starlight)
+                            </span>
+                            <span className={styles.productPrice}>
+                                21 999 грн
+                            </span>
+                        </div>
+                    </div>
+                    <div className={styles.productRemoveWrapper}>
+                        <TrashIcon />
+                    </div>
+                </li>
+            </ul>
             <div className={styles.priceSection}>
                 <span className={styles.priceCaption}>Загальна сума:</span>
                 <span className={styles.priceValue}>3 999 грн</span>
             </div>
             <div className={styles.actionSection}>
-                <span>Продовжити покупки</span>
-                <button>В кошик</button>
+                <span className={styles.continue}>Продовжити покупки</span>
+                <button className={styles.cartButton}>В кошик</button>
             </div>
         </div>
     );

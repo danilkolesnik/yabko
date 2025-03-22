@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import "./styles.css";
 import CartModal from "@/components/cartModal/CartModal";
-import Overlay from "@/ui/overlay/Overlay";
+import Overlay from "@/ui/Overlay/Overlay";
 import ProductSlider from "@/components/ProductSlider";
 import CategoriesList from "@/components/CategoriesList";
 import ShowcaseSlider from "@/components/showcase/ShowcaseSlider";
