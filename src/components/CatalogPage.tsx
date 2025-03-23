@@ -1,9 +1,85 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import styles from './CatalogPage.module.scss';
-import ProductCard from '@/components/productCard/ProductCard';
+import ProductCard from './productCard/ProductCard';
 import Link from 'next/link';
-import { CatalogPageProps, ProductVariant, FilterGroup, FilterOption, Product } from '@/types/filters';
+
+// Базовые интерфейсы
+interface ProductImage {
+  id?: string;
+  url: string;
+}
+
+interface ProductPrice {
+  id?: string;
+  amount: number;
+  currency_code: string;
+}
+
+interface ProductVariant {
+  id: string;
+  title?: string;
+  prices?: ProductPrice[];
+  options?: any[]; // Массив опций варианта
+  [key: string]: any;
+}
+
+interface ProductOptionValue {
+  id?: string;
+  value: string;
+}
+
+interface ProductOption {
+  id?: string;
+  title: string;
+  values: (string | ProductOptionValue)[];
+}
+
+interface Category {
+  id: string;
+  name: string;
+  handle: string;
+  parent_category_id: string | null;
+  category_children?: Category[];
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
+  handle: string;
+  images: ProductImage[];
+  variants: ProductVariant[];
+  options?: ProductOption[];
+  categories?: Category[]; // Категории продукта
+}
+
+interface CatalogPageProps {
+  category: Category; // Текущая категория
+  products: Product[]; // Продукты для отображения
+  breadcrumbs?: { name: string; path: string }[]; // Хлебные крошки
+  allCategories?: Category[]; // Все доступные категории для фильтрации
+}
+
+// Интерфейсы для динамических фильтров
+interface FilterOption {
+  value: string;  // Значение фильтра (для категорий это ID)
+  label: string;  // Отображаемое название
+  count: number;  // Количество вариантов с этим значением
+  normalized?: string; // Нормализованное значение для сопоставления (для атрибутов)
+}
+
+interface FilterGroup {
+  id: string;
+  name: string;
+  options: FilterOption[];
+  expanded: boolean;
+  // Для групп категорий:
+  isCategory?: boolean; // Является ли группа категорией
+  parentId?: string; // ID родительской категории (для подкатегорий)
+  order?: number; // Порядок отображения
+  isProduct?: boolean; // Новое свойство: является ли группа продуктами
+}
 
 // Функция для получения значения опции из варианта
 const getVariantOptionValue = (variant: ProductVariant, optionName: string): string | undefined => {
@@ -63,11 +139,63 @@ const getVariantOptionValue = (variant: ProductVariant, optionName: string): str
 
 // Функция для нормализации значения опции
 const normalizeOptionValue = (optionName: string, value: string): string => {
+  // if (!value) return '';
+  
+  // const lowerValue = value.toLowerCase();
+  
+  // // Нормализация для storage
+  // if (optionName.toLowerCase() === 'storage') {
+  //   // Убираем пробелы и приводим к единому формату
+  //   let normalized = lowerValue.replace(/\s+/g, '');
+    
+  //   // Преобразуем все обозначения гигабайт/терабайт к единому формату
+  //   normalized = normalized
+  //     .replace(/gb/i, 'GB')
+  //     .replace(/tb/i, 'TB')
+  //     .replace(/mb/i, 'MB');
+    
+  //   return normalized;
+  // }
+  
+  // // Нормализация для размеров
+  // if (optionName.toLowerCase() === 'size') {
+  //   return value.toUpperCase();
+  // }
+  
+  // // Нормализация для цветов
+  // if (optionName.toLowerCase() === 'color') {
+  //   // Первая буква заглавная, остальные строчные
+  //   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  // }
+  
+  // Для других опций возвращаем как есть
   return value;
 };
 
 // Функция для получения отображаемого значения опции
 const getDisplayOptionValue = (optionName: string, value: string): string => {
+  // if (!value) return '';
+  
+  // // Отображение для storage
+  // if (optionName.toLowerCase() === 'storage') {
+  //   // Проверяем наличие обозначений гигабайт/терабайт
+  //   if (value.toUpperCase().includes('GB')) {
+  //     // Форматируем, например, "256GB"
+  //     return value.toUpperCase();
+  //   }
+  //   if (value.toUpperCase().includes('TB')) {
+  //     // Форматируем, например, "1TB"
+  //     return value.toUpperCase();
+  //   }
+    
+  //   // Если нет обозначения, предполагаем гигабайты
+  //   if (/^\d+$/.test(value)) {
+  //     return `${value}GB`;
+  //   }
+    
+  //   return value;
+  // }
+  
   return value;
 };
 
@@ -185,7 +313,7 @@ const createUniqueFilterGroups = (variants: {product: Product, variant: ProductV
     // Добавляем фильтр по цене
     {
       id: 'price',
-      name: 'Цена',
+      name: 'Ціна',
       options: [],
       expanded: true
     }
@@ -393,7 +521,7 @@ export default function CatalogPage({
       // НОВОЕ: Создаем фильтр по продуктам
       const productFilter: FilterGroup = {
         id: 'products',
-        name: 'Товары',
+        name: 'Продукти',
         options: products.map(product => ({
           value: product.id,
           label: product.title,
@@ -434,13 +562,10 @@ export default function CatalogPage({
       const prices: number[] = [];
       
       variants.forEach(({ variant }) => {
-        if (!variant.prices) return;
-        
-        variant.prices.forEach(price => {
-          if (price && typeof price.amount === 'number') {
-            prices.push(price.amount / 100);
-          }
-        });
+        // ИЗМЕНЕНО: Используем variant.metadata.price вместо variant.prices
+        if (variant.metadata && typeof variant.metadata.price === 'number') {
+          prices.push(variant.metadata.price);
+        }
       });
       
       if (prices.length > 0) {
@@ -511,19 +636,13 @@ export default function CatalogPage({
       const beforePriceFilter = filtered.length;
       
       filtered = filtered.filter(({ variant }) => {
-        if (!variant.prices || variant.prices.length === 0) {
-          return true; // Если нет цен, пропускаем этот фильтр
+        // ИЗМЕНЕНО: Используем variant.metadata.price вместо variant.prices
+        if (!variant.metadata || typeof variant.metadata.price !== 'number') {
+          return true; // Если нет цены, пропускаем этот фильтр
         }
         
-        // Проверяем, попадает ли хотя бы одна из цен в диапазон
-        const inRange = variant.prices.some(price => {
-          if (!price || typeof price.amount !== 'number') return true;
-          
-          const priceValue = price.amount / 100;
-          return priceValue >= currentPriceRange[0] && priceValue <= currentPriceRange[1];
-        });
-        
-        return inRange;
+        const priceValue = variant.metadata.price;
+        return priceValue >= currentPriceRange[0] && priceValue <= currentPriceRange[1];
       });
       
       console.log(`После фильтра по цене: ${filtered.length} вариантов (убрано ${beforePriceFilter - filtered.length})`);
@@ -700,6 +819,10 @@ export default function CatalogPage({
       'midnight': '#121212',
       'starlight': '#F9F3EE',
       'product red': '#FF0000',
+      'black titanium': '#333333',
+      'white titanium': '#F5F5F5',
+      'natural titanium': '#D6CFC7',
+      'desert titanium': '#E8D6C2',
     };
     
     return colorMap[colorName.toLowerCase()] || '#CCCCCC';
@@ -742,27 +865,19 @@ export default function CatalogPage({
               className={styles.filterHeader} 
               onClick={() => toggleFilterGroup('price')}
             >
-              <h3>Цена</h3>
-              <span className={styles.collapseIcon}>
-                {attributeFilterGroups[0]?.expanded ? '▲' : '▼'}
+              <h3>Ціна</h3>
+              <span className={`${styles.collapseIcon} ${attributeFilterGroups[0]?.expanded ? '' : styles.rotatedIcon}`}>
+                ▼
               </span>
             </div>
             
-            {attributeFilterGroups[0]?.expanded && (
+            <div className={`${styles.filterContent} ${attributeFilterGroups[0]?.expanded ? styles.expanded : ''}`}>
               <div className={styles.priceRange}>
                 <div className={styles.rangeValues}>
-                  <span>{currentPriceRange[0]} ₴</span>
-                  <span>{currentPriceRange[1]} ₴</span>
+                  <span>{currentPriceRange[0]}</span>
+                  <span>{currentPriceRange[1]}</span>
                 </div>
                 <div className={styles.rangeSliders}>
-                  <input
-                    type="range"
-                    min={priceRange[0]}
-                    max={priceRange[1]}
-                    value={currentPriceRange[0]}
-                    onChange={(e) => handlePriceRangeChange(Number(e.target.value), currentPriceRange[1])}
-                    className={styles.rangeSlider}
-                  />
                   <input
                     type="range"
                     min={priceRange[0]}
@@ -773,7 +888,7 @@ export default function CatalogPage({
                   />
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* НОВОЕ: Фильтр по продуктам */}
@@ -784,33 +899,31 @@ export default function CatalogPage({
                 onClick={() => toggleFilterGroup('products')}
               >
                 <h3>{productFilterGroup.name}</h3>
-                <span className={styles.collapseIcon}>
-                  {productFilterGroup.expanded ? '▲' : '▼'}
+                <span className={`${styles.collapseIcon} ${productFilterGroup.expanded ? '' : styles.rotatedIcon}`}>
+                  ▼
                 </span>
               </div>
               
-              {productFilterGroup.expanded && (
-                <div className={styles.filterContent}>
-                  <div className={styles.filterOptions}>
-                    {productFilterGroup.options.map((option) => (
-                      <div key={`products-${option.value}`} className={styles.filterOption}>
-                        <input
-                          type="checkbox"
-                          id={`products-${option.value}`}
-                          checked={selectedFilters['products']?.includes(option.value) || false}
-                          onChange={() => handleFilterChange('products', option.value)}
-                        />
-                        <label htmlFor={`products-${option.value}`}>
-                          {option.label}
-                          {option.count > 0 && (
-                            <span style={{ color: '#999', marginLeft: '5px' }}>({option.count})</span>
-                          )}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+              <div className={`${styles.filterContent} ${productFilterGroup.expanded ? styles.expanded : ''}`}>
+                <div className={styles.filterOptions}>
+                  {productFilterGroup.options.map((option) => (
+                    <div key={`products-${option.value}`} className={styles.filterOption}>
+                      <input
+                        type="checkbox"
+                        id={`products-${option.value}`}
+                        checked={selectedFilters['products']?.includes(option.value) || false}
+                        onChange={() => handleFilterChange('products', option.value)}
+                      />
+                      <label htmlFor={`products-${option.value}`}>
+                        {option.label}
+                        {option.count > 0 && (
+                          <span>({option.count})</span>
+                        )}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           )}
 
@@ -822,33 +935,31 @@ export default function CatalogPage({
                 onClick={() => toggleFilterGroup(group.id)}
               >
                 <h3>{group.name}</h3>
-                <span className={styles.collapseIcon}>
-                  {group.expanded ? '▲' : '▼'}
+                <span className={`${styles.collapseIcon} ${group.expanded ? '' : styles.rotatedIcon}`}>
+                  ▼
                 </span>
               </div>
               
-              {group.expanded && (
-                <div className={styles.filterContent}>
-                  <div className={styles.filterOptions}>
-                    {group.options.map((option) => (
-                      <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
-                        <input
-                          type="checkbox"
-                          id={`${group.id}-${option.value}`}
-                          checked={selectedFilters[group.id]?.includes(option.value) || false}
-                          onChange={() => handleFilterChange(group.id, option.value)}
-                        />
-                        <label htmlFor={`${group.id}-${option.value}`}>
-                          {option.label}
-                          {option.count > 0 && (
-                            <span style={{ color: '#999', marginLeft: '5px' }}>({option.count})</span>
-                          )}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+              <div className={`${styles.filterContent} ${group.expanded ? styles.expanded : ''}`}>
+                <div className={styles.filterOptions}>
+                  {group.options.map((option) => (
+                    <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
+                      <input
+                        type="checkbox"
+                        id={`${group.id}-${option.value}`}
+                        checked={selectedFilters[group.id]?.includes(option.value) || false}
+                        onChange={() => handleFilterChange(group.id, option.value)}
+                      />
+                      <label htmlFor={`${group.id}-${option.value}`}>
+                        {option.label}
+                        {option.count > 0 && (
+                          <span>({option.count})</span>
+                        )}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           ))}
           
@@ -860,39 +971,37 @@ export default function CatalogPage({
                 onClick={() => toggleFilterGroup(group.id)}
               >
                 <h3>{group.name}</h3>
-                <span className={styles.collapseIcon}>
-                  {group.expanded ? '▲' : '▼'}
+                <span className={`${styles.collapseIcon} ${group.expanded ? '' : styles.rotatedIcon}`}>
+                  ▼
                 </span>
               </div>
               
-              {group.expanded && (
-                <div className={styles.filterContent}>
-                  <div className={styles.filterOptions}>
-                    {group.options.map((option) => (
-                      <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
-                        <input
-                          type="checkbox"
-                          id={`${group.id}-${option.value}`}
-                          checked={selectedFilters[group.id]?.includes(option.value) || false}
-                          onChange={() => handleFilterChange(group.id, option.value)}
+              <div className={`${styles.filterContent} ${group.expanded ? styles.expanded : ''}`}>
+                <div className={styles.filterOptions}>
+                  {group.options.map((option) => (
+                    <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
+                      <input
+                        type="checkbox"
+                        id={`${group.id}-${option.value}`}
+                        checked={selectedFilters[group.id]?.includes(option.value) || false}
+                        onChange={() => handleFilterChange(group.id, option.value)}
+                      />
+                      {(group.name.toLowerCase().includes('цвет') || group.name.toLowerCase().includes('color') || group.name.toLowerCase().includes('колір')) && (
+                        <span 
+                          className={styles.colorSquare}
+                          style={{ backgroundColor: getColorCode(option.value) }}
                         />
-                        {(group.name.toLowerCase().includes('цвет') || group.name.toLowerCase().includes('color')) && (
-                          <span 
-                            className={styles.colorSquare}
-                            style={{ backgroundColor: getColorCode(option.value) }}
-                          />
+                      )}
+                      <label htmlFor={`${group.id}-${option.value}`}>
+                        {option.label}
+                        {option.count > 0 && (
+                          <span>({option.count})</span>
                         )}
-                        <label htmlFor={`${group.id}-${option.value}`}>
-                          {option.label}
-                          {option.count > 0 && (
-                            <span style={{ color: '#999', marginLeft: '5px' }}>({option.count})</span>
-                          )}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           ))}
 
@@ -900,15 +1009,6 @@ export default function CatalogPage({
           <button className={styles.resetButton} onClick={resetFilters}>
             Сбросить фильтр
           </button>
-
-          {/* Отладочная информация */}
-          <div style={{ padding: '10px', fontSize: '12px', color: '#999', marginTop: '10px' }}>
-            <p>Всего вариантов: {filteredVariants.length} из {allVariants.length}</p>
-            <p>Активные фильтры: {Object.entries(selectedFilters)
-              .filter(([_, values]) => values.length > 0)
-              .map(([id, values]) => `${id} (${values.join(', ')})`)
-              .join('; ') || 'нет'}</p>
-          </div>
         </div>
 
         {/* Сетка продуктов */}

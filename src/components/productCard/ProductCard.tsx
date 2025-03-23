@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "./product.card.module.scss";
 import { RatingStarIcon } from "@/assets/icons/icons";
 import { localStorageService } from "@/services/localStorage";
+import { getColorCode } from "@/utils/constants";
 
 interface ProductImage {
   id?: string;
@@ -89,39 +90,11 @@ const extractColors = (product: Product): string[] => {
   return Array.from(colors);
 };
 
-const getColorCode = (colorName: string): string => {
-  const colorMap: Record<string, string> = {
-    'black': '#000000',
-    'white': '#ffffff',
-    'red': '#ff0000',
-    'blue': '#0000ff',
-    'green': '#008000',
-    'yellow': '#ffff00',
-    'purple': '#800080',
-    'pink': '#ffc0cb',
-    'gold': '#ffd700',
-    'silver': '#c0c0c0',
-    'graphite': '#333333',
-    'gray': '#808080',
-    'space gray': '#676767',
-    'midnight': '#121212',
-    'starlight': '#f9f3ee',
-    'product red': '#ff0000',
-    'desert titanium': '#d5c4b0',
-    'natural titanium': '#c0bcb1',
-    'black titanium': '#232323',
-    'white titanium': '#e8e8e8',
-  };
-  
-  const lowerColor = colorName.toLowerCase();
-  return colorMap[lowerColor] || '#cccccc';
-};
-
 const ProductCard = ({ product }: { product: Product }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const formatPrice = (amount: number): string => {
-    return (amount / 100).toLocaleString() + ' ₴';
+    return amount.toLocaleString() + ' ₴';
   };
 
   const variants = product.variants || [];
@@ -156,6 +129,10 @@ const renderSingleCard = (
   
   const colors = extractColors(product);
   
+  const handle: string = variant?.metadata?.handle;
+  const variantImages: string[] = variant?.metadata?.img?.split(",").map((url : any) => url.trim());
+  console.log(variantImages)
+
   const handleBuy = () => {
     localStorageService({method: 'set', key: 'cart', value: JSON.stringify(product)});
     showOverlay();
@@ -163,23 +140,33 @@ const renderSingleCard = (
   };
 
   return (
-    <div onClick={() => router.push(`/product/${product.handle}`)} key={variant?.id || product.id} className={styles.card}>
+    <div onClick={() => router.push(`/products/${product.handle}`)} key={variant?.id || product.id} className={styles.card}>
       {/* Изображение товара */}
       <div className={styles.imageContainer}>
-        {product.images && product.images.length > 0 ? (
+        {variantImages && variantImages.length > 0 ? (
           <img
-            src={product.images[selectedIndex]?.url}
+            src={variantImages[selectedIndex]}
             alt={product.title}
             className={styles.productImage}
           />
         ) : (
-          <div className={styles.noImage}>Нет фото</div>
+          <>
+            {product.images && product.images.length > 0 ? (
+              <img
+                src={product.images[selectedIndex]?.url}
+                alt={product.title}
+                className={styles.productImage}
+              />
+            ) : (
+              <div className={styles.noImage}>Нет фото</div>
+            )}
+          </>
         )}
       </div>
       {/* Индикаторы изображений (точки) */}
-      {product.images && product.images.length > 1 && (
+      {variantImages && variantImages.length > 1 && (
         <div className={styles.indicators}>
-          {product.images.map((_, index) => (
+          {variantImages.map((_, index) => (
             <span
               key={index}
               className={`${styles.dot} ${selectedIndex === index ? styles.active : ""}`}
@@ -223,7 +210,7 @@ const renderSingleCard = (
             handleBuy();
         }} className={styles.buyButton}>Купити</button>
           <span className={styles.price}>
-            {price > 0 ? (formatPrice(price)) : '50 000 ₴'}
+            {variant?.metadata?.price > 0 ? (formatPrice(variant?.metadata?.price)) : '50530 ₴'}
           </span>
         </div>
       </div>
