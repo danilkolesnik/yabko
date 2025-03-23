@@ -50,7 +50,7 @@ export default function Header() {
         <a href='/' className={styles.logo}>
           <Logo />
         </a>
-        <a className={styles.catalogButtonWrapper} href="#catalog">
+        <a className={styles.catalogButtonWrapper} href="/#catalog">
           <CatalogButton />
         </a>
         <div className={styles.searchWrapper}>

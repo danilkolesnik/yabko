@@ -1,0 +1,166 @@
+.mainCart {
+    padding: 0 15px;
+    margin: 2rem;
+    @media screen and (max-width: 768px) {
+        margin: 5px;
+        padding: 0;
+    }
+}
+
+.mainCartFlex {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+.sideBlockWrapper {
+    display: flex;
+    width: 25%;
+    flex-direction: column;
+    gap: 10px;
+    @media screen and (max-width: 768px) {
+        width: 100%;
+        gap: 5px;
+    }
+}
+
+.sideBlockCaption {
+    font-family: 'Gotham', sans-serif;
+    font-size: 1rem;
+    padding: 0;
+    margin: 0;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.contactInfoBlock {
+    background-color: #1c1c1c;
+    padding: 20px;
+    @media screen and (max-width: 768px) {
+        padding: 10px;
+    }
+}
+
+.deliveryBlock {
+    background-color: #1c1c1c;
+    padding: 20px;
+    @media screen and (max-width: 768px) {
+        padding: 10px;
+    }
+}
+
+.cartItemsWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    @media screen and (max-width: 768px) {
+        order: -1; 
+    }
+}
+
+.miniCart {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    @media screen and (max-width: 768px) {
+        gap: 5px;
+    }
+}
+
+.miniCartItem {
+    background-color: #1d1d1d;
+    padding: 9px 4px 4px 22px;
+    border-radius: 2px;
+    display: flex;
+    @media screen and (max-width: 768px) {
+        padding: 7px 4px 0;
+    }
+}
+
+.productPhotoWrapper {
+    max-width: 105px;
+    height: 140px;
+    width: 100%;
+    margin-right: 15px;
+}
+
+.productDetailsWrapper {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.productName {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.productPrice {
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.productWarranty {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #999999;
+}
+
+.productInfoFlex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.productRemoveWrapper {
+    cursor: pointer;
+    margin: 0 5px auto auto;
+}
+
+
+.priceSection {
+    background-color: #1d1d1d;
+    padding: 5px;
+    border-radius: 2px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.priceCaption {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.priceValue {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.cartTotal {
+    margin: 10px 0 0 0;
+    padding: 9px 15px 10px 21px;
+    background-color: #1d1d1d;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
+}
+
+.cartTotalCaption {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.cartTotalValue {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
