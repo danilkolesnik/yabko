@@ -11,7 +11,7 @@ import Hamburger from 'hamburger-react'
 
 export default function Header() {
 
-  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(true);
+  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(false);
   const [isTop, setIsTop] = useState(true)
   const [productCategories, setProductCategories] = useState<any[]>([]);
 

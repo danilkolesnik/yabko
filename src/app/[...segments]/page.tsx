@@ -133,9 +133,11 @@ async function getProductsByCategory(categoryId: string) {
       limit: 100,
     });
     
+    
     return products;
   } catch (error) {
     console.error("Ошибка при получении продуктов:", error);
     return [];
   }
 }
+
