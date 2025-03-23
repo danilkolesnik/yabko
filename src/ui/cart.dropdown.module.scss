@@ -2,9 +2,102 @@
 .cartDropdown {
     position: absolute;
     right: 0;
-    margin: 5px 10px 0;
+    margin: 0 10px 0;
+    padding: 0;
     width: 300px;
-    height: 150px;
     background-color: #1C1C1C;
     z-index: 323;
+}
+
+.cartItemsList {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.miniCartItem {
+    cursor: pointer;
+    background-color: #1d1d1d;
+    padding: 4px;
+    border-radius: 2px;
+    display: flex;
+    @media screen and (max-width: 768px) {
+        padding: 7px 4px 0;
+    }
+}
+
+.productPhotoWrapper {
+    width: 22%;
+    margin-right: 5px;
+}
+
+.productDetailsWrapper {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.productName {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #888;
+}
+
+.productPrice {
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.productInfoFlex {
+    display: flex;
+    flex-direction: column;
+}
+
+.productRemoveWrapper {
+    cursor: pointer;
+    margin: auto 0;
+}
+
+
+.priceSection {
+    background-color: #1d1d1d;
+    padding: 5px;
+    border-radius: 2px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.priceCaption {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.priceValue {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.goToCartWrapper {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-top: 1px solid #fff;
+}
+
+.goToCartButton {
+    cursor: pointer;
+    height: 35px;
+    background-color: hsl(359, 65%, 47%);
+    border: none;
+    border-radius: 3px;
+    color: #FFF;
+    font-size: 0.85rem;
+    letter-spacing: .25px;
+    font-weight: bold;
 }

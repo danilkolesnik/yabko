@@ -20,6 +20,17 @@
     }
 }
 
+.active {
+    cursor: pointer;
+    background: #fff;
+    color: #000;
+    opacity: 100;
+}
+
+.active .buttonContent {
+    color: #000 !important;
+}
+
 .cartButton::before {
     content: "";
     background: #0F0F0F;
@@ -75,8 +86,8 @@
 .cartButtonCaption {
     font-family: 'Gotham', sans-serif;
     font-weight: bold;
-    color: #888;
-    font-size: 13px;
+    font-size: 0.65rem;
+    letter-spacing: .25px;
 }
 
 .buttonContent {
