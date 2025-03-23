@@ -58,7 +58,6 @@ const extractColors = (product: Product): string[] => {
   
   if (colors.size === 0 && product.variants && Array.isArray(product.variants)) {
     product.variants.forEach(variant => {
-      // Check direct color property
       if (variant.color) {
         colors.add(variant.color);
       }
@@ -70,7 +69,6 @@ const extractColors = (product: Product): string[] => {
         }
       }
       
-      // Check options array if exists
       if (variant.options && Array.isArray(variant.options)) {
         variant.options.forEach(opt => {
           if (
@@ -91,7 +89,6 @@ const extractColors = (product: Product): string[] => {
   return Array.from(colors);
 };
 
-// Function to get color code based on color name
 const getColorCode = (colorName: string): string => {
   const colorMap: Record<string, string> = {
     'black': '#000000',
@@ -117,7 +114,7 @@ const getColorCode = (colorName: string): string => {
   };
   
   const lowerColor = colorName.toLowerCase();
-  return colorMap[lowerColor] || '#cccccc'; // Default gray if color not found
+  return colorMap[lowerColor] || '#cccccc';
 };
 
 const ProductCard = ({ product }: { product: Product }) => {
@@ -186,7 +183,10 @@ const renderSingleCard = (
             <span
               key={index}
               className={`${styles.dot} ${selectedIndex === index ? styles.active : ""}`}
-              onClick={() => setSelectedIndex(index)}
+              onClick={(event) => {
+                event.stopPropagation();
+                setSelectedIndex(index);
+              }}
             />
           ))}
         </div>

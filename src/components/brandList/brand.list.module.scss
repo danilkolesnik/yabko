@@ -1,0 +1,57 @@
+
+.brands {
+    margin-top: 2rem;
+}
+
+.brandListWrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    @media screen and (max-width: 700px) {
+        gap: 5px;
+        justify-content: center;
+    }
+}
+
+.brandCard {
+    cursor: pointer;
+    width: 16%;
+    text-decoration: none;
+    @media screen and (max-width: 700px) {
+        width: 49%;
+    }
+}
+
+.subcategoryListWrapper {
+    display: flex;
+    margin-top: 1.5rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    @media screen and (max-width: 700px) {
+        gap: 5px;
+        justify-content: center;
+    }
+}
+
+.subcategoryCard {
+    cursor: pointer;
+    background-color: #1d1d1d;
+    text-decoration: none;
+    width: 16%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.subCategoryName {
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: 0.9rem;
+}
+
+.subcategoryPic {
+    width: 50%;
+}

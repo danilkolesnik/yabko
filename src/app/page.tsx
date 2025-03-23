@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "./styles.css";
+import BrandList from "@/components/brandList/BrandList";
 import CartModal from "@/components/cartModal/CartModal";
 import Overlay from "@/ui/Overlay/Overlay";
 import ProductSlider from "@/components/ProductSlider";
@@ -83,6 +84,9 @@ export default function HomePage() {
         <div className="hero-wrapper">
           <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
           <ShowcaseSlider />
+        </div>
+        <div id='brands'>
+          <BrandList productCategories={productCategories} />
         </div>
         <div id='catalog'>
           {(sliderCategories || []).map((category) => (

@@ -41,22 +41,9 @@ const CartModal = () => {
                                 21 999 грн
                             </span>
                         </div>
-                    </div>
-                    <div className={styles.productRemoveWrapper}>
-                        <TrashIcon />
-                    </div>
-                </li>
-                <li className={styles.miniCartItem}>
-                    <div className={styles.productPhotoWrapper}>
-                        photo
-                    </div>
-                    <div className={styles.productDetailsWrapper}>
                         <div className={styles.productInfoFlex}>
-                            <span className={styles.productName}>
-                                Apple iPhone 13 128GB (Starlight)
-                            </span>
-                            <span className={styles.productPrice}>
-                                21 999 грн
+                            <span className={styles.productWarranty}>
+                                Гарантiя 1 рiк
                             </span>
                         </div>
                     </div>
