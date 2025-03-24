@@ -11,11 +11,13 @@ import DescriptionSection from "@/components/description/DescriptionSection";
 import { medusa } from "@/lib/medusa";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [productCategories, setProductCategories] = useState<any[]>([]);
+  
+  
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [sliderCategories, setSliderCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
+  const [productCategories, setProductCategories] = useState<any[]>([]);
 
   const fetchProductsByCategories = async (filteredCategories: any[]) => {
     const updatedProducts: { [key: string]: any[] } = {};

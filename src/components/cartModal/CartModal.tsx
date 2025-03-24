@@ -47,7 +47,13 @@ const CartModal = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.productRemoveWrapper}>
+                        <div className={styles.productRemoveWrapper}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                localStorageService({ method: "remove", key: "cart", value: { id: item.id } });
+                                window.location.reload();
+                            }}
+                        >
                             <TrashIcon />
                         </div>
                     </li>
@@ -59,7 +65,7 @@ const CartModal = () => {
                 <span className={styles.priceValue}>21 999 грн</span>
             </div>
             <div className={styles.actionSection}>
-                <span className={styles.continue}>Продовжити покупки</span>
+                <span onClick={handleCloseModal} className={styles.continue}>Продовжити покупки</span>
                 <button onClick={() => router.push('/cart')} className={styles.cartButton}>В кошик</button>
             </div>
         </div>

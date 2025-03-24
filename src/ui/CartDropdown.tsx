@@ -32,7 +32,13 @@ export default function CartDropdown() {
                                 </span>
                             </div>
                         </div>
-                        <div className={styles.productRemoveWrapper}>
+                        <div className={styles.productRemoveWrapper}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                localStorageService({ method: "remove", key: "cart", value: { id: item.id } });
+                                window.location.reload();
+                            }}
+                        >
                             <TrashIcon />
                         </div>
                     </li>

@@ -1,8 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import styles from './CatalogPage.module.scss';
+import CatalogSlider from './catalogSlider/CatalogSlider';
 import ProductCard from './productCard/ProductCard';
 import Link from 'next/link';
+import { medusa } from "@/lib/medusa";
 
 // Базовые интерфейсы
 interface ProductImage {
@@ -838,8 +840,71 @@ export default function CatalogPage({
     );
   }
 
+  const [sliderProducts, setSliderProducts] = useState<any[]>([]);
+  const [categoryProducts, setCategoryProducts] = useState<any>([]);
+  
+  const fetchProductsByCategories = async (filteredCategories: any[]) => {
+      const updatedProducts: { [key: string]: any[] } = {};
+      
+      const fetchProducts = async (categoryId: string) => {
+        try {
+          const { products } = await medusa.products.list({
+            category_id: [categoryId],
+          });
+          return products;
+        } catch (error) {
+          console.error("Ошибка при получении продуктов для категории", categoryId, error);
+          return [];
+        }
+      };
+    
+      for (const category of filteredCategories) {
+        const categoryId = category.id;
+        
+        try {
+          const products = await fetchProducts(categoryId);
+          
+          updatedProducts[categoryId] = products;
+    
+          for (const childCategory of category.category_children || []) {
+            const childProducts = await fetchProducts(childCategory.id);
+            updatedProducts[childCategory.id] = childProducts;
+          }
+          
+        } catch (error) {
+          console.error("Ошибка при обработке категории", categoryId, error);
+        }
+      }
+      setCategoryProducts(updatedProducts);
+    };
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const [{ products }, { product_categories }] = await Promise.all([
+            medusa.products.list(),
+            medusa.productCategories.list(),
+          ]);
+          setSliderProducts(products);
+  
+          const filteredCategories = product_categories.filter((category: any) => {
+            return category.metadata?.slider === true;
+          });
+  
+          fetchProductsByCategories(filteredCategories);
+  
+        } catch (error) {
+          console.error("Error fetching data", error);
+        }
+      };
+      fetchData();
+    }, []);
+
   return (
     <div className={styles.catalogContainer}>
+      
+      {category && categoryProducts && <CatalogSlider key={category.id} category={category} categoryProducts={categoryProducts} />}
+      
       {/* Хлебные крошки */}
       {breadcrumbs && breadcrumbs.length > 0 && (
         <div className={styles.breadcrumbs}>
@@ -852,10 +917,8 @@ export default function CatalogPage({
           ))}
         </div>
       )}
-
       {/* Заголовок категории */}
       <h1 className={styles.categoryTitle}>{category?.name || 'Категория'}</h1>
-
       <div className={styles.catalogContent}>
         {/* Сайдбар с фильтрами */}
         <div className={styles.filterSidebar}>

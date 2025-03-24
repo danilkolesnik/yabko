@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import styles from './cart.module.scss';
 import { localStorageService } from '@/services/localStorage';
@@ -6,11 +7,15 @@ import { TrashIcon } from '@/assets/icons/icons';
 import Input from '@/ui/Input/Input';
 
 export default function CartPage() {
-    
+    const router = useRouter();
     const [cart, setCart] = useState([]);
 
     useEffect(() => {
-        setCart(localStorageService({method: 'get', key: 'cart'}));
+        const cart = localStorageService({method: 'get', key: 'cart'});
+        if (cart.length === 0) {
+            router.push('/#catalog');
+        }
+        setCart(cart);
     }, []);
 
     return (
@@ -50,7 +55,13 @@ export default function CartPage() {
                                         </span>
                                     </div>
                                 </div>
-                                <div className={styles.productRemoveWrapper}>
+                                <div className={styles.productRemoveWrapper}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        localStorageService({ method: "remove", key: "cart", value: { id: item.id } });
+                                        window.location.reload();
+                                    }}
+                                >
                                     <TrashIcon />
                                 </div>
                             </li>
