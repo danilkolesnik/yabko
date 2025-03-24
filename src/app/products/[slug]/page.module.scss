@@ -1,9 +1,9 @@
-// app/product/[id]/ProductPage.module.scss
 
 .container {
   color: white;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 120px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -18,10 +18,6 @@
   list-style: none;
   margin: 0;
   padding: 0;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
 }
 
 .navItem {
@@ -42,11 +38,28 @@
 
 .productContainer {
   display: flex;
-  margin-top: 20px;
-  gap: 20px;
+  margin-top: 0px;
+  gap: 1px;
   
   @media (max-width: 768px) {
     flex-direction: column;
+  }
+}
+
+.optionUnavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #888;
+    top: 50%;
+    left: 0;
+    transform: rotate(-45deg);
   }
 }
 
@@ -54,7 +67,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  max-width: 500px;
+  max-width: 520px;
+  gap: 10px;
 }
 
 .mainImageContainer {
@@ -65,12 +79,14 @@
   background-color: #1a1a1a;
   border-radius: 8px;
   overflow: hidden;
+  padding: 10px;
 }
 
 .mainImage {
   width: 100%;
   height: auto;
   object-fit: contain;
+  border-bottom: 1px solid #333;
 }
 
 .thumbnails {
@@ -78,6 +94,7 @@
   gap: 10px;
   margin-bottom: 30px;
   height: 60px;
+  padding: 10px;
 }
 
 .thumbnail {
@@ -166,16 +183,14 @@
   flex: 1;
   padding-left: 10px;
   flex-direction: column;
-
-  @media (max-width: 768px) {
-    padding: 10px;
-  }
 }
 
 .productTitle {
   font-size: 24px;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
   font-weight: 600;
+  margin-top: 20px;
+  line-height: 25px;
 }
 
 .rating {
@@ -195,7 +210,7 @@
 }
 
 .pricing {
-  margin-bottom: 5px;
+  margin-bottom: 20px;
 }
 
 .currentPrice {
@@ -206,7 +221,8 @@
 .oldPrice {
   color: #888;
   text-decoration: line-through;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 600;
   margin-left: 10px;
 }
 
@@ -218,17 +234,15 @@
 
 .paymentOptions {
   display: flex;
-  margin-bottom: 12px;
-  gap: 10px;
+  margin-bottom: 8px;
+  gap: 5px;
 }
 
 .paymentOption {
   flex: 1;
-  padding: 5px 10px;
+  padding: 4px 10px;
   text-align: center;
-  border: 1px solid #333;
   font-size: 12px;
-  border-radius: 4px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -238,7 +252,8 @@
 
 .specGroup {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 20px;
 }
 
 .paymentIcon {
@@ -252,28 +267,31 @@
 
 .specRow {
   padding: 10px 0;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   background: #1a1a1a;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-
-  @media (max-width: 768px) {
-    padding: 10px;
-  }
+}
+.specRowOption {
+  padding: 10px 20px;
+  margin-bottom: 8px;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
 }
 
 .header {
   background: #1a1a1a;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   padding: 1px 10px;
 }
 
 .specTitle {
   color: #888;
-  margin-bottom: 10px;
+  margin-bottom: 3px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   display: flex;
   align-items: center;
 }
@@ -314,7 +332,7 @@
 
 .colorOptions {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
 .colorBtn {
@@ -348,6 +366,116 @@
 
 .colorBlue {
   background-color: #4169e1;
+}
+
+.colorBlue {
+  background-color: #4169e1;
+}
+
+.colorPurple {
+  background-color: #9370DB;
+}
+
+.colorPink {
+  background-color: #FF69B4;
+}
+
+.colorRed {
+  background-color: #FF3B30;
+}
+
+.colorGreen {
+  background-color: #34C759;
+}
+
+.colorYellow {
+  background-color: #FFCC00;
+}
+
+.colorCoral {
+  background-color: #FF7F50;
+}
+
+.colorOrange {
+  background-color: #FFA500;
+}
+
+/* iPhone-specific titanium colors */
+.colorTitaniumBlack {
+  background-color: #2D2D2F;
+}
+
+.colorTitaniumGray, .colorTitaniumGrey {
+  background-color: #77787B;
+}
+
+.colorTitaniumWhite {
+  background-color: #F0F2F1;
+}
+
+.colorTitaniumNatural {
+  background-color: #E3D0B9;
+}
+
+.colorTitaniumGold {
+  background-color: #F3E5C3;
+}
+
+.colorTitaniumBlue {
+  background-color: #7D92A9;
+}
+
+/* Additional phone colors */
+.colorMidnight {
+  background-color: #1F2024;
+}
+
+.colorSpaceBlack {
+  background-color: #232325;
+}
+
+.colorSpaceGray {
+  background-color: #5A5A5F;
+}
+
+.colorGraphite {
+  background-color: #5A5A5A;
+}
+
+.colorStarlight {
+  background-color: #F9F8F4;
+}
+
+.colorProductRed {
+  background-color: #E12D39;
+}
+
+.colorDeepPurple {
+  background-color: #5D5166;
+}
+
+.colorSierraBlue {
+  background-color: #90A8BE;
+}
+
+.colorPacificBlue {
+  background-color: #5E8FA3;
+}
+
+.colorAlpineGreen {
+  background-color: #505E56;
+}
+
+.colorMidnightGreen {
+  background-color: #4E5851;
+}
+
+.colorSilver {
+  background-color: #E4E4E2;
+}
+
+.colorBlack {
+  background-color: #1B1B1B;
 }
 
 .warrantyOptions {
@@ -425,6 +553,21 @@ input:checked + .switchSlider:before {
   color: #888;
 }
 
+/* Add pulsing animation for the button */
+@keyframes pulsate {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
 .preorderBtn {
   width: 100%;
   padding: 15px;
@@ -435,11 +578,28 @@ input:checked + .switchSlider:before {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   transition: background-color 0.3s;
+  position: relative;
+  overflow: hidden;
   
   &:hover {
     background-color: #e33;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin-left: -40px;
+    margin-top: -40px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: pulsate 1.5s ease-out infinite;
+    pointer-events: none;
   }
 }
 
@@ -470,4 +630,48 @@ input:checked + .switchSlider:before {
   font-size: 16px;
   color: #ccc;
   flex-grow: 1;
+}
+
+/* New styles for product description */
+.productDescription {
+  width: 100%;
+}
+
+.descriptionHeader {
+  background: #1a1a1a;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.descriptionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: white;
+  margin-top: 0;
+}
+
+.descriptionContent {
+  background: #1a1a1a;
+  padding: 10px;
+  color: #ccc;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.descriptionContent p {
+  margin-bottom: 12px;
+}
+
+.descriptionContent ul {
+  margin-left: 20px;
+  margin-bottom: 12px;
+}
+
+.descriptionContent li {
+  margin-bottom: 8px;
+}
+
+.bg {
+  background-color: #1a1a1a;
 }

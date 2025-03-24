@@ -144,7 +144,7 @@ export default function ShowcaseSlider({ category, categoryProducts, setShowOver
                   <div className={styles.slideContent}>
                     {(group || []).map((product: any, index: number) => (
                       <div key={index} className={styles.productWrapper}>
-                        <ProductCard product={product} />
+                        <ProductCard product={product} isSlider />
                       </div>
                     ))}
                   </div>
