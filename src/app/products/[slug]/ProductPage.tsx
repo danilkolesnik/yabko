@@ -505,23 +505,24 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
               </div>
             
               
-              {reviews.map((review) => (
-                <div className={styles.reviewsList}>
+              {reviews?.map((review, i) => (
+                <div className={styles.reviewsList} key={almostReviews[i]}>
                 
                 
-                <div className={styles.reviewItem}>
-                  <div className={styles.reviewHeader}>
-                    <div className={styles.reviewerName}>{review[0]}</div>
+                  <div className={styles.reviewItem}>
+                    <div className={styles.reviewHeader}>
+                      <div className={styles.reviewerName}>{review[0]}</div>
+                      
+                    </div>
                     <div className={styles.reviewStars}>★★★★★</div>
+                    <div className={styles.reviewText}>
+                      {review[1]}
+                    </div>
+                    
                   </div>
-                  <div className={styles.reviewText}>
-                    {review[1]}
-                  </div>
-                  
+                
+                
                 </div>
-                
-                
-              </div>
               ))}
               
               
