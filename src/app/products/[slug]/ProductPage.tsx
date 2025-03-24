@@ -1,8 +1,10 @@
-// app/product/[slug]/ProductPageClient.tsx
 'use client';
+import { useCart } from "@/context/CartContext";
+import { useOverlay } from "@/context/OverlayContext";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.scss';
+import { localStorageService } from "@/services/localStorage";
 
 interface ProductPageClientProps {
   product: any;
@@ -11,7 +13,17 @@ interface ProductPageClientProps {
 
 const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
   const router = useRouter();
+
+  const { openCart } = useCart();
+  const { showOverlay } = useOverlay();
   
+  const handleAddToCart = () => {
+    localStorageService({method: 'set', key: 'cart', value: JSON.stringify(product)});
+    router.push(`/cart`);
+    showOverlay();
+    openCart();
+  }
+
   // State for active image, selected variant, and processed options
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(initialVariant);
@@ -179,7 +191,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
   
   // Get product images - NEW LOGIC
   // Get the variant image (first priority)
-  const variantImage = selectedVariant.metadata?.img.split(",").map(url   => url.trim()) || null;
+  const variantImage = selectedVariant.metadata?.img?.split(",").map(url   => url.trim()) || null;
   
   // Get product images, combining variant image with product images
   const productImages = product.images?.map(img => img.url) || [];
@@ -353,7 +365,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
             ))}
           </div>
           
-          <button className={styles.preorderBtn}>
+          <button onClick={handleAddToCart} className={styles.preorderBtn}>
             {product.status === 'draft' ? 'Передзамовлення' : 'Додати у кошик'}
           </button>
           

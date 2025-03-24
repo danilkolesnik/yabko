@@ -1,5 +1,6 @@
-import styles from './catalog.button.module.scss'
-import { BurgerIcon } from '@/assets/icons/icons'
+import React, { useState, useEffect } from 'react';
+import styles from './catalog.button.module.scss';
+import { BurgerIcon } from '@/assets/icons/icons';
 
 export default function CatalogButton() {
   return (
@@ -10,4 +11,4 @@ export default function CatalogButton() {
       </span>
     </button>
   )
-}
+};
