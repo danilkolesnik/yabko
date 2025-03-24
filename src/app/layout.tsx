@@ -19,14 +19,14 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en">
       <body>
       <OverlayProvider>
-        <CartProvider>
           <Header />
               <main>
+              <CartProvider>
                 {children}
                 <CallButton />
+                </CartProvider>
               </main>
           <Footer />
-        </CartProvider>
         </OverlayProvider>
       </body>
     </html>

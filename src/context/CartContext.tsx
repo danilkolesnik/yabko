@@ -20,7 +20,7 @@ export function useCart() {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setCartOpen] = useState(false); //false
 
-  const openCart = () => setCartOpen(true);
+  const openCart = () => { setCartOpen(true); console.log('big penis')};
   const closeCart = () => setCartOpen(false);
 
   return (

@@ -145,7 +145,7 @@ const renderSingleCard = (
   };
 
   return (
-    <div onClick={() => router.push(`${variant?.metadata?.handle}`)} key={variant?.id || product.id} className={styles.card}>
+    <div onClick={() => router.push(variant?.metadata?.handle)} key={variant?.id || product.id} className={styles.card}>
       {/* Изображение товара */}
       <div className={styles.imageContainer}>
         {variantImages && variantImages.length > 0 ? (
@@ -200,7 +200,7 @@ const renderSingleCard = (
         )}
 
         {/* Название товара */}
-        <h2 className={styles.title}>{variant.title}</h2> 
+        <h2 className={styles.title}>{variant?.title}</h2> 
     
         {/* Секция покупки с ценой */}
         <div className={styles.buySection}>
@@ -209,7 +209,7 @@ const renderSingleCard = (
             handleBuy();
         }} className={styles.buyButton}>Купити</button>
           <span className={styles.price}>
-            {variant?.metadata?.price > 0 ? (formatPrice(variant?.metadata?.price)) : '50530 ₴'}
+            {variant?.metadata?.price > 0 ? (formatPrice(variant?.metadata?.price)) : 'not set'}
           </span>
         </div>
       </div>
