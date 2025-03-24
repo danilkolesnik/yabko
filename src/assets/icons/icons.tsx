@@ -316,3 +316,11 @@ export const CallButtonIcon = () => (
     </path>
   </svg>
 );
+
+export function Star(){
+  return (
+    <svg className="star_w">
+            <use xlinkHref="/catalog/view/theme/black_app/image/sprite_product.svg#star"></use>
+      </svg>
+  )
+}
