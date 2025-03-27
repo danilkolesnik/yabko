@@ -1,7 +1,6 @@
 import styles from './brand.list.module.scss';
 
 const BrandList = ({ productCategories } : any) => {
-    // console.log('brands', productCategories)
     return (
         <div className={styles.brands}>
             <div className={styles.brandListWrapper}>

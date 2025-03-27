@@ -1,84 +1,53 @@
+'use client';
+import { useState } from 'react';
 import styles from './footer.module.scss';
 import { TelegramIcon, ApplePayIcon } from '@/assets/icons/icons';
+import { AccordeonIcon } from '@/assets/icons/icons';
+import { footerLinks } from '@/utils/constants';
+import { phoneNumber, email } from '@/utils/constants';
 
+type MenuState = {
+    products: boolean;
+    information: boolean;
+    contacts: boolean;
+};
+  
 export default function Footer() {
+
+    const [isMenuOpen, setIsMenuOpen] = useState<MenuState>({
+        products: false,
+        information: false,
+        contacts: false,
+    });
+
+    const toggleMenu = (key: keyof MenuState) => {
+        setIsMenuOpen((prevState) => ({
+            ...prevState,
+            [key]: !prevState[key],
+        }));
+    };
+
     return (
         <footer className={styles.footer}>
             <div className={styles.footerTop}>
                 <nav className={styles.footerNav}>
                     <span className={styles.footerNavCaption}>Продукція</span>
                     <div className={styles.footerItemsContainer}>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">iPhone</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">iPad</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Mac</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Apple Watch</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">AirPods</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Гаджети</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Аксесуари</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Веснянi знижки</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Dyson</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Samsung Galaxy</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Смартфони</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Смарт-годинники</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Телевiзори</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Планшети</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Консолi та геймiнг</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Ноутбуки</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">ПК та аксесуари</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Технiка для дому</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Краса та здоров'я</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Розумний дiм</a>
-                        </div>
-                        <div className={styles.footerItem}>
-                            <a className={styles.footerLink} href="#">Фото та аудiо</a>
-                        </div>
+                        {footerLinks.map((link, index) => (
+                            <div className={styles.footerItem} key={index}>
+                                <a className={styles.footerLink} href={link.href}>
+                                    {link.title}
+                                </a>
+                            </div>
+                        ))}
                     </div>
                 </nav>
                 <div className={styles.footerSideBlock}>
                     <span className={styles.footerNavCaption}>Для зв’язку та запитань</span>
                     <div className={styles.footerContactWrapper}>
-                        <a className={styles.footerContactLink} href="#">info@jabko.ua</a>
+                        <a className={styles.footerContactLink} href="#">{email}</a>
                         <span>
-                            <a className={styles.footerContactLink} href="#">0 800 33 03 86 </a>
+                            <a className={styles.footerContactLink} href="#">{phoneNumber} </a>
                             <span className={styles.footerTimeNote}>
                                 (з 9:00 до 22:00)
                             </span>
@@ -95,6 +64,57 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+            <div className={styles.footerMobile}>
+                <div className={styles.accordeon}>
+                    <header className={styles.accordeonHeader} onClick={() => toggleMenu("products")}>
+                        <span className={styles.accordeonTitle}>Продукцiя</span>
+                        <span className={`${styles.arrowWrapper} ${isMenuOpen.products ? styles.expanded : ""}`}>
+                            <AccordeonIcon />
+                        </span>
+                    </header>
+                    <div className={`${styles.mobileNavWrapper} ${isMenuOpen.products ? styles.open : ""}`}>
+                        {footerLinks.map((link, index) => (
+                            <a key={index} className={styles.mobileNavItem} href={link.href}>
+                                {link.title}
+                            </a>
+                        ))}
+                    </div>
+                </div>
+                <div className={styles.accordeon}>
+                    <header className={styles.accordeonHeader} onClick={() => toggleMenu("information")}>
+                        <span className={styles.accordeonTitle}>Iнформацiя</span>
+                        <span className={`${styles.arrowWrapper} ${isMenuOpen.information ? styles.expanded : ""}`}>
+                            <AccordeonIcon />
+                        </span>
+                    </header>
+                    <div className={`${styles.mobileNavWrapper} ${isMenuOpen.information ? styles.open : ""}`}>
+                        Тут буде iнформацiя
+                    </div>
+                </div>
+                <div className={styles.accordeon}>
+                    <header className={styles.accordeonHeader} onClick={() => toggleMenu("contacts")}>
+                        <span className={styles.accordeonTitle}>Для зв'язку та запитань</span>
+                        <span className={`${styles.arrowWrapper} ${isMenuOpen.contacts ? styles.expanded : ""}`}>
+                            <AccordeonIcon />
+                        </span>
+                    </header>
+                    <div className={`${styles.mobileRegularWrapper} ${isMenuOpen.contacts ? styles.open : ""}`}>
+                        <div className={styles.mobileItemWrapper}>
+                            <span className={styles.mobileIcon}>
+                                <img loading="lazy" src="https://img.jabko.ua/image/cache/icons/white/phonefull.png.webp" alt="" />
+                            </span>
+                            <span className={styles.mobileItemName}>{phoneNumber}</span>
+                        </div>
+                        <div className={styles.mobileItemWrapper}>
+                            <span className={styles.mobileIcon}>
+                                <img loading="lazy" src="https://img.jabko.ua/image/cache/icons/white/mailfull.png.webp" alt="" />
+                            </span>
+                            <span className={styles.mobileItemName}>{email}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </footer>
     )
 }

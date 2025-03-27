@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import "./styles.css";
+import React, { useEffect, useState } from "react";
+import { useMobileCategories } from '@/context/MobileCategoriesContext';
 import BrandList from "@/components/brandList/BrandList";
 import CartModal from "@/components/cartModal/CartModal";
 import Overlay from "@/ui/Overlay/Overlay";
@@ -9,10 +10,11 @@ import CategoriesList from "@/components/CategoriesList";
 import ShowcaseSlider from "@/components/showcase/ShowcaseSlider";
 import DescriptionSection from "@/components/description/DescriptionSection";
 import { medusa } from "@/lib/medusa";
+import MobileCatalogButton from "@/ui/mobileCatalogButton/MobileCatalogButton";
 
 export default function HomePage() {
   
-  
+  const { openCategories } = useMobileCategories();
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [sliderCategories, setSliderCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
@@ -87,6 +89,7 @@ export default function HomePage() {
           <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
           <ShowcaseSlider />
         </div>
+        <MobileCatalogButton onClick={() => openCategories()}/>
         <div id='brands'>
           <BrandList productCategories={productCategories} />
         </div>

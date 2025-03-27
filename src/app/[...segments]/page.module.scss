@@ -3,6 +3,9 @@
     padding: 0 15px;
     margin: 0 auto;
     max-width: 1600px;
+    @media screen and (max-width: 768px) {
+      padding: 0 5px;
+    }
   }
   
   .loading {

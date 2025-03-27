@@ -1,19 +1,24 @@
-'use client'
-import { useEffect, useState } from 'react';
-import { useOverlay } from '@/context/OverlayContext';
+'use client';
 import styles from './header.module.scss';
+import { motion } from "framer-motion";
+import { useEffect, useState } from 'react';
+import { useMobileCategories } from '@/context/MobileCategoriesContext';
+import { useOverlay } from '@/context/OverlayContext';
 import { Logo, CartIcon } from '@/assets/icons/icons'
 import CatalogButton from '@/ui/CatalogButton';
 import Search from '@/ui/Search';
 import CartButton from '@/ui/CartButton';
 import MobileCategories from "@/components/mobileCategories/MobileCategories";
 import CategoriesList from '@/components/CategoriesList';
+import Hamburger from 'hamburger-react';
+import { phoneNumber } from '@/utils/constants';
 import { medusa } from "@/lib/medusa";
-import Hamburger from 'hamburger-react'
 
 export default function Header() {
   const { showOverlay, hideOverlay } = useOverlay();
-  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(false);
+  const { isCategoriesOpen, setCategoriesOpen } = useMobileCategories();
+
+  // const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(false);
   const [isTop, setIsTop] = useState(true);
 
   const [isCategoryListVisible, setIsCategoryListVisible] = useState(false);
@@ -47,15 +52,15 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${isCategoryListVisible ? styles.categoriesVisible : ''}`}>
       <div className={`${styles.phoneBar} ${isTop ? styles.visible : styles.hidden}`}>
-        <a className={styles.phoneLink} href="tel:0800330386">
-          0 800 33 03 86
+        <a className={styles.phoneLink} href={`tel:${phoneNumber.replace(/\s/g, "")}`}>
+          {phoneNumber}
         </a>
       </div>
       <div className={styles.mainHeader}>
-        <span onClick={() => setIsMobileCategoriesOpen(!isMobileCategoriesOpen)} className={styles.burgerWrapper}>
-          <Hamburger />
+        <span onClick={() => setCategoriesOpen(!isCategoriesOpen)} className={styles.burgerWrapper}>
+          <Hamburger toggled={isCategoriesOpen} size={24} />
         </span>
-        {isMobileCategoriesOpen && <MobileCategories productCategories={productCategories}/>}
+        <MobileCategories isCategoriesOpen={isCategoriesOpen} productCategories={productCategories}/>
         <a href='/' className={styles.logo}>
           <Logo />
         </a>
@@ -81,7 +86,7 @@ export default function Header() {
           <Search />
           <CartButton />
         </div>
-        <span onClick={() => setIsMobileCategoriesOpen(!isMobileCategoriesOpen)} className={styles.burgerWrapper}>
+        <span className={styles.burgerWrapper}>
           <CartIcon />
         </span>
       </div>

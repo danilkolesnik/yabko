@@ -152,6 +152,7 @@
     transform: translateX(-100%);
     opacity: 0;
     z-index: 0;
+    
   }
   
   .pink {
@@ -189,6 +190,9 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    @media screen and (max-width: 700px) {
+      display: none;
+    }
   }
   
   .navButton:hover {

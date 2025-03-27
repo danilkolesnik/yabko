@@ -6,6 +6,19 @@
   z-index: 930;
 }
 
+.mobileCategories {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.mobileCategories.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
 .categoriesVisible {
   z-index: 999;
 }
@@ -13,6 +26,9 @@
 .logo {
   display: block;
   cursor: pointer;
+  @media screen and (max-width: 700px) {
+    margin: 5px 3px 0 0;
+  }
 }
 
 .phoneBar {
@@ -66,6 +82,9 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  @media screen and (min-width: 1700px) {
+    padding: 0 4rem;
+  }
   @media screen and (max-width: 700px) {
     justify-content: space-between;
   }
@@ -109,6 +128,9 @@
 .catalogContainer {
   margin-top: 10px;
   padding-bottom: 10px;
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
 }
 
 .dropdownContainer {
@@ -120,6 +142,9 @@
   background-color: #0F0F0F;
   padding-top: 10px;
   z-index: 999;
+  @media screen and (min-width: 1700px) {
+    margin-left: 5rem;
+  }
 }
 
 .top {

@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.scss';
 import { localStorageService } from "@/services/localStorage";
+import { styleText } from "util";
+import { div } from "framer-motion/client";
+import { CategoryArrow } from "@/assets/icons/icons";
 
 interface ProductPageClientProps {
   product: any;
@@ -28,7 +31,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState(initialVariant);
   const [selectedWarranty, setSelectedWarranty] = useState('2');
-  
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
   // Processed options for UI rendering
   const [processedOptions, setProcessedOptions] = useState<any[]>([]);
 
@@ -239,7 +242,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
   const handleReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would handle the review submission to your backend
-    alert("Дякую за видгук!")
+    alert("Дякуємо! Ваш відгук буде опубліковано після перевірки модератором.");
     // Reset form
     setReviewerName('');
     setReviewText('');
@@ -264,6 +267,13 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
     <div className={styles.container}>
       <div className={styles.pageWrapper}>
         <div className={styles.mainContent}>
+          <div className={styles.productHeader}>
+            <nav className={styles.productHeaderNav}>
+              <a href="/">Головна</a>
+              <a href="#description">Опис</a>
+              <a href="#reviews">Вiдгуки</a>
+            </nav>
+          </div>
           <div className={styles.productContainer}>
             <div className={styles.productImageSection}>
               <div className={styles.bg}>
@@ -329,15 +339,15 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
               <div className={styles.paymentOptions}>
                 <div className={styles.paymentOption}>
                   <div className={styles.paymentIcon}>📱</div>
-                  <span>Оплата Частинами</span>
+                  <span className={styles.paymentOptionSpan}>Оплата Частинами</span>
                 </div>
                 <div className={styles.paymentOption}>
                   <div className={styles.paymentIcon}>🚚</div>
-                  <span>Безкоштовна доставка</span>
+                  <span className={styles.paymentOptionSpan}>Безкоштовна доставка</span>
                 </div>
                 <div className={styles.paymentOption}>
                   <div className={styles.paymentIcon}>🔄</div>
-                  <span>Вигідний TRADE-IN</span>
+                  <span className={styles.paymentOptionSpan}>Вигідний TRADE-IN</span>
                 </div>
               </div>
               
@@ -392,6 +402,11 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
                 ))}
               </div>
               
+              <div className={styles.warrantyNote}>
+                <span>
+                  Гарантiю 1 рiк вiд магазину включено у вартiсть.
+                </span>
+              </div>
               <button onClick={handleAddToCart} className={styles.preorderBtn}>
                 {product.status === 'draft' ? 'Передзамовлення' : 'Додати у кошик'}
               </button>
@@ -406,7 +421,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
                   </div>
                   <div className={styles.warrantyItem}>
                     <span className={styles.warrantyIcon}>🛡️</span>
-                    <span className={styles.warrantyText}>Гарантiя вiд виробника та магазину до 2 років.</span>
+                    <span className={styles.warrantyText}>Гарантiя вiд виробника та магазину до 1 року.</span>
                     <span className={styles.infoIcon}>ⓘ</span>
                   </div>
                   <div className={styles.warrantyItem}>
@@ -416,133 +431,142 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
                   </div>
                 </div>
               </div>
-              {product.description ? (
-                <div className={styles.productDescription}>
-                  <div className={styles.descriptionContent}>
-                    <h2 className={styles.descriptionTitle}>Опис товару:</h2>
-                    {product.description}
-                  </div>
-                </div>
-              ) : null}
             </div>
           </div>
-
-          {/* Review Section */}
-          <div className={styles.reviewContainer}>
-            <div className={styles.sameContainer}>
-              <div className={styles.formWrapper}>
-                  <h2 className={styles.reviewTitle}>Відгуки клієнтів про {selectedVariant?.title}</h2>
-                
-                <div className={styles.overallRating}>
-                  {/* <div className={styles.ratingStars}>★★★★★</div> */}
-                  <div className={styles.ratingValue}>
-                    Загальний рейтинг товару: <div className={styles.ratingStars}>★★★★★</div> <span className={styles.reviewCount}>(44 відгуків)</span>
+          <div className={styles.bottomFlex}>
+          {/* Description Section */}
+            <div className={styles.innerMainFlex}>
+              <div id='description' className={styles.decriptionContainer}>
+                <header className={styles.descriptionHeader} onClick={() => setDescriptionOpen(!descriptionOpen)}>
+                  <h6>Детальнiше про {product?.title}</h6>
+                  <span className={`${styles.arrowWrapper} ${descriptionOpen ? styles.expanded : ''}`}>
+                    <CategoryArrow />
+                  </span>
+                </header>
+                { descriptionOpen && (
+                  <div className={styles.descriptionContent}>
+                    {product?.description}
                   </div>
-                </div>
-                
-                <form className={styles.reviewForm} onSubmit={handleReviewSubmit}>
-                  <div className={styles.reviewFormField}>
-                    {/* <div className={styles.rate}></div> */}
-                    <input
-                      type="text"
-                      placeholder="Ваше ім'я"
-                      className={styles.reviewFormInput}
-                      value={reviewerName}
-                      onChange={(e) => setReviewerName(e.target.value)}
-                      required
-                    />
-                    <div className={styles.starRating}>
-                      <div className={styles.ratingLabel}>Оцінка:</div>
-                        <div className={styles.stars}>
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                              key={star}
-                              className={`${styles.star} ${rating >= star || hoverRating >= star ? styles.active : ''}`}
-                              onClick={() => handleRatingClick(star)}
-                              onMouseEnter={() => setHoverRating(star)}
-                              onMouseLeave={() => setHoverRating(0)}
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                  </div>
-                  
-                  
-                  
-                  <div className={styles.reviewFormField}>
-                    <textarea
-                      placeholder="Ваш коментарий"
-                      className={styles.reviewFormTextarea}
-                      value={reviewText}
-                      onChange={(e) => setReviewText(e.target.value)}
-                      required
-                    ></textarea>
-                  </div>
-                  
-                  <div className={styles.buttonGroup}>
-                    <input
-                      type="file"
-                      id="photo-upload"
-                      className={styles.fileInput}
-                      multiple
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                    <button
-                      type="button"
-                      className={`${styles.reviewFormButton} ${styles.photoButton}`}
-                      onClick={handleFileButtonClick}
-                    >
-                      <span>📷</span> Додати фотографії
-                    </button>
-                    <button type="submit" className={styles.reviewFormButton}>
-                      Залишити відгук
-                    </button>
-                  </div>
-                </form>
+                )}
               </div>
-            
-              
-              {reviews?.map((review, i) => (
-                <div className={styles.reviewsList} key={almostReviews[i]}>
-                
-                
-                  <div className={styles.reviewItem}>
-                    <div className={styles.reviewHeader}>
-                      <div className={styles.reviewerName}>{review[0]}</div>
-                      
-                    </div>
-                    <div className={styles.reviewStars}>★★★★★</div>
-                    <div className={styles.reviewText}>
-                      {review[1]}
+              {/* Review Section */}
+              <div className={styles.reviewContainer} id='reviews'>
+                <div className={styles.sameContainer}>
+                  <div className={styles.formWrapper}>
+                      <h2 className={styles.reviewTitle}>Відгуки клієнтів про {selectedVariant?.title}</h2>
+                    
+                    <div className={styles.overallRating}>
+                      {/* <div className={styles.ratingStars}>★★★★★</div> */}
+                      <div className={styles.ratingValue}>
+                        Загальний рейтинг товару: <div className={styles.ratingStars}>★★★★★</div> <span className={styles.reviewCount}>(44 відгуків)</span>
+                      </div>
                     </div>
                     
+                    <form className={styles.reviewForm} onSubmit={handleReviewSubmit}>
+                      <div className={styles.reviewFormField}>
+                        {/* <div className={styles.rate}></div> */}
+                        <input
+                          type="text"
+                          placeholder="Ваше ім'я"
+                          className={styles.reviewFormInput}
+                          value={reviewerName}
+                          onChange={(e) => setReviewerName(e.target.value)}
+                          required
+                        />
+                        <div className={styles.starRating}>
+                          <div className={styles.ratingLabel}>Оцінка:</div>
+                            <div className={styles.stars}>
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <span
+                                  key={star}
+                                  className={`${styles.star} ${rating >= star || hoverRating >= star ? styles.active : ''}`}
+                                  onClick={() => handleRatingClick(star)}
+                                  onMouseEnter={() => setHoverRating(star)}
+                                  onMouseLeave={() => setHoverRating(0)}
+                                >
+                                  ★
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                      </div>
+                      
+                      
+                      
+                      <div className={styles.reviewFormField}>
+                        <textarea
+                          placeholder="Ваш коментарий"
+                          className={styles.reviewFormTextarea}
+                          value={reviewText}
+                          onChange={(e) => setReviewText(e.target.value)}
+                          required
+                        ></textarea>
+                      </div>
+                      
+                      <div className={styles.buttonGroup}>
+                        <input
+                          type="file"
+                          id="photo-upload"
+                          className={styles.fileInput}
+                          multiple
+                          accept="image/*"
+                          onChange={handleFileChange}
+                        />
+                        <button
+                          type="button"
+                          className={`${styles.reviewFormButton} ${styles.photoButton}`}
+                          onClick={handleFileButtonClick}
+                        >
+                          <span>📷</span> Додати фотографії
+                        </button>
+                        <button type="submit" className={styles.reviewFormButton}>
+                          Залишити відгук
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 
-                
+                  
+                  {reviews?.map((review, i) => (
+                    <div className={styles.reviewsList} key={almostReviews[i]}>
+                    
+                    
+                      <div className={styles.reviewItem}>
+                        <div className={styles.reviewHeader}>
+                          <div className={styles.reviewerName}>{review[0]}</div>
+                          
+                        </div>
+                        <div className={styles.reviewStars}>★★★★★</div>
+                        <div className={styles.reviewText}>
+                          {review[1]}
+                        </div>
+                        
+                      </div>
+                    
+                    
+                    </div>
+                  ))}
+                  
+                  
                 </div>
-              ))}
-              
-              
+              </div>
             </div>
             <div className={styles.variantSidebar}>
-                    <img
-                      src={finalImages[0] || "/iphone.jpg"}
-                      alt={selectedVariant?.title}
-                      className={styles.variantImage}
-                    />
-                    <h3 className={styles.variantTitle}>
-                      {selectedVariant?.title}
-                    </h3>
-                    <div className={styles.variantPrice}>
-                      <span className={styles.variantCurrentPrice}>{currentPrice}</span>
-                      <span className={styles.variantOldPrice}>{oldPrice}</span>
-                    </div>
-                    <button className={styles.buyButton} onClick={handleAddToCart}>
-                      Купити
-                    </button>
+              <img
+                src={finalImages[0] || "/iphone.jpg"}
+                alt={selectedVariant?.title}
+                className={styles.variantImage}
+              />
+              <h3 className={styles.variantTitle}>
+                {selectedVariant?.title}
+              </h3>
+              <div className={styles.variantPrice}>
+                <span className={styles.variantCurrentPrice}>{currentPrice}</span>
+                <span className={styles.variantOldPrice}>{oldPrice}</span>
+              </div>
+              <button className={styles.buyButton} onClick={handleAddToCart}>
+                Купити
+              </button>
             </div>
           </div>
         </div>

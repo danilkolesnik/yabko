@@ -1,5 +1,8 @@
 .productSliderContainer {
   margin-top: 42px;
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
 }
 
 .productSliderHeader {
@@ -8,6 +11,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 0.8rem 0 0;
 }
 
 .headerCaptionWrapper {

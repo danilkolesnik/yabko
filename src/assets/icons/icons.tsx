@@ -231,7 +231,7 @@ export function CartIcon(props: SVGProps<SVGSVGElement>) {
 
 export const CategoryArrow = (props: SVGProps<SVGSVGElement>) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 14" width="7" height="13">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 15" width="9" height="15">
       <g xmlns="http://www.w3.org/2000/svg" transform="matrix(0 -1 1 0 -0 14)">
       <path fillRule="evenodd" clipRule="evenodd" d="M7.39819 7.22371C7.17851 7.44338 6.82241 7.44338 6.60274 7.22371L0.867876 1.48883C0.648208 1.26916 0.648208 0.913059 0.867876 0.693384L1.13305 0.428184C1.35271 0.208509 1.70887 0.208509 1.92854 0.428184L7.00046 5.50013L12.0724 0.428184C12.2921 0.208509 12.6482 0.208509 12.8679 0.428184L13.1331 0.693384C13.3527 0.913059 13.3527 1.26916 13.1331 1.48883L7.39819 7.22371Z" fill="currentColor"></path></g>
     </svg>
@@ -324,3 +324,46 @@ export function Star(){
       </svg>
   )
 }
+
+export const ReviewsIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g id="SVGRepo_bgCarrier" strokeWidth="0"/>
+    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"/>
+    <g id="SVGRepo_iconCarrier"> <path fillRule="evenodd" clipRule="evenodd" d="M3 10.4C3 8.15979 3 7.03969 3.43597 6.18404C3.81947 5.43139 4.43139 4.81947 5.18404 4.43597C6.03969 4 7.15979 4 9.4 4H14.6C16.8402 4 17.9603 4 18.816 4.43597C19.5686 4.81947 20.1805 5.43139 20.564 6.18404C21 7.03969 21 8.15979 21 10.4V11.6C21 13.8402 21 14.9603 20.564 15.816C20.1805 16.5686 19.5686 17.1805 18.816 17.564C17.9603 18 16.8402 18 14.6 18H7.41421C7.149 18 6.89464 18.1054 6.70711 18.2929L4.70711 20.2929C4.07714 20.9229 3 20.4767 3 19.5858V18V13V10.4ZM9 8C8.44772 8 8 8.44772 8 9C8 9.55228 8.44772 10 9 10H15C15.5523 10 16 9.55228 16 9C16 8.44772 15.5523 8 15 8H9ZM9 12C8.44772 12 8 12.4477 8 13C8 13.5523 8.44772 14 9 14H12C12.5523 14 13 13.5523 13 13C13 12.4477 12.5523 12 12 12H9Z" fill="#999999"/> </g>
+  </svg>
+);
+
+export const AccordeonIcon = () => (
+  <svg width="15" height="10" viewBox="0 0 15 10" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7.01055 8.93841C7.4003 9.32971 8.02159 9.31949 8.39825 8.91557L14.5362 2.33339C14.9129 1.92947 14.9023 1.28482 14.5125 0.893521C14.1228 0.50222 13.5015 0.512447 13.1248 0.916362L7.66885 6.76719L2.02326 1.09909C1.63351 0.707793 1.01222 0.71802 0.635563 1.12194C0.258906 1.52585 0.269517 2.1705 0.659263 2.5618L7.01055 8.93841ZM6.68802 6.80919L6.7113 8.22321L8.6738 8.19091L8.65052 6.77688L6.68802 6.80919Z">
+    </path>
+  </svg>
+);
+
+export const MobileCatalogIcon = () => (
+  <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_5717_2476)">
+      <mask id="path-1-inside-1_5717_2476" fill="white">
+        <rect y="0.268066" width="7" height="7" rx="1"></rect>
+      </mask>
+      <rect y="0.268066" width="7" height="7" rx="1" stroke="black" strokeWidth="2.6" mask="url(#path-1-inside-1_5717_2476)"></rect>
+      <mask id="path-2-inside-2_5717_2476" fill="white">
+        <rect x="8" y="0.268066" width="7" height="7" rx="1"></rect>
+      </mask>
+      <rect x="8" y="0.268066" width="7" height="7" rx="1" stroke="black" strokeWidth="2.6" mask="url(#path-2-inside-2_5717_2476)"></rect>
+      <mask id="path-3-inside-3_5717_2476" fill="white">
+        <rect y="8.26807" width="7" height="7" rx="1"></rect>
+      </mask>
+      <rect y="8.26807" width="7" height="7" rx="1" stroke="black" strokeWidth="2.6" mask="url(#path-3-inside-3_5717_2476)"></rect>
+      <mask id="path-4-inside-4_5717_2476" fill="white">
+        <rect x="8" y="8.26807" width="7" height="7" rx="1"></rect>
+      </mask>
+      <rect x="8" y="8.26807" width="7" height="7" rx="1" stroke="black" strokeWidth="2.6" mask="url(#path-4-inside-4_5717_2476)"></rect>
+    </g>
+    <defs>
+      <clipPath id="clip0_5717_2476">
+        <rect width="15" height="16" fill="white"></rect>
+      </clipPath>
+    </defs>
+  </svg>
+)

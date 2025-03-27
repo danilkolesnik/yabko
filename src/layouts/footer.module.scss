@@ -1,6 +1,9 @@
 
 .footer {
     padding: 0px 15px 0px 25px;
+    @media screen and (max-width: 700px) {
+        padding: 0 0 90px 0;
+    }
 }
 
 .footerTop {
@@ -10,10 +13,13 @@
     justify-content: space-between;
     margin: 0px 2rem;
     
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 900px) {
         flex-direction: column;
         gap: 1rem;
         margin: 0px 5px;
+    }
+    @media screen and (max-width: 700px) {
+        display: none;
     }
 }
 
@@ -104,4 +110,96 @@
     align-items: center;
     margin: 0 2px 0 15px;
     height: 25px;
+}
+
+//mobile
+
+.footerMobile {
+    padding: 12px 6px 0;
+    @media screen and (min-width: 700px) {
+        display: none;
+    }
+}
+
+.accordeon {
+    background-color: #1d1d1d;
+    padding: 0 20px;
+    margin-bottom: 6px;
+}
+
+.accordeonHeader {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 59px;
+}
+
+.accordeonTitle {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #fff;
+    letter-spacing: .75px;
+}
+
+.arrowWrapper {
+  transition: transform 0.3s ease;
+}
+
+.expanded {
+  transform: rotate(180deg);
+}
+
+.mobileNavWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.mobileRegularWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.open {
+    max-height: 500px; 
+    opacity: 1;
+    padding-bottom: 15px;
+}
+
+.mobileNavItem {
+    border-radius: 4px;
+    border: 1px solid #999;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    font-weight: 600;
+    line-height: 20px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.mobileItemWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mobileIcon {
+    width: 23px;
+}
+
+.mobileItemName {
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: .75px;
 }

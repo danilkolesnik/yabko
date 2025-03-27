@@ -3,7 +3,7 @@ import { useOverlay } from "@/context/OverlayContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./product.card.module.scss";
-import { RatingStarIcon } from "@/assets/icons/icons";
+import { RatingStarIcon, ReviewsIcon } from "@/assets/icons/icons";
 import { localStorageService } from "@/services/localStorage";
 import { getColorCode } from "@/utils/constants";
 
@@ -138,7 +138,7 @@ const renderSingleCard = (
   const handle: string = variant?.metadata?.handle;
   const variantImages: string[] = variant?.metadata?.img?.split(",").map((url : any) => url.trim());
 
-  const handleBuy = () => {
+  const handleBuy = (variant: any) => {
     localStorageService({method: 'set', key: 'cart', value: JSON.stringify(product)});
     showOverlay();
     openCart();
@@ -206,7 +206,7 @@ const renderSingleCard = (
         <div className={styles.buySection}>
           <button type="button" onClick={(event) => {
             event.stopPropagation();
-            handleBuy();
+            handleBuy(variant);
         }} className={styles.buyButton}>Купити</button>
           <span className={styles.price}>
             {variant?.metadata?.price > 0 ? (formatPrice(variant?.metadata?.price)) : '50530 ₴'}
@@ -276,7 +276,12 @@ const renderProduct = (
         {/* Рейтинг */}
         <div className={styles.rating}>
           <span>{[1,2,3,4,5].map((star) => <RatingStarIcon key={star} />)}</span>
-          <span className={styles.reviewCount}>(40)</span>
+          <div className={styles.reviewsCountWrapper}>
+            <span className={styles.reviewIcon}>
+              <ReviewsIcon />
+            </span>
+            <span className={styles.reviewCount}>(40)</span>
+          </div>
         </div>
         
         {/* Color circles - NEW */}
