@@ -7,7 +7,7 @@ import styles from './page.module.scss';
 import { localStorageService } from "@/services/localStorage";
 import { styleText } from "util";
 import { div } from "framer-motion/client";
-import { CategoryArrow } from "@/assets/icons/icons";
+import { CategoryArrow, InfoIcon } from "@/assets/icons/icons";
 
 interface ProductPageClientProps {
   product: any;
@@ -338,16 +338,22 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
               
               <div className={styles.paymentOptions}>
                 <div className={styles.paymentOption}>
-                  <div className={styles.paymentIcon}>📱</div>
+                  <div className={styles.paymentIcon}>
+                    <img src="https://img.jabko.ua/image/cache/catalog/products/2024/11/051707/PUMB_SCH_full.png.webp" width="19" height="19" loading="lazy" alt="" />
+                  </div>
                   <span className={styles.paymentOptionSpan}>Оплата Частинами</span>
                 </div>
                 <div className={styles.paymentOption}>
-                  <div className={styles.paymentIcon}>🚚</div>
+                  <div className={styles.paymentIcon}>
+                    <img src="https://img.jabko.ua/image/cache/catalog/products/2024/07/260626/free-icon-delivery-truck-5470239-(1)full.png.webp" width="19" height="19" loading="lazy" alt="" />
+                  </div>
                   <span className={styles.paymentOptionSpan}>Безкоштовна доставка</span>
                 </div>
                 <div className={styles.paymentOption}>
-                  <div className={styles.paymentIcon}>🔄</div>
-                  <span className={styles.paymentOptionSpan}>Вигідний TRADE-IN</span>
+                  <div className={styles.paymentIcon}>
+                    <img src="https://img.jabko.ua/image/cache/catalog/products/2024/11/011237/exchangefull.png.webp" width="19" height="19" loading="lazy" alt="" />
+                  </div>
+                  <span className={styles.paymentOptionSpanSpecial}>Вигідний TRADE-IN</span>
                 </div>
               </div>
               
@@ -408,10 +414,10 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
                 </span>
               </div>
               <button onClick={handleAddToCart} className={styles.preorderBtn}>
-                {product.status === 'draft' ? 'Передзамовлення' : 'Додати у кошик'}
+                {product.status === 'draft' ? 'Передзамовлення' : 'Купити'}
               </button>
               
-              <div className={styles.specRow}>
+              <div className={`${styles.specRow} ${styles.unique}`}>
                 <div className={styles.warrantyInfo}>
                   <h3 className={styles.warrantyTitle}>Гарантія та доставка:</h3>
                   <div className={styles.warrantyItem}>
@@ -428,6 +434,43 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
                     <span className={styles.warrantyIcon}>🔄</span>
                     <span className={styles.warrantyText}>Швидкий обмiн та повернення протягом 14 днiв.</span>
                     <span className={styles.infoIcon}>ⓘ</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.mobileWarrantyWrapper}>
+                <header className={styles.mobileWarrantyHeader}>
+                  <h6>Гарантія та доставка:</h6>
+                </header>
+                <div className={styles.mobileWarrantyContainer}>
+                  <div className={styles.mobileWarrantyRow}>
+                    <span className={styles.warrantyIcon}>
+                      <img src="https://img.jabko.ua/image/iconproduct/_delivery.svg" alt="Apple iPhone 15 128GB (Blue)" loading="lazy" />
+                    </span>
+                    <span className={styles.mobileWarrantyText}>Безкоштовна доставка у магазин та відділення Нової Пошти.</span>
+                    <span className={`${styles.warrantyIcon} ${styles.mobileInfo}`}>
+                      <InfoIcon />
+                    </span>
+                  </div>
+
+                  <div className={styles.mobileWarrantyRow}>
+                    <span className={styles.warrantyIcon}>
+                      <img src="https://img.jabko.ua/image/cache/-main-new/medalfull.png.webp" alt="Apple iPhone 15 128GB (Blue)" loading="lazy"/>
+                    </span>
+                    <span className={styles.mobileWarrantyText}>Гарантія від виробника та магазину  до 2 років.</span>
+                    <span className={`${styles.warrantyIcon} ${styles.mobileInfo}`}>
+                      <InfoIcon />
+                    </span>
+                  </div>
+
+                  <div className={styles.mobileWarrantyRow}>
+                    <span className={styles.warrantyIcon}>
+                      <img src="https://img.jabko.ua/image/iconproduct/_flip.svg" alt="Apple iPhone 15 128GB (Blue)" loading="lazy" />
+                    </span>
+                    <span className={styles.mobileWarrantyText}>Безкоштовна доставка у магазин та відділення Нової Пошти.</span>
+                    <span className={`${styles.warrantyIcon} ${styles.mobileInfo}`}>
+                      <InfoIcon />
+                    </span>
                   </div>
                 </div>
               </div>
