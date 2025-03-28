@@ -5,6 +5,7 @@ import CatalogSlider from './catalogSlider/CatalogSlider';
 import ProductCard from './productCard/ProductCard';
 import Link from 'next/link';
 import { medusa } from "@/lib/medusa";
+import { AccordeonIcon } from '@/assets/icons/icons';
 
 // Базовые интерфейсы
 interface ProductImage {
@@ -53,7 +54,7 @@ export interface Product {
   images: ProductImage[];
   variants: ProductVariant[];
   options?: ProductOption[];
-  categories?: Category[]; // Категории продукта
+  categories?: Category[]; // Категории  та
 }
 
 interface CatalogPageProps {
@@ -86,14 +87,10 @@ interface FilterGroup {
 // Функция для получения значения опции из варианта
 const getVariantOptionValue = (variant: ProductVariant, optionName: string): string | undefined => {
   const lowerOptionName = optionName.toLowerCase();
-  console.log("LOWEROPTIONNAME ", lowerOptionName);
-  console.log("OPTION NAME: ", optionName)
   
   // 1. Сначала проверяем прямые свойства варианта
   for (const key in variant) {
     if (key.toLowerCase() === lowerOptionName && variant[key] !== undefined) {
-      console.log("VARIANT KEY zzzzzzzzzzzz: ", variant[key]);
-      console.log("VARIANT: ", variant);
       return String(variant[key]);
     }
   }
@@ -120,14 +117,6 @@ const getVariantOptionValue = (variant: ProductVariant, optionName: string): str
         return optItem.value;
       }
       
-      // 3.2 Проверяем наличие прямого поля title
-      // if (optItem.title && 
-      //     optItem.title.toLowerCase() === lowerOptionName && 
-      //     optItem.value !== undefined) {
-      //   return optItem.value;
-      // }
-      
-      // 3.3 Проверяем, есть ли свойство с именем опции в самом элементе options
       if (optItem[lowerOptionName] !== undefined) {
         console.log("OptItem[lowerOptionName]: ")
         return String(optItem[lowerOptionName]);
@@ -387,6 +376,9 @@ export default function CatalogPage({
   breadcrumbs = [],
   allCategories = []
 }: CatalogPageProps) {
+  // Состояние для отображения/скрытия панели фильтров
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+  
   // Все варианты для отслеживания
   const [allVariants, setAllVariants] = useState<{product: Product, variant: ProductVariant}[]>([]);
   // Отфильтрованные варианты
@@ -409,6 +401,11 @@ export default function CatalogPage({
   // Выбранные фильтры
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  
+  // Переключение панели фильтров
+  const toggleFilterPanel = () => {
+    setIsFilterPanelOpen(!isFilterPanelOpen);
+  };
   
   // НОВОЕ: Подготовка иерархии категорий для фильтрации
   useEffect(() => {
@@ -491,6 +488,20 @@ export default function CatalogPage({
     setSelectedFilters(prev => ({...prev, ...initialCategoryFilters}));
     
   }, [allCategories, products, category.id]);
+  
+  useEffect(() => {
+    // Prevent body scrolling when filter panel is open
+    if (isFilterPanelOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    // Cleanup function to restore scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isFilterPanelOpen]);
   
   // Первоначальная инициализация данных
   useEffect(() => {
@@ -917,11 +928,29 @@ export default function CatalogPage({
           ))}
         </div>
       )}
+      
       {/* Заголовок категории */}
       <h1 className={styles.categoryTitle}>{category?.name || 'Категория'}</h1>
-      <div className={styles.catalogContent}>
-        {/* Сайдбар с фильтрами */}
-        <div className={styles.filterSidebar}>
+      
+      {/* Кнопка для отображения фильтров */}
+      <button 
+        className={styles.filterButton} 
+        onClick={toggleFilterPanel}
+      >
+        <span className={styles.filterIcon}></span>
+        Фільтри
+      </button>
+      
+      {/* Панель фильтров, которая выезжает сверху */}
+      <div className={`${styles.filterPanel} ${isFilterPanelOpen ? styles.filterPanelOpen : ''}`}>
+        <div className={styles.filterPanelHeader}>
+          <h2>Фільтри</h2>
+          <button className={styles.closeButton} onClick={toggleFilterPanel}>
+            ✕
+          </button>
+        </div>
+        
+        <div className={styles.filterPanelContent}>
           {/* Фильтр по цене */}
           <div className={styles.filterGroup}>
             <div 
@@ -930,7 +959,7 @@ export default function CatalogPage({
             >
               <h3>Ціна</h3>
               <span className={`${styles.collapseIcon} ${attributeFilterGroups[0]?.expanded ? '' : styles.rotatedIcon}`}>
-                ▼
+                <AccordeonIcon />
               </span>
             </div>
             
@@ -963,7 +992,163 @@ export default function CatalogPage({
               >
                 <h3>{productFilterGroup.name}</h3>
                 <span className={`${styles.collapseIcon} ${productFilterGroup.expanded ? '' : styles.rotatedIcon}`}>
-                  ▼
+                  <AccordeonIcon />
+                </span>
+              </div>
+              
+              <div className={`${styles.filterContent} ${productFilterGroup.expanded ? styles.expanded : ''}`}>
+                <div className={styles.filterOptions}>
+                  {productFilterGroup.options.map((option) => (
+                    <div key={`products-${option.value}`} className={styles.filterOption}>
+                      <input
+                        type="checkbox"
+                        id={`products-mobile-${option.value}`}
+                        checked={selectedFilters['products']?.includes(option.value) || false}
+                        onChange={() => handleFilterChange('products', option.value)}
+                      />
+                      <label htmlFor={`products-mobile-${option.value}`}>
+                        {option.label}
+                        {option.count > 0 && (
+                          <span>({option.count})</span>
+                        )}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Фильтры по категориям */}
+          {categoryFilterGroups.map((group) => (
+            <div key={group.id} className={styles.filterGroup}>
+              <div 
+                className={styles.filterHeader} 
+                onClick={() => toggleFilterGroup(group.id)}
+              >
+                <h3>{group.name}</h3>
+                <span className={`${styles.collapseIcon} ${group.expanded ? '' : styles.rotatedIcon}`}>
+                  <AccordeonIcon />
+                </span>
+              </div>
+              
+              <div className={`${styles.filterContent} ${group.expanded ? styles.expanded : ''}`}>
+                <div className={styles.filterOptions}>
+                  {group.options.map((option) => (
+                    <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
+                      <input
+                        type="checkbox"
+                        id={`${group.id}-mobile-${option.value}`}
+                        checked={selectedFilters[group.id]?.includes(option.value) || false}
+                        onChange={() => handleFilterChange(group.id, option.value)}
+                      />
+                      <label htmlFor={`${group.id}-mobile-${option.value}`}>
+                        {option.label}
+                        {option.count > 0 && (
+                          <span>({option.count})</span>
+                        )}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+          
+          {/* Динамические фильтры по атрибутам продуктов */}
+          {attributeFilterGroups.slice(1).map((group) => (
+            <div key={group.id} className={styles.filterGroup}>
+              <div 
+                className={styles.filterHeader} 
+                onClick={() => toggleFilterGroup(group.id)}
+              >
+                <h3>{group.name}</h3>
+                <span className={`${styles.collapseIcon} ${group.expanded ? '' : styles.rotatedIcon}`}>
+                  <AccordeonIcon />
+                </span>
+              </div>
+              
+              <div className={`${styles.filterContent} ${group.expanded ? styles.expanded : ''}`}>
+                <div className={styles.filterOptions}>
+                  {group.options.map((option) => (
+                    <div key={`${group.id}-${option.value}`} className={styles.filterOption}>
+                      <input
+                        type="checkbox"
+                        id={`${group.id}-mobile-${option.value}`}
+                        checked={selectedFilters[group.id]?.includes(option.value) || false}
+                        onChange={() => handleFilterChange(group.id, option.value)}
+                      />
+                      {(group.name.toLowerCase().includes('цвет') || group.name.toLowerCase().includes('color') || group.name.toLowerCase().includes('колір')) && (
+                        <span 
+                          className={styles.colorSquare}
+                          style={{ backgroundColor: getColorCode(option.value) }}
+                        />
+                      )}
+                      <label htmlFor={`${group.id}-mobile-${option.value}`}>
+                        {option.label}
+                        {option.count > 0 && (
+                          <span>({option.count})</span>
+                        )}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Кнопка сброса фильтров */}
+          <button className={styles.resetButton} onClick={resetFilters}>
+            Скинути фільтр
+          </button>
+        </div>
+      </div>
+      
+      <div className={styles.catalogContent}>
+        {/* Сайдбар с фильтрами (только для десктопа) */}
+        <div className={styles.filterSidebar}>
+          {/* Фильтр по цене */}
+          <div className={styles.filterGroup}>
+            <div 
+              className={styles.filterHeader} 
+              onClick={() => toggleFilterGroup('price')}
+            >
+              <h3>Ціна</h3>
+              <span className={`${styles.collapseIcon} ${attributeFilterGroups[0]?.expanded ? '' : styles.rotatedIcon}`}>
+                <AccordeonIcon />
+              </span>
+            </div>
+            
+            <div className={`${styles.filterContent} ${attributeFilterGroups[0]?.expanded ? styles.expanded : ''}`}>
+              <div className={styles.priceRange}>
+                <div className={styles.rangeValues}>
+                  <span>{currentPriceRange[0]}</span>
+                  <span>{currentPriceRange[1]}</span>
+                </div>
+                <div className={styles.rangeSliders}>
+                  <input
+                    type="range"
+                    min={priceRange[0]}
+                    max={priceRange[1]}
+                    value={currentPriceRange[1]}
+                    onChange={(e) => handlePriceRangeChange(currentPriceRange[0], Number(e.target.value))}
+                    className={styles.rangeSlider}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* НОВОЕ: Фильтр по продуктам */}
+          {productFilterGroup && (
+            <div className={styles.filterGroup}>
+              <div 
+                className={styles.filterHeader} 
+                onClick={() => toggleFilterGroup('products')}
+              >
+                <h3>{productFilterGroup.name}</h3>
+                <span className={`${styles.collapseIcon} ${productFilterGroup.expanded ? '' : styles.rotatedIcon}`}>
+                  <AccordeonIcon />
                 </span>
               </div>
               
@@ -999,7 +1184,7 @@ export default function CatalogPage({
               >
                 <h3>{group.name}</h3>
                 <span className={`${styles.collapseIcon} ${group.expanded ? '' : styles.rotatedIcon}`}>
-                  ▼
+                  <AccordeonIcon />
                 </span>
               </div>
               
@@ -1035,7 +1220,7 @@ export default function CatalogPage({
               >
                 <h3>{group.name}</h3>
                 <span className={`${styles.collapseIcon} ${group.expanded ? '' : styles.rotatedIcon}`}>
-                  ▼
+                  <AccordeonIcon />
                 </span>
               </div>
               
@@ -1094,6 +1279,11 @@ export default function CatalogPage({
           )}
         </div>
       </div>
+      
+      {/* Затемнение фона при открытых фильтрах */}
+      {isFilterPanelOpen && (
+        <div className={styles.overlay} onClick={toggleFilterPanel}></div>
+      )}
     </div>
   );
 }
