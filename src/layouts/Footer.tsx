@@ -42,6 +42,26 @@ export default function Footer() {
                         ))}
                     </div>
                 </nav>
+                <div className={styles.footerInfoBlock}>
+                    <span className={styles.footerNavCaption}>Iнформацiя</span>
+                    <div className={styles.footerItemsContainer}>
+                        <div className={styles.footerItem}>
+                            <a className={styles.footerLink} href='#'>
+                                Гарантія та сервіс
+                            </a>
+                        </div>
+                        <div className={styles.footerItem}>
+                            <a className={styles.footerLink} href='#'>
+                                Доставка та оплата
+                            </a>
+                        </div>
+                        <div className={styles.footerItem}>
+                            <a className={styles.footerLink} href='#'>
+                                Договір публічної оферти
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div className={styles.footerSideBlock}>
                     <span className={styles.footerNavCaption}>Для зв’язку та запитань</span>
                     <div className={styles.footerContactWrapper}>
@@ -87,8 +107,25 @@ export default function Footer() {
                             <AccordeonIcon />
                         </span>
                     </header>
-                    <div className={`${styles.mobileNavWrapper} ${isMenuOpen.information ? styles.open : ""}`}>
-                        Тут буде iнформацiя
+                    <div className={`${styles.mobileRegularWrapper} ${isMenuOpen.information ? styles.open : ""}`}>
+                        <div className={styles.mobileItemWrapper}>
+                            <span className={styles.mobileIcon}>
+                                <img width="23" height="23" loading="lazy" src="https://img.jabko.ua/image/icons/white/service.svg" alt="" />
+                            </span>
+                            <span className={styles.mobileItemName}>Гарантія та сервіс</span>
+                        </div>
+                        <div className={styles.mobileItemWrapper}>
+                            <span className={styles.mobileIcon}>
+                                <img width="23" height="23" loading="lazy" src="https://img.jabko.ua/image/cache/icons/white/blogfull.png.webp" alt="" />
+                            </span>
+                            <span className={styles.mobileItemName}>Доставка та оплата</span>
+                        </div>
+                        <div className={styles.mobileItemWrapper}>
+                            <span className={styles.mobileIcon}>
+                            <img width="23" height="23" loading="lazy" src="https://img.jabko.ua/image/icons/white/ep_document-copy.svg?1" alt="" />
+                            </span>
+                            <span className={styles.mobileItemName}>Договір публічної оферти</span>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.accordeon}>

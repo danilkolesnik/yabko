@@ -86,9 +86,14 @@ export default function Header() {
           <Search />
           <CartButton />
         </div>
-        <span className={styles.burgerWrapper}>
-          <CartIcon />
-        </span>
+        <div className={styles.mobileHeaderFlex}>
+          <a className={styles.burgerWrapper} href="/cart">
+            <CartIcon />
+          </a>
+          <a className={styles.burgerWrapper} href="/cart">
+            <CartIcon />
+          </a>
+        </div>
       </div>
     </header>
   )

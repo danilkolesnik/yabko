@@ -151,3 +151,11 @@
   margin-top: 90px;
   padding-top: 20px;
 }
+
+.mobileHeaderFlex {
+  display: flex;
+  gap: 10px;
+  @media screen and (min-width: 700px) {
+    display: none;
+  }
+}
