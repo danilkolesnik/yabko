@@ -11,6 +11,15 @@
     flex-direction: column;
     gap: 10px;
     z-index: 996;
+
+    @media screen and (max-width: 700px) {
+        width: auto;
+        height: 100%;
+        padding: 20px 45px;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
 }
 
 .header {

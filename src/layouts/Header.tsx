@@ -6,7 +6,8 @@ import { useMobileCategories } from '@/context/MobileCategoriesContext';
 import { useOverlay } from '@/context/OverlayContext';
 import { Logo, CartIcon, MobileCallIcon, MobileSearchIcon } from '@/assets/icons/icons'
 import CatalogButton from '@/ui/CatalogButton';
-import Search from '@/ui/Search';
+import Search from '@/ui/Search/Search';
+import SearchBar from '@/ui/Search/SearchBar';
 import CartButton from '@/ui/CartButton';
 import MobileCategories from "@/components/mobileCategories/MobileCategories";
 import CategoriesList from '@/components/CategoriesList';
@@ -24,7 +25,11 @@ export default function Header() {
   const [isCategoryListVisible, setIsCategoryListVisible] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   const [productCategories, setProductCategories] = useState<any[]>([]);
+  
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  useEffect(() => { console.log(isSearchOpen) }, [isSearchOpen]);
+  
   useEffect(() => {
 
     const fetchData = async () => {
@@ -61,7 +66,7 @@ export default function Header() {
           <span onClick={() => setCategoriesOpen(!isCategoriesOpen)} className={styles.burgerWrapper}>
             <Hamburger toggled={isCategoriesOpen} size={24} />
           </span>
-          <span className={styles.searchIconWrapper}>
+          <span className={styles.searchIconWrapper} onClick={() => setIsSearchOpen(true)}>
             <MobileSearchIcon />
           </span>
         </div>
@@ -88,7 +93,7 @@ export default function Header() {
           </div>
         </div>
         <div className={styles.searchWrapper}>
-          <Search />
+          <Search setIsSearchOpen={setIsSearchOpen} showOverlay={showOverlay} hideOverlay={hideOverlay} />
           <CartButton />
         </div>
         <div className={styles.mobileHeaderFlex}>
@@ -100,6 +105,7 @@ export default function Header() {
           </a>
         </div>
       </div>
+      {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} hideOverlay={hideOverlay} />}
     </header>
   )
 }
