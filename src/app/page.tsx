@@ -11,11 +11,12 @@ import ShowcaseSlider from "@/components/showcase/ShowcaseSlider";
 import DescriptionSection from "@/components/description/DescriptionSection";
 import { medusa } from "@/lib/medusa";
 import MobileCatalogButton from "@/ui/mobileCatalogButton/MobileCatalogButton";
+import AnimatedLoader from "@/ui/Loader/Loader";
 
 export default function HomePage() {
   
   const { openCategories } = useMobileCategories();
-  const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [sliderCategories, setSliderCategories] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [categoryProducts, setCategoryProducts] = useState<{ [key: string]: any[] }>({});
@@ -72,7 +73,7 @@ export default function HomePage() {
 
         fetchProductsByCategories(filteredCategories);
         setSliderCategories(filteredCategories);
-
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -80,13 +81,13 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  return (
+  return isLoading ? <AnimatedLoader/> : (
     <>
       <div className="page-wrapper">
         <CartModal />
         <Overlay />
         <div className="hero-wrapper">
-          <CategoriesList products={products} productCategories={productCategories} setShowOverlay={setShowOverlay}/>
+          <CategoriesList products={products} productCategories={productCategories} />
           <ShowcaseSlider />
         </div>
         <MobileCatalogButton onClick={() => openCategories()}/>
@@ -95,7 +96,7 @@ export default function HomePage() {
         </div>
         <div id='catalog'>
           {(sliderCategories || []).map((category) => (
-            <ProductSlider key={category.id} category={category} categoryProducts={categoryProducts} setShowOverlay={setShowOverlay} />
+            <ProductSlider key={category.id} category={category} categoryProducts={categoryProducts} />
           ))}
         </div>
         <DescriptionSection />

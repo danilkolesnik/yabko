@@ -7,7 +7,7 @@ import { Category } from "@/types/category";
 import { CategoryProducts } from "@/types/product";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/assets/icons/icons";
 
-export default function ShowcaseSlider({ category, categoryProducts, setShowOverlay }: { category: Category, categoryProducts: CategoryProducts, setShowOverlay: any }) {
+export default function ShowcaseSlider({ category, categoryProducts }: { category: Category, categoryProducts: CategoryProducts }) {
   function groupProducts(products: any, groupSize = 6, totalSlides = 3) {
     
     if (window.innerWidth < 700) {
