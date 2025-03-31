@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './CatalogPage.module.scss';
 import CatalogSlider from './catalogSlider/CatalogSlider';
 import ProductCard from './productCard/ProductCard';
+import { ReviewsIcon } from '@/assets/icons/icons';
 import Link from 'next/link';
 import { medusa } from "@/lib/medusa";
 import { AccordeonIcon } from '@/assets/icons/icons';
@@ -930,7 +931,10 @@ export default function CatalogPage({
       )}
       
       {/* Заголовок категории */}
-      <h1 className={styles.categoryTitle}>{category?.name || 'Категория'}</h1>
+      <div className={styles.titleWrapper}>
+        <h1 className={styles.categoryTitle}>{category?.name || 'Категория'}</h1>
+        <div className={styles.reviewStars}>★★★★★ <ReviewsIcon /></div>
+      </div>
       
       {/* Кнопка для отображения фильтров */}
       <button 

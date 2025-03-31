@@ -275,6 +275,20 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
             </nav>
           </div>
           <div className={styles.productContainer}>
+            <div className={styles.mobileShown}>
+              <h1 className={styles.productTitle}>{selectedVariant?.title}</h1>
+              <div className={`${styles.betweenFlex} ${styles.reversed}`}>
+                <div className={styles.rating}>
+                  <div className={styles.stars}>★★★★★</div>
+                  <span className={styles.reviewCount}>(54)</span>
+                </div>
+                <div className={styles.productStatus}>
+                  <div className={styles.productStatusContent}>
+                    В наявності
+                  </div>
+                </div>
+            </div>
+            </div>
             <div className={styles.productImageSection}>
               <div className={styles.bg}>
                 <div className={styles.mainImageContainer}>
@@ -322,13 +336,20 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
             
             <div className={styles.productDetails}>
               <div className={styles.header}>
-                <h1 className={styles.productTitle}>{selectedVariant?.title}</h1>
-              
-                <div className={styles.rating}>
-                  <div className={styles.stars}>★★★★★</div>
-                  <span className={styles.reviewCount}>(54)</span>
+                <div className={styles.mobileHidden}>
+                  <h1 className={styles.productTitle}>{selectedVariant?.title}</h1>
+                  <div className={styles.betweenFlex}>
+                    <div className={styles.rating}>
+                      <div className={styles.stars}>★★★★★</div>
+                      <span className={styles.reviewCount}>(54)</span>
+                    </div>
+                    <div className={styles.productStatus}>
+                      <div className={styles.productStatusContent}>
+                        В наявності
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                
                 <div className={styles.pricing}>
                   <span className={styles.currentPrice}>{currentPrice}</span>
                   <span className={styles.oldPrice}>{oldPrice}</span>

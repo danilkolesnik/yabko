@@ -195,6 +195,9 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    @media (max-width: 800px) {
+      display: none;
+    }
   }
   
   .navButton:hover {

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from 'react';
 import { useMobileCategories } from '@/context/MobileCategoriesContext';
 import { useOverlay } from '@/context/OverlayContext';
-import { Logo, CartIcon } from '@/assets/icons/icons'
+import { Logo, CartIcon, MobileCallIcon, MobileSearchIcon } from '@/assets/icons/icons'
 import CatalogButton from '@/ui/CatalogButton';
 import Search from '@/ui/Search';
 import CartButton from '@/ui/CartButton';
@@ -57,9 +57,14 @@ export default function Header() {
         </a>
       </div>
       <div className={styles.mainHeader}>
-        <span onClick={() => setCategoriesOpen(!isCategoriesOpen)} className={styles.burgerWrapper}>
-          <Hamburger toggled={isCategoriesOpen} size={24} />
-        </span>
+        <div className={styles.mobileHeaderFlex}>
+          <span onClick={() => setCategoriesOpen(!isCategoriesOpen)} className={styles.burgerWrapper}>
+            <Hamburger toggled={isCategoriesOpen} size={24} />
+          </span>
+          <span className={styles.searchIconWrapper}>
+            <MobileSearchIcon />
+          </span>
+        </div>
         <MobileCategories isCategoriesOpen={isCategoriesOpen} productCategories={productCategories}/>
         <a href='/' className={styles.logo}>
           <Logo />
@@ -87,8 +92,8 @@ export default function Header() {
           <CartButton />
         </div>
         <div className={styles.mobileHeaderFlex}>
-          <a className={styles.burgerWrapper} href="/cart">
-            <CartIcon />
+          <a className={styles.burgerWrapper} href={`tel:${phoneNumber.replace(/\s/g, "")}`}>
+            <MobileCallIcon />
           </a>
           <a className={styles.burgerWrapper} href="/cart">
             <CartIcon />

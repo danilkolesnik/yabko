@@ -46,6 +46,7 @@
   
   @media (max-width: 768px) {
     flex-direction: column;
+    gap: 0px;
   }
 }
 
@@ -86,6 +87,9 @@
   overflow: hidden;
   padding: 10px;
   height: 100%; /* Take full height of parent */
+  @media screen and (max-width: 700px) {
+    margin-bottom: 0;
+  }
 }
 
 .mainImage {
@@ -211,6 +215,10 @@
   font-weight: 600;
   margin-top: 20px;
   line-height: 25px;
+  @media screen and (max-width: 700px) {
+    text-align: center;
+    padding-bottom: 10px;
+  }
 }
 
 .rating {
@@ -233,11 +241,22 @@
 
 .pricing {
   margin-bottom: 20px;
+
+  @media screen and (max-width: 700px) {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 5px;
+  }
 }
 
 .currentPrice {
   font-size: 28px;
   font-weight: bold;
+  @media screen and (max-width: 700px) {
+    font-size: 30px;
+  }
 }
 
 .oldPrice {
@@ -246,6 +265,9 @@
   font-size: 20px;
   font-weight: 600;
   margin-left: 10px;
+  @media screen and (max-width: 700px) {
+    margin-left: 0;
+  }
 }
 
 .productCode {
@@ -1259,4 +1281,58 @@ input:checked + .switchSlider:before {
 .mobileWarrantyText {
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+.betweenFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.productStatusContent {
+  border: 1px solid #078548;
+  color: #078548;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 19px;
+  color: #078549;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  padding: 6px 14px 5px;
+}
+
+.productStatusContent::after {
+  background: #078548;
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 6px;
+}
+
+.reversed {
+  flex-direction: row-reverse;
+}
+
+.mobileShown {
+  background: #1a1a1a;
+  padding: 0 15px;
+  display: none;
+  @media screen and (max-width: 700px) {
+    display: block;
+  }
+}
+
+.mobileHidden {
+  display: block;
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
 }

@@ -87,6 +87,7 @@
   }
   @media screen and (max-width: 700px) {
     justify-content: space-between;
+    padding: 0 10px;
   }
 }
 
@@ -158,4 +159,10 @@
   @media screen and (min-width: 700px) {
     display: none;
   }
+}
+
+.searchIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
