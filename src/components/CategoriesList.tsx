@@ -98,7 +98,7 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
                             {categoryProducts[child.id].length > 0 && (
                               categoryProducts[child.id].map((product) => (
                                 <li className={styles.productListItem} key={product.id}>
-                                  <Link href='/product' className={styles.productListLink}>
+                                  <Link href={`/${product.variants[0]?.metadata?.handle}`} className={styles.productListLink}>
                                     {product.title}
                                   </Link>
                                 </li>

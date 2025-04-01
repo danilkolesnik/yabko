@@ -1,11 +1,12 @@
 'use client';
 import styles from './search.module.scss';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { medusa } from '@/lib/medusa';
 import { SearchIcon, CloseIcon } from '@/assets/icons/icons';
 
 export default function SearchBar({ setIsSearchOpen, hideOverlay } : { setIsSearchOpen: any, hideOverlay: any}) {
-    
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('')
     const [products, setProducts] = useState([]);
 
@@ -42,8 +43,6 @@ export default function SearchBar({ setIsSearchOpen, hideOverlay } : { setIsSear
                     value={searchQuery}
                     onChange={handleSearch}
                     className={styles.searchBarInput}
-                    onFocus={() => console.log('Фокус на инпут')}
-                    onBlur={() => console.log('Потеря фокуса')}
                 />
                 <span className={styles.closeIconWrapper} onClick={() => {
                     hideOverlay();
@@ -56,7 +55,11 @@ export default function SearchBar({ setIsSearchOpen, hideOverlay } : { setIsSear
                 {(products || []).map((product) => {
                     if (product?.variants) {
                         return product.variants.map((variant) => (
-                            <div key={variant.id} className={styles.singleProductWrapper}>
+                            <div onClick={() => {
+                                hideOverlay();
+                                setIsSearchOpen(false);
+                                router.push(`${variant?.metadata?.handle}`)
+                            }} key={variant.id} className={styles.singleProductWrapper}>
                                 <div className={styles.photoWrapper}>
                                     {product.images && <img src={product.images[0].url} alt="" />}
                                 </div>
@@ -67,7 +70,12 @@ export default function SearchBar({ setIsSearchOpen, hideOverlay } : { setIsSear
                             </div>
                         ));
                     } else {
-                        <div key={product.id} className={styles.singleProductWrapper}>
+                        <div onClick={() => {
+                            hideOverlay();
+                            setIsSearchOpen(false);
+                            router.push(`/products/${product?.handle}`)
+                        }}
+                        key={product.id} className={styles.singleProductWrapper}>
                             <div className={styles.photoWrapper}>
                                 {product.images && <img src={product.images[0].url} alt="" />}
                             </div>
