@@ -811,7 +811,10 @@ input:checked + .switchSlider:before {
   text-align: center;
   margin-bottom: 5px;
   margin-top: 0;
-  padding-top: 20px
+  padding-top: 20px;
+  @media screen and (max-width: 700px) {
+    padding-top: 10px
+  }
 }
 
 .overallRating {
@@ -1334,5 +1337,85 @@ input:checked + .switchSlider:before {
   display: block;
   @media screen and (max-width: 700px) {
     display: none;
+  }
+}
+
+.characteristicsContainer {
+  margin-top: 10px;
+  background-color: #1a1a1a;
+  padding: 10px;
+  @media screen and (max-width: 700px) {
+    margin-top: 5px;
+  }
+}
+
+.characteristicsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.characteristicsTitle {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: left;
+  margin: 0 0 20px;
+}
+
+.charName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  height: 20px;
+  line-height: 19px;
+  @media screen and (max-width: 700px) {
+    font-size: 0.8rem;  
+  }
+}
+
+.charValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 19px;
+  @media screen and (max-width: 700px) {
+    font-size: 0.8rem;  
+  }
+}
+
+.characteristicsRow {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  min-height: 20px;
+}
+
+.charNameWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.charDivider {
+  height: 1px;
+  flex-grow: 1;
+  position: relative;
+}
+
+.charDivider::after {
+  content: "";
+  width: calc(100% - 20px);
+  opacity: .5;
+  position: absolute;
+  left: 10px;
+  border-width: 1px .5px .5px;
+  border-top: .5px dashed #999;
+}
+
+.charNameWrapper {
+  width: 50%;
+  @media screen and (max-width: 700px) {
+    width: 35%;    
   }
 }

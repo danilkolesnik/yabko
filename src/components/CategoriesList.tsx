@@ -4,7 +4,7 @@ import { useOverlay } from '@/context/OverlayContext';
 import Link from 'next/link';
 import styles from './categories.list.module.scss';
 import { medusa } from "@/lib/medusa";
-import { CategoryArrow } from '@/assets/icons/icons';
+import { CategoryArrow, NewIcon } from '@/assets/icons/icons';
 
 export default function CategoriesList({ productCategories, setShowOverlay }: any) {
   const { showOverlay, hideOverlay } = useOverlay();
@@ -83,7 +83,10 @@ export default function CategoriesList({ productCategories, setShowOverlay }: an
                     {category.metadata?.picture && <img className={styles.categoryItemPicture} src={category.metadata.picture} alt="" />}
                     {category.name}
                   </div>
-                  {category.category_children.length ? <CategoryArrow /> : null}
+                  <div className={styles.arrowFlex}>
+                    {category.metadata?.isNew ? <NewIcon/> : null}
+                    {category.category_children.length ? <CategoryArrow /> : null}
+                  </div>
                 </div>
                 {activeCategoryId === category.id && category.category_children.length > 0 && (
                   <ul className={styles.childCategories}>

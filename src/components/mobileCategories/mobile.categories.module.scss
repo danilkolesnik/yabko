@@ -135,3 +135,9 @@
 .arrowBackWrapper {
   transform: rotate(180deg);
 }
+
+.arrowFlex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

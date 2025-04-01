@@ -202,8 +202,13 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
   const variantImage = selectedVariant.metadata?.img?.split(",").map(url => url.trim()) || null;
   const almostReviews = selectedVariant.metadata?.reviews?.split(",").map(r => r.trim()) || null;
   const reviews = almostReviews?.map(review => review.split(":")) || null;
-  console.log(reviews)
+  // console.log(reviews)
   
+  const almostCharacteristics = selectedVariant.metadata?.characteristics?.split(",").map(r => r.trim()) || null;
+  const characteristics = almostCharacteristics?.map((char: any) => char.split(":")) || null;
+
+  console.log("char",characteristics);
+
   // Get product images, combining variant image with product images
   const productImages = product.images?.map(img => img.url) || [];
   
@@ -258,7 +263,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      console.log('Selected files:', files);
+      // console.log('Selected files:', files);
       // Here you would handle file upload
     }
   };
@@ -271,6 +276,7 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
             <nav className={styles.productHeaderNav}>
               <a href="/">Головна</a>
               <a href="#description">Опис</a>
+              <a href="#characteristics">Характеристики</a>
               <a href="#reviews">Вiдгуки</a>
             </nav>
           </div>
@@ -512,6 +518,21 @@ const ProductPage = ({ product, initialVariant }: ProductPageClientProps) => {
                     {product?.description}
                   </div>
                 )}
+              </div>
+              {/* Xarakteristiki Section */}
+              <div className={styles.characteristicsContainer} id='characteristics'>
+                <h2 className={styles.characteristicsTitle}>Основні характеристики:</h2>
+                <div className={styles.characteristicsWrapper}>
+                  {characteristics?.map((review, i) => (
+                    <div className={styles.characteristicsRow} key={almostCharacteristics[i]}>
+                      <div className={styles.charNameWrapper}>
+                        <span className={styles.charName}>{review[0]}:</span>
+                        <span className={styles.charDivider}></span>
+                      </div>
+                      <span className={styles.charValue}>{review[1]}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
               {/* Review Section */}
               <div className={styles.reviewContainer} id='reviews'>

@@ -1,9 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { medusa } from "@/lib/medusa";
-import { CategoryArrow } from '@/assets/icons/icons';
+import { CategoryArrow, NewIcon } from '@/assets/icons/icons';
 import styles from './mobile.categories.module.scss';
-import { NON_STANDARD_NODE_ENV } from 'next/dist/lib/constants';
 
 export default function MobileCategories({ productCategories, isCategoriesOpen }: any) {
 
@@ -61,45 +60,6 @@ export default function MobileCategories({ productCategories, isCategoriesOpen }
     fetchProductsByCategory(categoryId);
   };
   
-  const renderCategory = (category: any) => {
-    return (
-      <li key={category.id} className={styles.categoryItem}>
-        <div className={styles.categoryHeader} onClick={() => toggleCategory(category.id)}>
-          <div className={styles.categoryItemNameWrapper}>
-            {expandedCategories[category.id] && <span className={styles.arrowBackWrapper}><CategoryArrow /></span>}
-            {category.metadata?.picture && <img src={category.metadata.picture} alt="" className={styles.categoryItemPicture} />}
-            {category.name}
-          </div>
-          {category.category_children.length > 0 && !expandedCategories[category.id] && <CategoryArrow />}
-        </div>
-        {expandedCategories[category.id] && category.category_children.length > 0 && (
-          <ul className={styles.subCategoryList}>
-            {category.category_children.map((child: any) => {
-              console.log('child id', child.id, 'cat', categoryProducts, '--> ', categoryProducts[child.id]);
-              return (
-                <li key={child.id} className={styles.subCategoryItem}>
-                <div className={styles.subCategoryHeader} onClick={() => toggleCategory(child.id)}>
-                  <div className={styles.categoryItemNameWrapper}>
-                    {child.metadata?.picture && <img src={child.metadata.picture} alt="" className={styles.categoryItemPicture  } />}
-                    {child.name}
-                  </div>
-                </div>
-                {categoryProducts[child.id] && (
-                  <ul className={styles.productList}>
-                    {categoryProducts[child.id].map((product) => (
-                      <li key={product.id} className={styles.productItem}>{product.title}</li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-              )
-            })}
-          </ul>
-        )}
-      </li>
-    )
-  }
-
   return (
     <div className={`${styles.mobileMenuWrapper} ${isCategoriesOpen ? styles.open : ""}`}>
       <div className={styles.mobileMenuContent}>
@@ -114,7 +74,10 @@ export default function MobileCategories({ productCategories, isCategoriesOpen }
                       {category.metadata?.picture && <img src={category.metadata.picture} alt="" className={styles.categoryItemPicture} />}
                       {category.name}
                     </div>
-                    {category.category_children.length > 0 && !expandedCategories[category.id] && <CategoryArrow />}
+                    <div className={styles.arrowFlex}>
+                      {category.metadata?.isNew ? <NewIcon/> : null}
+                      {category.category_children.length > 0 && !expandedCategories[category.id] && <CategoryArrow />}
+                    </div>
                   </div>
                   {expandedCategories[category.id] && category.category_children.length > 0 && (
                     <ul className={styles.subCategoryList}>
