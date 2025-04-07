@@ -102,7 +102,6 @@ export default function Header() {
           <a className={styles.burgerWrapper} href="/cart">
             <CartIcon />
           </a>
-          >?
         </div>
       </div>
       {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} hideOverlay={hideOverlay} />}

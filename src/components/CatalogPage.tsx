@@ -942,7 +942,7 @@ export default function CatalogPage({
         onClick={toggleFilterPanel}
       >
         <span className={styles.filterIcon}></span>
-        Фільтри
+        Фільтр (5)
       </button>
       
       {/* Панель фильтров, которая выезжает сверху */}

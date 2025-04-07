@@ -34,8 +34,9 @@ const CallButton = () => {
     }, [showIcon]);
 
     const handleCallButtonClick = () => {
-        openCall();
-        showOverlay();
+      console.log("Call button clicked");
+      openCall();
+      showOverlay();
     };
 
     return (
