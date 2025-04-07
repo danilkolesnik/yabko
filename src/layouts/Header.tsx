@@ -19,7 +19,6 @@ export default function Header() {
   const { showOverlay, hideOverlay } = useOverlay();
   const { isCategoriesOpen, setCategoriesOpen } = useMobileCategories();
 
-  // const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState<boolean>(false);
   const [isTop, setIsTop] = useState(true);
 
   const [isCategoryListVisible, setIsCategoryListVisible] = useState(false);
@@ -28,7 +27,7 @@ export default function Header() {
   
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  useEffect(() => { console.log(isSearchOpen) }, [isSearchOpen]);
+  // useEffect(() => { console.log(isSearchOpen) }, [isSearchOpen]);
   
   useEffect(() => {
 
@@ -103,6 +102,7 @@ export default function Header() {
           <a className={styles.burgerWrapper} href="/cart">
             <CartIcon />
           </a>
+          >?
         </div>
       </div>
       {isSearchOpen && <SearchBar setIsSearchOpen={setIsSearchOpen} hideOverlay={hideOverlay} />}

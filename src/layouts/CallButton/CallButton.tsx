@@ -1,9 +1,13 @@
 'use client';
 import styles from './call.button.module.scss';
+import { useCall } from "@/context/CallContext";
+import { useOverlay } from '@/context/OverlayContext';
 import { useState, useEffect } from "react";
 import { CallButtonIcon, TelegramIcon } from '@/assets/icons/icons';
 
 const CallButton = () => {
+    const { openCall } = useCall();
+    const { showOverlay } = useOverlay();
     const [showIcon, setShowIcon] = useState(true);
     const [isShaking, setIsShaking] = useState(false);
     const [fade, setFade] = useState(true);
@@ -18,7 +22,7 @@ const CallButton = () => {
   
       return () => clearInterval(toggleDisplay);
     }, []);
-  
+    
     useEffect(() => {
       if (!showIcon) return; 
       const shakeInterval = setInterval(() => {
@@ -29,9 +33,14 @@ const CallButton = () => {
       return () => clearInterval(shakeInterval);
     }, [showIcon]);
 
+    const handleCallButtonClick = () => {
+        openCall();
+        showOverlay();
+    };
+
     return (
         <div className={styles.callButtonWrapper}>
-            <div className={styles.callButton}>
+            <div className={styles.callButton} onClick={handleCallButtonClick}>
                 <div
                     className={`${styles.callButtonContent} ${isShaking ? styles.shake : ""} ${
                         fade ? styles.fadeIn : styles.fadeOut

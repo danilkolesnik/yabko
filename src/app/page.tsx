@@ -2,6 +2,7 @@
 import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { useMobileCategories } from '@/context/MobileCategoriesContext';
+import { useCall } from "@/context/CallContext";
 import BrandList from "@/components/brandList/BrandList";
 import CartModal from "@/components/cartModal/CartModal";
 import Overlay from "@/ui/Overlay/Overlay";
@@ -12,6 +13,7 @@ import DescriptionSection from "@/components/description/DescriptionSection";
 import { medusa } from "@/lib/medusa";
 import MobileCatalogButton from "@/ui/mobileCatalogButton/MobileCatalogButton";
 import AnimatedLoader from "@/ui/Loader/Loader";
+import CallModal from "@/components/callModal/CallModal";
 
 export default function HomePage() {
   
@@ -85,6 +87,7 @@ export default function HomePage() {
     <>
       <div className="page-wrapper">
         <CartModal />
+        <CallModal />
         <Overlay />
         <div className="hero-wrapper">
           <CategoriesList products={products} productCategories={productCategories} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { OverlayProvider } from '@/context/OverlayContext';
+import { CallProvider } from "@/context/CallContext";
 import { CartProvider } from "@/context/CartContext";
 import { MobileCategoriesProvider } from '@/context/MobileCategoriesContext';
 import './styles.css';
@@ -23,10 +24,12 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           <MobileCategoriesProvider>
             <Header />
               <main>
-                <CartProvider>
-                  {children}
-                  <CallButton />
-                </CartProvider>
+                <CallProvider>
+                  <CartProvider>
+                    {children}
+                    <CallButton />
+                  </CartProvider>
+                </CallProvider>
               </main>
             <Footer />
           </MobileCategoriesProvider>

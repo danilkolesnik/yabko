@@ -1,0 +1,206 @@
+
+.cartModal {
+    position: fixed;
+    width: 50%;
+    padding: 15px 15px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 996;
+
+    @media screen and (max-width: 700px) {
+        width: auto;
+        height: 100%;
+        padding: 20px 45px;
+        top: auto;
+        left: auto;
+        transform: none;
+    }
+}
+
+.header {
+    position: relative;
+    text-align: center;
+}
+
+.header h6 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.closeWrapper {
+    position: absolute;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    margin-top: -2px;
+}
+
+.miniCart {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.miniCartItem {
+    background-color: #1d1d1d;
+    padding: 9px 4px 4px 22px;
+    border-radius: 2px;
+    display: flex;
+}
+
+.productPhotoWrapper {
+    max-width: 105px;
+    height: 140px;
+    width: 100%;
+    margin-right: 5px;
+}
+
+.productDetailsWrapper {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.productName {
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.productPrice {
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.productWarranty {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #999999;
+}
+
+.productInfoFlex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.productRemoveWrapper {
+    cursor: pointer;
+    margin: 0 5px auto auto;
+}
+
+
+.priceSection {
+    background-color: #1d1d1d;
+    padding: 5px;
+    border-radius: 2px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.priceCaption {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.priceValue {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.actionSection {
+    background-color: #1d1d1d;
+    padding: 9px;
+    border-radius: 2px;
+    gap: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.continue {
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #999999;
+}
+
+.cartButton {
+    cursor: pointer;
+    height: 40px;
+    width: 35%;
+    padding: 10px 15px;
+    background-color: #c42a2c;
+    max-width: 298px;
+    border: none;
+    border-radius: 3px;
+    color: #FFF;
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.callCaption {
+    text-align: center;
+    font-size: 1.15rem;
+}
+
+.callFormWrapper {
+    display: flex;
+    width: 40%;
+    flex-direction: column;
+    margin: auto;
+}
+
+.callFormWrapper input {
+    height: 54px;
+    font-family: 'Gotham', sans-serif;
+    padding: 13px 20px;
+    color: #000 !important;
+    border: 1px solid #fff;
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: lighter;
+}
+
+.callFormWrapper button {
+    cursor: pointer;
+    height: 54px;
+    font-family: 'Gotham', sans-serif;
+    padding: 13px 20px;
+    color: #fff !important;
+    border: none;
+    background-color: #c42a2c;  
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: lighter;
+    margin-top: 15px;
+}
+
+.callFormWrapper span {
+    font: 300 13px / 32px Open sans, Ubuntu, Arial;
+    color: #fff !important;
+    text-align: center;
+    display: flow;
+}
+
+.bottomArticle {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: left;
+    margin-top: 15px;
+}
+
+.bottomArticle span {
+    font-size: 13px;
+    height: 17px;
+    line-height: 18px;
+}
